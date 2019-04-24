@@ -1,0 +1,84 @@
+{
+  "name": "oasis-client",
+  "version": "0.0.0",
+  "description": "",
+  "keywords": [],
+  "main": "dist/oasis-client.umd.js",
+  "module": "dist/oasis-client.es5.js",
+  "typings": "dist/types/oasis-client.d.ts",
+  "files": [
+    "dist",
+    "src",
+    "test"
+  ],
+  "author": "Oasis Labs Inc. <info@oasislabs.com>",
+  "repository": {
+    "type": "git"
+  },
+  "license": "",
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "scripts": {
+    "lint": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
+    "prebuild": "rimraf dist",
+    "build": "tsc --module commonjs && rollup -c rollup.config.ts && typedoc --out docs --target es6 --theme minimal --mode file src",
+    "start": "rollup -c rollup.config.ts -w",
+    "test": "jest --coverage",
+    "test:watch": "jest --coverage --watch",
+    "precommit": "lint-staged"
+  },
+  "lint-staged": {
+    "{src,test}/**/*.ts": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "jest": {
+    "transform": {
+      ".(ts|tsx)": "ts-jest"
+    },
+    "testEnvironment": "node",
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ]
+  },
+  "prettier": {
+    "semi": true,
+    "singleQuote": true
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^7.1.2",
+    "@commitlint/config-conventional": "^7.1.2",
+    "@types/jest": "^23.3.2",
+    "@types/node": "^10.11.0",
+    "husky": "^1.0.1",
+    "jest": "^23.6.0",
+    "jest-config": "^23.6.0",
+    "lint-staged": "^8.0.0",
+    "lodash.camelcase": "^4.3.0",
+    "prettier": "^1.14.3",
+    "rimraf": "^2.6.2",
+    "rollup": "^0.67.0",
+    "rollup-plugin-commonjs": "^9.1.8",
+    "rollup-plugin-json": "^3.1.0",
+    "rollup-plugin-node-resolve": "^3.4.0",
+    "rollup-plugin-sourcemaps": "^0.4.2",
+    "rollup-plugin-typescript2": "^0.18.0",
+    "ts-jest": "^23.10.2",
+    "ts-node": "^7.0.1",
+    "tslint": "^5.11.0",
+    "tslint-config-prettier": "^1.15.0",
+    "tslint-config-standard": "^8.0.1",
+    "typedoc": "^0.12.0",
+    "typescript": "^3.0.3"
+  }
+}
