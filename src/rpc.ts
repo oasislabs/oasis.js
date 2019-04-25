@@ -56,7 +56,8 @@ export class RpcFactory {
     return async (...args: any[]) => {
       let encoder = await this.encoder;
       let txData = await encoder.encode(fn, args);
-      return this.provider.send(txData);
+      let request = { data: txData, method: 'oasis_rpc' };
+      return this.provider.send(request);
     };
   }
 }

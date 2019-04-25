@@ -13,6 +13,7 @@
 // }
 export interface Idl {
   [key: string]: any;
+  constructor: RpcConstructor;
 }
 
 type RpcIdent = string;
@@ -25,7 +26,7 @@ type RpcField = {};
 
 enum RpcType {}
 
-type RpcConstructor = {};
+type RpcConstructor = any;
 
 export type RpcFn = {
   name: string;

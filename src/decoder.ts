@@ -8,9 +8,14 @@ export interface RpcDecoder {
 }
 
 export class PlaintextRpcDecoder {
-  async decode(data: Bytes): Promise<RpcRequest> {
+  async decode(data: Bytes, constructor?: boolean): Promise<RpcRequest> {
     if (typeof data === 'string') {
       data = Buffer.from(data, 'hex');
+    }
+
+    // Constructor doesn't use a sighash.
+    if (constructor) {
+      return cbor.decode(data);
     }
 
     return {
@@ -31,6 +36,6 @@ export class ConfidentialRpcDecoder extends PlaintextRpcDecoder {
 }
 
 type RpcRequest = {
-  sighash: Bytes4;
+  sighash?: Bytes4;
   input: any[];
 };
