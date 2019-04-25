@@ -27,7 +27,8 @@
     "start": "rollup -c rollup.config.ts -w",
     "test": "jest --coverage",
     "test:watch": "jest --coverage --watch",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "coverage": "jest --coverage && cat ./coverage/lcov.info | coveralls"
   },
   "lint-staged": {
     "{src,test}/**/*.ts": [
@@ -62,6 +63,7 @@
     "@types/cbor": "^2.0.0",
     "@types/jest": "^23.3.2",
     "@types/node": "^10.11.0",
+    "coveralls": "^3.0.3",
     "husky": "^1.0.1",
     "jest": "^23.6.0",
     "jest-config": "^23.6.0",
