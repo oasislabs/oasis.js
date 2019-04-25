@@ -7,7 +7,7 @@ import json from 'rollup-plugin-json'
 
 const pkg = require('./package.json')
 
-const libraryName = 'oasis-client'
+const libraryName = 'oasis'
 
 export default {
   input: `src/${libraryName}.ts`,

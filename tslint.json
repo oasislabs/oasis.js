@@ -5,6 +5,7 @@
   ],
   "rules": {
 	"semicolon": [true, "always"],
-	"quotemark": [true, "single"]
+	"quotemark": [true, "single"],
+	"no-trailing-whitespace": true
   }
 }
