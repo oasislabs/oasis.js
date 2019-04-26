@@ -16,9 +16,13 @@ export class PlaintextRpcEncoder implements RpcEncoder {
 
     // TODO: input validation. https://github.com/oasislabs/oasis-client/issues/14
 
-    let sighash = Sighash.from(fn);
     let cborEncoded = cbor.encode(args);
 
+    if (fn.name === 'constructor') {
+      return cborEncoded;
+    }
+
+    let sighash = Sighash.from(fn);
     return Buffer.concat([sighash, cborEncoded]);
   }
 }

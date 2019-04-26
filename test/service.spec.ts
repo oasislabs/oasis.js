@@ -1,22 +1,20 @@
 import { Idl } from '../src/idl';
 import Service from '../src/service';
 import { PlaintextRpcDecoder } from '../src/decoder';
-import { Provider } from '../src/provider';
+import { Request } from '../src/provider';
 import { idl } from './idls/test-contract';
+import { RequestMockProvider } from './utils';
 
 describe('Service', () => {
+  const address = '0x372FF3aeA1fc69B9C440A5fE0B4c23c38226Da68';
   it('constructs a service with a hex string address', () => {
-    let address = '0x372FF3aeA1fc69B9C440A5fE0B4c23c38226Da68';
     let service = new Service(idl, address);
 
     expect(service.address).toEqual(address);
   });
 
   it('constructs a service with a buffer address', () => {
-    let address = Buffer.from(
-      '372FF3aeA1fc69B9C440A5fE0B4c23c38226Da68',
-      'hex'
-    );
+    let bufferAddress = Buffer.from(address, 'hex');
     let service = new Service(idl, address);
 
     expect(service.address).toEqual(address);
@@ -26,7 +24,7 @@ describe('Service', () => {
     // Given an idl.
 
     // When.
-    let service = new Service(idl);
+    let service = new Service(idl, address);
 
     // Then.
     // Rpcs are directly on the service object.
@@ -45,7 +43,7 @@ describe('Service', () => {
 
   it('throws an exception when the incorrect number of arguments are passed to an rpc', async () => {
     // Given.
-    let service = new Service(idl);
+    let service = new Service(idl, address);
 
     // When.
     let input = defType();
@@ -62,42 +60,26 @@ describe('Service', () => {
     let input1 = defType();
     let input2 = Buffer.from('1234', 'hex');
 
-    let txDataPromise: Promise<Buffer> = new Promise(async resolve => {
+    let txDataPromise: Promise<Request> = new Promise(async resolve => {
       // Given a service.
-      let service = new Service(idl, undefined, {
-        provider: new TxDataMockProvider(resolve)
+      let service = new Service(idl, address, {
+        provider: new RequestMockProvider(resolve)
       });
 
       // When we make an rpc request.
       await service.rpc.the(input1, input2);
     });
 
-    let txData = await txDataPromise;
+    let request = await txDataPromise;
 
     // Then we should have given the provider the encoded wire format of the request.
     let decoder = new PlaintextRpcDecoder();
-    let req = await decoder.decode(txData);
-    expect(req.sighash.toString('hex')).toEqual('ddefa4ab');
+    let req = await decoder.decode(request.data);
+    expect(req.sighash!.toString('hex')).toEqual('ddefa4ab');
     expect(JSON.stringify(req.input)).toEqual(JSON.stringify([input1, input2]));
+    expect(request.method).toEqual('oasis_rpc');
   });
 });
-
-/**
- * TxDataMockProvider is a mock provider to pull out the encoded transaction data for
- * an rpc call.
- */
-class TxDataMockProvider implements Provider {
-  /**
-   * @param txResolve is a promise's resolve function returning the
-   *        trandaction data received by this provider for a single
-   *        tx.
-   */
-  constructor(private txResolve: Function) {}
-
-  async send(txData: Buffer): Promise<any> {
-    this.txResolve(txData);
-  }
-}
 
 // Returns a `DefTy` object to be used for testing. See idls/test-contract.ts.
 function defType() {

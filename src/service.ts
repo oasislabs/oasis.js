@@ -9,7 +9,7 @@ import { Provider, WebsocketProvider } from './provider';
  */
 export default class Service {
   public rpc: Rpcs;
-  public address?: Address;
+  public address: Address;
 
   private idl: Idl;
 
@@ -23,7 +23,7 @@ export default class Service {
    * @param address? is the address of the currently deployed
    * @param options? are the optinos configuring the Service client.
    */
-  public constructor(idl: Idl, address?: Address, options?: ServiceOptions) {
+  public constructor(idl: Idl, address: Address, options?: ServiceOptions) {
     options = this.setupOptions(options);
 
     // Attach the rpcs onto the rpc interface so that we can generate dynamic
