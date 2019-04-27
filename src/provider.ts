@@ -6,15 +6,6 @@ export interface Provider {
   send(request: Request): Promise<any>;
 }
 
-export class ConfidentialProvider implements Provider {
-  constructor(private provider: Provider) {}
-
-  async send(request: Request): Promise<any> {
-    // TODO: https://github.com/oasislabs/oasis-client/issues/4.
-    return this.provider.send(request);
-  }
-}
-
 export class WebsocketProvider {
   constructor(private url: string) {}
 

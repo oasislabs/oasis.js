@@ -9,5 +9,6 @@ yarn build
 # Serve the files.
 python3 -m http.server 8000 &
 
-# Run the browser test.
-node test/browser/test.js
+# Run the browser tests.
+node test/browser/service/test.js
+node test/browser/confidential/test.js
