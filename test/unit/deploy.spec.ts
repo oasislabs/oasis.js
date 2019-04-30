@@ -1,10 +1,10 @@
-import { Idl } from '../src/idl';
-import * as oasis from '../src/index';
-import { idl } from './idls/test-contract';
+import { Idl } from '../../src/idl';
+import * as oasis from '../../src/index';
 import { RequestMockProvider } from './utils';
-import { Request } from '../src/provider';
-import { DeployHeaderReader } from '../src/deploy/header';
-import { PlaintextRpcDecoder } from '../src/decoder';
+import { Request } from '../../src/provider';
+import { DeployHeaderReader } from '../../src/deploy/header';
+import { PlaintextRpcDecoder } from '../../src/decoder';
+import { idl } from './idls/test-contract';
 
 describe('Service deploys', () => {
   let testCases = [

@@ -1,4 +1,5 @@
-import { DeployHeader, DeployHeaderWriter } from '../src/deploy/header';
+import { DeployHeader, DeployHeaderWriter } from '../../src/deploy/header';
+import * as bytes from '../../src/utils/bytes';
 
 describe('DeployHeader', () => {
   describe('deployCode', () => {
@@ -31,8 +32,10 @@ describe('DeployHeader', () => {
     failTests.forEach(test => {
       it(test.description, async function() {
         expect(() => {
-          '0x' +
-            DeployHeader.deployCode(test.header, test.bytecode).toString('hex');
+          bytes.toHex(DeployHeader.deployCode(
+            test.header,
+            test.bytecode
+          ) as Uint8Array);
         }).toThrowError(test.error);
       });
     });
@@ -84,10 +87,11 @@ describe('DeployHeader', () => {
 
     successTests.forEach(test => {
       it(test.description, function() {
-        let data = DeployHeader.deployCode(test.header, test.bytecode).toString(
-          'hex'
-        );
-        expect('0x' + data).toBe(test.expected);
+        let data = bytes.toHex(DeployHeader.deployCode(
+          test.header,
+          test.bytecode
+        ) as Uint8Array);
+        expect(data).toBe(test.expected);
       });
     });
   });

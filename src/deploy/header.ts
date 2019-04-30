@@ -1,6 +1,6 @@
 import { Bytes } from '../types';
-const assert = require('assert');
-const bytes = require('../utils/bytes');
+import * as assert from 'assert';
+import * as bytes from '../utils/bytes';
 
 export type DeployHeaderOptions = {
   expiry?: number;
@@ -19,7 +19,7 @@ export class DeployHeader {
     let version = DeployHeaderWriter.version(this.version);
     let body = DeployHeaderWriter.body(this.body);
 
-    assert.equal(body.length % 2, 0);
+    assert.strictEqual(body.length % 2, 0);
 
     let length = DeployHeaderWriter.size(body);
 
@@ -51,13 +51,13 @@ export class DeployHeader {
     deploycode: Bytes
   ): Bytes {
     if (typeof deploycode !== 'string') {
-      deploycode = '0x' + deploycode.toString('hex');
+      deploycode = bytes.toHex(deploycode);
     }
     DeployHeader.deployCodePreconditions(headerBody, deploycode);
 
     if (Object.keys(headerBody).length === 0) {
       // All apis should return buffers not hex strings.
-      return Buffer.from(deploycode.substr(2), 'hex');
+      return bytes.parseHex(deploycode.substr(2));
     }
 
     // Read the existing header, if it exists.
@@ -78,9 +78,8 @@ export class DeployHeader {
     }
 
     let code = currentHeader.data() + initcode.substr(2);
-
     // All apis should return buffers not hex strings.
-    return Buffer.from(code.substr(2), 'hex');
+    return bytes.parseHex(code.substr(2));
   }
 
   private static deployCodePreconditions(
@@ -132,7 +131,7 @@ export class DeployHeader {
  * A collection of utilities for parsing through deploycode including the Oasis contract
  * deploy header in the form of a hex string.
  */
-// TODO: change return values to be Bytes (as Buffers).
+// TODO: change return values to be Bytes.
 export class DeployHeaderReader {
   /**
    * @param   {String} deploycode is the transaction data to deploy a contract as a hex string.
@@ -140,7 +139,7 @@ export class DeployHeaderReader {
    */
   public static header(deploycode: Bytes): DeployHeader | null {
     if (typeof deploycode !== 'string') {
-      deploycode = '0x' + deploycode.toString('hex');
+      deploycode = bytes.toHex(deploycode);
     }
 
     if (!deploycode.startsWith('0x' + DeployHeader.prefix())) {
@@ -160,10 +159,13 @@ export class DeployHeaderReader {
    */
   public static body(deploycode: Bytes): DeployHeaderOptions {
     if (typeof deploycode !== 'string') {
-      deploycode = '0x' + deploycode.toString('hex');
+      deploycode = bytes.toHex(deploycode);
     }
 
-    assert.equal(true, deploycode.startsWith('0x' + DeployHeader.prefix()));
+    assert.strictEqual(
+      true,
+      deploycode.startsWith('0x' + DeployHeader.prefix())
+    );
 
     let length = DeployHeaderReader.size(deploycode);
     let serializedBody = deploycode.substr(
@@ -171,7 +173,7 @@ export class DeployHeaderReader {
       length * 2
     );
 
-    return JSON.parse(Buffer.from(serializedBody, 'hex').toString('utf8'));
+    return JSON.parse(bytes.decodeUtf8(bytes.parseHex(serializedBody)));
   }
 
   /**
@@ -179,10 +181,13 @@ export class DeployHeaderReader {
    */
   public static size(deploycode: Bytes): number {
     if (typeof deploycode !== 'string') {
-      deploycode = '0x' + deploycode.toString('hex');
+      deploycode = bytes.toHex(deploycode);
     }
 
-    assert.equal(true, deploycode.startsWith('0x' + DeployHeader.prefix()));
+    assert.strictEqual(
+      true,
+      deploycode.startsWith('0x' + DeployHeader.prefix())
+    );
 
     let length = deploycode.substr(
       DeployHeaderReader.sizeStart(),
@@ -197,10 +202,13 @@ export class DeployHeaderReader {
    */
   public static version(deploycode: Bytes): number {
     if (typeof deploycode !== 'string') {
-      deploycode = '0x' + deploycode.toString('hex');
+      deploycode = bytes.toHex(deploycode);
     }
 
-    assert.equal(true, deploycode.startsWith('0x' + DeployHeader.prefix()));
+    assert.strictEqual(
+      true,
+      deploycode.startsWith('0x' + DeployHeader.prefix())
+    );
 
     let version = deploycode.substr(
       DeployHeaderReader.versionStart(),
@@ -215,10 +223,13 @@ export class DeployHeaderReader {
    */
   public static initcode(deploycode: Bytes): string {
     if (typeof deploycode !== 'string') {
-      deploycode = '0x' + deploycode.toString('hex');
+      deploycode = bytes.toHex(deploycode);
     }
 
-    assert.equal(true, deploycode.startsWith('0x' + DeployHeader.prefix()));
+    assert.strictEqual(
+      true,
+      deploycode.startsWith('0x' + DeployHeader.prefix())
+    );
 
     return (
       '0x' + deploycode.substr(DeployHeaderReader.initcodeStart(deploycode))
@@ -227,10 +238,13 @@ export class DeployHeaderReader {
 
   private static initcodeStart(deploycode: Bytes): number {
     if (typeof deploycode !== 'string') {
-      deploycode = '0x' + deploycode.toString('hex');
+      deploycode = bytes.toHex(deploycode);
     }
 
-    assert.equal(true, deploycode.startsWith('0x' + DeployHeader.prefix()));
+    assert.strictEqual(
+      true,
+      deploycode.startsWith('0x' + DeployHeader.prefix())
+    );
 
     // Make sure to convert the "length" to nibbles, since it's in units of bytes.
     return (
@@ -276,11 +290,11 @@ export class DeployHeaderReader {
   }
 }
 
-// TODO: change return values to be Bytes (as Buffers).
+// TODO: change return values to be Bytes.
 export class DeployHeaderWriter {
   public static size(body: Bytes): string {
     if (typeof body !== 'string') {
-      body = '0x' + body.toString('hex');
+      body = bytes.toHex(body);
     }
     return bytes.toHex(bytes.parseNumber(body.substr(2).length / 2, 2));
   }
@@ -292,6 +306,6 @@ export class DeployHeaderWriter {
   }
 
   public static body(body: DeployHeaderOptions): string {
-    return '0x' + Buffer.from(JSON.stringify(body), 'utf8').toString('hex');
+    return bytes.toHex(bytes.encodeUtf8(JSON.stringify(body)));
   }
 }

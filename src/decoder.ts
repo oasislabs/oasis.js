@@ -1,7 +1,7 @@
 import { RpcFn } from './idl';
 import { H256, Bytes4, Bytes } from './types';
-
-const cbor = require('cbor');
+import * as bytes from './utils/bytes';
+import cbor from './utils/cbor';
 
 export interface RpcDecoder {
   decode(data: Bytes): Promise<RpcRequest>;
@@ -10,7 +10,7 @@ export interface RpcDecoder {
 export class PlaintextRpcDecoder {
   async decode(data: Bytes, constructor?: boolean): Promise<RpcRequest> {
     if (typeof data === 'string') {
-      data = Buffer.from(data, 'hex');
+      data = bytes.parseHex(data);
     }
 
     // Constructor doesn't use a sighash.
