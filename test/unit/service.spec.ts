@@ -1,9 +1,10 @@
-import { Idl } from '../src/idl';
-import Service from '../src/service';
-import { PlaintextRpcDecoder } from '../src/decoder';
-import { Request } from '../src/provider';
-import { idl } from './idls/test-contract';
+import { Idl } from '../../src/idl';
+import Service from '../../src/service';
+import { PlaintextRpcDecoder } from '../../src/decoder';
+import { Request } from '../../src/provider';
 import { RequestMockProvider } from './utils';
+import * as bytes from '../../src/utils/bytes';
+import { idl } from './idls/test-contract';
 
 describe('Service', () => {
   const address = '0x372FF3aeA1fc69B9C440A5fE0B4c23c38226Da68';
@@ -58,7 +59,7 @@ describe('Service', () => {
   it('encodes an rpc request using a given IDL', async () => {
     // Inputs to the rpc.
     let input1 = defType();
-    let input2 = Buffer.from('1234', 'hex');
+    let input2 = bytes.parseHex('1234');
 
     let txDataPromise: Promise<Request> = new Promise(async resolve => {
       // Given a service.
@@ -75,7 +76,7 @@ describe('Service', () => {
     // Then we should have given the provider the encoded wire format of the request.
     let decoder = new PlaintextRpcDecoder();
     let req = await decoder.decode(request.data);
-    expect(req.sighash!.toString('hex')).toEqual('ddefa4ab');
+    expect(bytes.toHex(req.sighash!)).toEqual('0xddefa4ab');
     expect(JSON.stringify(req.input)).toEqual(JSON.stringify([input1, input2]));
     expect(request.method).toEqual('oasis_rpc');
   });
@@ -89,15 +90,13 @@ function defType() {
       test: 0
     },
     f4: [
-      Buffer.from(
-        '0000000000000000000000000000000000000000000000000000000000000001',
-        'hex'
+      bytes.parseHex(
+        '0000000000000000000000000000000000000000000000000000000000000001'
       ),
-      Buffer.from(
-        '0000000000000000000000000000000000000000000000000000000000000002',
-        'hex'
+      bytes.parseHex(
+        '0000000000000000000000000000000000000000000000000000000000000002'
       ),
-      Buffer.from('0000000000000000000000000000000000000003', 'hex')
+      bytes.parseHex('0000000000000000000000000000000000000003')
     ]
   };
 }

@@ -1,0 +1,76 @@
+<html>
+  <head>
+    <script src="/dist/index.umd.js"></script>
+    <script src="/test/browser/idl.js"></script>
+    <script>
+      window.onload = function(){
+        runTest();
+      };
+      /**
+       * Makes a service request and places the stringified request into the
+       * `#test` html element.
+       */
+      async function runTest() {
+        // Dummy service address.
+        const address = '0x372FF3aeA1fc69B9C440A5fE0B4c23c38226Da68';
+
+        const [input1, input2] = serviceInputs();
+
+        let txDataPromise = new Promise(async resolve => {
+          // Given a service.
+          let service = new oasis.Service(idl, address, {
+            provider: new RequestMockProvider(resolve)
+          });
+          // When I make an rpc request.
+          await service.the(input1, input2);
+        });
+
+        let request = await txDataPromise;
+
+        // Then I should have given the provider the encoded wire format of the request.
+        let decoder = new oasis.utils.PlaintextRpcDecoder();
+        let req = await decoder.decode(request.data);
+
+        document.getElementById('test').innerHTML = JSON.stringify(req);
+      }
+      /**
+       * Returns inputs for the `DefTy` service `the` rpc to be used for testing.
+       * See test/idls/test-contract.ts.
+       */
+      function serviceInputs() {
+        let input1 = {
+          f1: 1,
+          f3: {
+            test: 0
+          },
+          f4: [
+            oasis.utils.bytes.parseHex('0x0000000000000000000000000000000000000000000000000000000000000001'),
+            oasis.utils.bytes.parseHex('0x0000000000000000000000000000000000000000000000000000000000000002'),
+            oasis.utils.bytes.parseHex('0x0000000000000000000000000000000000000003'),
+          ]
+        };
+        let input2 = oasis.utils.bytes.parseHex('0x1234');
+
+        return [input1, input2];
+      }
+      /**
+       * Implements the Provider interface to make requests for a service.
+       */
+      class RequestMockProvider {
+        /**
+         * @param requestResolve is a promise's resolve function returning the
+         *        request received by this provider.
+         */
+        constructor(requestResolve) {
+          this.requestResolve = requestResolve;
+        }
+        async send(request) {
+          this.requestResolve(request);
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <h1 id="test">Running Test</h1>
+  </body>
+</html>

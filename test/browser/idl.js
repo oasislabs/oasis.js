@@ -118,5 +118,3 @@ const idl = {
   ],
   idl_gen_version: '0.1.0'
 };
-
-export { idl };

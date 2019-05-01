@@ -25,7 +25,9 @@
     "prebuild": "rimraf dist",
     "build": "tsc --module commonjs && rollup -c rollup.config.ts && typedoc --out docs --target es6 --theme minimal --mode file src",
     "start": "rollup -c rollup.config.ts -w",
-    "test": "jest --coverage",
+    "test": "yarn test:unit && yarn test:browser",
+    "test:unit": "jest --coverage",
+    "test:browser": "scripts/test-browser.sh",
     "test:watch": "jest --coverage --watch",
     "precommit": "lint-staged",
     "coverage": "jest --coverage && cat ./coverage/lcov.info | coveralls"
@@ -70,6 +72,7 @@
     "lint-staged": "^8.0.0",
     "lodash.camelcase": "^4.3.0",
     "prettier": "^1.14.3",
+    "puppeteer": "^1.15.0",
     "rimraf": "^2.6.2",
     "rollup": "^0.67.0",
     "rollup-plugin-commonjs": "^9.1.8",
@@ -86,7 +89,8 @@
     "typescript": "^3.0.3"
   },
   "dependencies": {
-    "cbor": "^4.1.5",
+    "cbor-js": "^0.1.0",
+    "js-sha3": "^0.8.0",
     "keccak256": "^1.0.0"
   }
 }

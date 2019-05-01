@@ -1,15 +1,15 @@
 import { RpcFn } from './idl';
 import { H256, Bytes4, Bytes } from './types';
-
-const cbor = require('cbor');
-const keccak256 = require('keccak256');
+import * as bytes from './utils/bytes';
+import cbor from './utils/cbor';
+import keccak256 from './utils/keccak256';
 
 export interface RpcEncoder {
-  encode(fn: RpcFn, args: any[]): Promise<Buffer>;
+  encode(fn: RpcFn, args: any[]): Promise<Uint8Array>;
 }
 
 export class PlaintextRpcEncoder implements RpcEncoder {
-  public async encode(fn: RpcFn, args: any[]): Promise<Buffer> {
+  public async encode(fn: RpcFn, args: any[]): Promise<Uint8Array> {
     if (fn.inputs.length !== args.length) {
       throw new Error(`Invalid arguments ${JSON.stringify(args)}`);
     }
@@ -23,7 +23,7 @@ export class PlaintextRpcEncoder implements RpcEncoder {
     }
 
     let sighash = Sighash.from(fn);
-    return Buffer.concat([sighash, cborEncoded]);
+    return bytes.concat([sighash, cborEncoded]);
   }
 }
 
@@ -31,12 +31,12 @@ class ConfidentialRpcEncoder extends PlaintextRpcEncoder {
   /**
    * @overrides PlaintextRpcEncoder, encrypting the data after encoding it.
    */
-  public async encode(fn: RpcFn, args: any[]): Promise<Buffer> {
+  public async encode(fn: RpcFn, args: any[]): Promise<Uint8Array> {
     let data = await super.encode(fn, args);
     return this.encrypt(data);
   }
 
-  private async encrypt(data: Buffer): Promise<Buffer> {
+  private async encrypt(data: Uint8Array): Promise<Uint8Array> {
     // TODO: https://github.com/oasislabs/oasis-client/issues/4
     return data;
   }
@@ -44,7 +44,7 @@ class ConfidentialRpcEncoder extends PlaintextRpcEncoder {
 
 class Sighash {
   public static from(fn: RpcFn): Bytes4 {
-    let sighash = keccak256(Sighash.format(fn));
+    let sighash = bytes.parseHex(keccak256(Sighash.format(fn)));
     return sighash.slice(0, 4);
   }
 

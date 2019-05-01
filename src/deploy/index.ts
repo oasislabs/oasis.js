@@ -4,6 +4,7 @@ import { Bytes } from '../types';
 import { Provider, defaultProvider } from '../provider';
 import { DeployHeader, DeployHeaderOptions } from './header';
 import { PlaintextRpcEncoder } from '../encoder';
+import * as bytes from '../utils/bytes';
 
 /**
  * deploy creates a service on the Oasis cloud.
@@ -29,7 +30,7 @@ export default async function deploy(options: DeployOptions): Promise<Service> {
  */
 function sanitizeOptions(options: DeployOptions) {
   if (typeof options.bytecode === 'string') {
-    options.bytecode = Buffer.from(options.bytecode.substr(2), 'hex');
+    options.bytecode = bytes.parseHex(options.bytecode.substr(2));
   }
   options.header = deployHeader(options);
 }
@@ -63,8 +64,8 @@ async function initcode(options: DeployOptions): Promise<Bytes> {
     { name: 'constructor', inputs: constructorArgs },
     options.arguments || []
   );
-  let bytecode = options.bytecode as Buffer;
-  return Buffer.concat([bytecode, args]);
+  let bytecode = options.bytecode as Uint8Array;
+  return bytes.concat([bytecode, args]);
 }
 
 /**

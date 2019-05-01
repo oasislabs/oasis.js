@@ -1,4 +1,4 @@
-import { Provider, Request } from '../src/provider';
+import { Provider, Request } from '../../src/provider';
 
 /**
  * RequestMockProvider is a mock provider to pull out the request sent to a provider.
