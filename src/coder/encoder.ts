@@ -1,8 +1,9 @@
-import { RpcFn } from './idl';
-import { H256, Bytes4, Bytes } from './types';
-import * as bytes from './utils/bytes';
-import cbor from './utils/cbor';
-import keccak256 from './utils/keccak256';
+import { RpcFn } from '../idl';
+import { H256, Bytes4, Bytes, PublicKey, PrivateKey } from '../types';
+import * as bytes from '../utils/bytes';
+import cbor from '../utils/cbor';
+import keccak256 from '../utils/keccak256';
+import { AeadKeys, nonce, encrypt } from '../confidential';
 
 export interface RpcEncoder {
   encode(fn: RpcFn, args: any[]): Promise<Uint8Array>;
@@ -27,18 +28,22 @@ export class PlaintextRpcEncoder implements RpcEncoder {
   }
 }
 
-class ConfidentialRpcEncoder extends PlaintextRpcEncoder {
+export class ConfidentialRpcEncoder extends PlaintextRpcEncoder {
+  public constructor(private keys: AeadKeys) {
+    super();
+  }
   /**
    * @overrides PlaintextRpcEncoder, encrypting the data after encoding it.
    */
   public async encode(fn: RpcFn, args: any[]): Promise<Uint8Array> {
     let data = await super.encode(fn, args);
-    return this.encrypt(data);
-  }
-
-  private async encrypt(data: Uint8Array): Promise<Uint8Array> {
-    // TODO: https://github.com/oasislabs/oasis-client/issues/4
-    return data;
+    return encrypt(
+      nonce(),
+      data,
+      this.keys.peerPublicKey,
+      this.keys.publicKey,
+      this.keys.privateKey
+    );
   }
 }
 

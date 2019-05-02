@@ -1,10 +1,11 @@
 import { Idl } from '../../src/idl';
 import * as oasis from '../../src/index';
-import { RequestMockProvider } from './utils';
+import { DeployMockProvider } from './utils';
 import { Request } from '../../src/provider';
 import { DeployHeaderReader } from '../../src/deploy/header';
-import { PlaintextRpcDecoder } from '../../src/decoder';
+import { PlaintextRpcDecoder } from '../../src/coder/decoder';
 import { idl } from './idls/test-contract';
+import Service from '../../src/service';
 
 describe('Service deploys', () => {
   let testCases = [
@@ -34,17 +35,18 @@ describe('Service deploys', () => {
     it(test.label, async () => {
       // Given an idl, and deploy options.
       let args = ['constructor-arg'];
-
+      let service: Service | undefined = undefined;
       let deployRequestPromise: Promise<Request> = new Promise(
         async resolve => {
           // When I deploy.
-          await oasis.deploy({
+          service = await oasis.deploy({
             idl,
             bytecode: test.bytecode,
             arguments: args,
             header: test.header,
-            provider: new RequestMockProvider(resolve)
+            provider: new DeployMockProvider(resolve)
           });
+          expect(service!.address).toEqual(DeployMockProvider.address);
         }
       );
 

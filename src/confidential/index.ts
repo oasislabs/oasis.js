@@ -1,6 +1,8 @@
 import { Deoxysii } from './aead';
 import { Nonce, PublicKey, PrivateKey } from '../types';
 import * as bytes from '../utils/bytes';
+import KeyStore from './key-store';
+import nacl from '../utils/tweetnacl';
 
 const aead = new Deoxysii();
 
@@ -49,6 +51,10 @@ async function decrypt(
   };
 }
 
+function nonce(): Nonce {
+  return nacl.randomBytes(15);
+}
+
 /**
  * Splits the given ciphertext into it's constituent components.
  *
@@ -81,4 +87,10 @@ type Decryption = {
   peerPublicKey: PublicKey;
 };
 
-export { encrypt, decrypt, Deoxysii };
+export type AeadKeys = {
+  peerPublicKey: PublicKey;
+  publicKey: PublicKey;
+  privateKey: PrivateKey;
+};
+
+export { encrypt, decrypt, nonce, Deoxysii, KeyStore };

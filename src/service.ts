@@ -3,6 +3,7 @@ import { Address } from './types';
 import { Rpcs, RpcFactory } from './rpc';
 import { EventEmitter } from 'events';
 import { Provider, WebsocketProvider } from './provider';
+import { Db, LocalStorage } from './db';
 
 /**
  * Service is the object representation of an Oasis rpc service.
@@ -29,7 +30,7 @@ export default class Service {
     // Attach the rpcs onto the rpc interface so that we can generate dynamic
     // rpc methods while keeping the compiler happy. Without this, we need
     // to use a types file when using a service within TypeScript.
-    this.rpc = RpcFactory.build(idl, options);
+    this.rpc = RpcFactory.build(idl, address, options);
     // Attach the rpcs directly onto the Service object so that we can have
     // the nice service.myMethod() syntax in JavaScript.
     Object.assign(this, this.rpc);
@@ -48,18 +49,21 @@ export default class Service {
   private setupOptions(options?: ServiceOptions): ServiceOptions {
     if (options === undefined) {
       options = defaultOptions();
+    } else {
+      options = Object.assign(defaultOptions(), options);
     }
-    Object.assign(options, defaultOptions);
     return options;
   }
 }
 
 export type ServiceOptions = {
-  provider: Provider;
+  provider?: Provider;
+  db?: Db;
 };
 
 function defaultOptions(): ServiceOptions {
   return {
-    provider: new WebsocketProvider('wss://web3.oasiscloud.io')
+    provider: new WebsocketProvider('wss://web3.oasiscloud.io'),
+    db: new LocalStorage()
   };
 }
