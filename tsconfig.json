@@ -15,9 +15,11 @@
     "noImplicitAny": false,
     "typeRoots": [
       "node_modules/@types",
+      "@types",
     ]
   },
   "include": [
     "src",
+    "@types",
   ]
 }

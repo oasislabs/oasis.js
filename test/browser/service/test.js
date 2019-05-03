@@ -10,7 +10,7 @@ async function runTest() {
   // Open browser at the test's webpage.
   const browser = await puppeteer.launch({headless: false});
   const page = await browser.newPage();
-  await page.goto('localhost:8000/test/browser');
+  await page.goto('localhost:8000/test/browser/service');
 
   // Get the test's html content.
   const h1 = await page.$('#test');

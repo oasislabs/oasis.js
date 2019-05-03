@@ -1,0 +1,58 @@
+<html>
+  <head>
+    <script src="/dist/index.umd.js"></script>
+    <script src="/test/browser/idls/test-contract.js"></script>
+    <script>
+      window.onload = function(){
+        runTest();
+      };
+      /**
+       * Encrypts and decrypts an example plaintext and inserts the result into the
+       * `#test` html element, for consumption by the test
+       */
+      async function runTest() {
+        let input = aeadInputs();
+
+        let plaintext = new Uint8Array([1, 2, 3, 4]);
+
+        let encryption = await oasis.utils.encrypt(
+          input.nonce,
+          plaintext,
+          input.publicKey,
+          input.peerPublicKey,
+          input.peerPrivateKey,
+        );
+
+        let decryption = await oasis.utils.decrypt(encryption, input.privateKey);
+
+        document.getElementById('test').innerHTML = JSON.stringify(decryption.plaintext);
+      }
+
+      function aeadInputs() {
+        let nonce = new Uint8Array([81, 12, 30, 244, 215, 175, 222, 168, 243, 207, 233, 131, 91, 19, 41 ]);
+        let publicKey = new Uint8Array(
+          [76, 194, 101, 195, 41, 86, 188, 68, 20, 196, 45, 88, 50, 28, 101, 65, 169, 62, 20, 86, 188, 169, 250, 131, 121, 184, 83, 198, 108, 127, 191, 59]
+        );
+        let privateKey = new Uint8Array(
+          [77, 65, 100, 57, 158, 249, 115, 170, 228, 223, 8, 122, 34, 16, 7, 109, 121, 80, 221, 98, 147, 57, 33, 10, 117, 181, 183, 181, 119, 248, 6, 97]
+        );
+        let peerPublicKey = new Uint8Array(
+          [11, 22, 95, 106, 208, 178, 217, 236, 126, 30, 21, 232, 31, 89, 61, 20, 62, 53, 45, 10, 43, 25, 109, 77, 213, 84, 134, 55, 254, 242, 21, 87]
+        );
+        let peerPrivateKey = new Uint8Array(
+          [102, 213, 202, 145, 129, 99, 154, 30, 39, 120, 107, 223, 154, 170, 91, 51, 180, 126, 147, 208, 28, 232, 221, 65, 142, 189, 187, 37, 158, 134, 218, 171]
+        );
+        return {
+          nonce,
+          publicKey,
+          privateKey,
+          peerPublicKey,
+          peerPrivateKey,
+        };
+      }
+    </script>
+  </head>
+  <body>
+    <h1 id="test">Running Test</h1>
+  </body>
+</html>

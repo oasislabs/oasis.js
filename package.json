@@ -48,6 +48,9 @@
       "ts",
       "tsx",
       "js"
+    ],
+    "coveragePathIgnorePatterns": [
+      "src/confidential/ecdh-tweak/browser.ts"
     ]
   },
   "prettier": {
@@ -91,6 +94,6 @@
   "dependencies": {
     "cbor-js": "^0.1.0",
     "js-sha3": "^0.8.0",
-    "keccak256": "^1.0.0"
+    "deoxysii": "^0.0.1"
   }
 }
