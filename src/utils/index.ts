@@ -3,18 +3,16 @@ import * as cbor from './cbor';
 import keccak256 from './keccak256';
 import { Deoxysii, encrypt, decrypt } from '../confidential';
 import { DeployHeaderReader, DeployHeaderWriter } from '../deploy/header';
-import { PlaintextRpcDecoder } from '../decoder';
-import { PlaintextRpcEncoder } from '../encoder';
+import RpcCoder from '../coder';
 
 export {
   bytes,
   cbor,
-  keccak256,
-  DeployHeaderReader,
-  DeployHeaderWriter,
-  PlaintextRpcDecoder,
-  PlaintextRpcEncoder,
-  Deoxysii,
   encrypt,
-  decrypt
+  decrypt,
+  keccak256,
+  RpcCoder,
+  Deoxysii,
+  DeployHeaderReader,
+  DeployHeaderWriter
 };

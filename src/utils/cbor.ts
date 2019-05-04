@@ -5,12 +5,17 @@
  */
 
 import * as _cborJs from 'cbor-js';
-// Node.
-let cborJs = _cborJs;
+
+let cborJs: any = undefined;
+
 // Browser.
 /* tslint:disable */
 if (typeof window !== 'undefined') {
   cborJs = _cborJs.default;
+}
+// Node;
+else {
+  cborJs = require('cbor-js');
 }
 
 export function encode(input: any): Uint8Array {

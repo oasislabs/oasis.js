@@ -4,13 +4,18 @@
  */
 
 import * as _sha3 from 'js-sha3';
-// Node.
-let sha3 = _sha3;
+
+let sha3: any = undefined;
+
 // Browser.
 /* tslint:disable */
 if (typeof window !== 'undefined') {
   // @ts-ignore
   sha3 = _sha3.default;
+}
+// Node.
+else {
+  sha3 = require('js-sha3');
 }
 
 const keccak256 = sha3.keccak256;

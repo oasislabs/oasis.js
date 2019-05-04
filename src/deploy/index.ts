@@ -3,7 +3,7 @@ import { Idl } from '../idl';
 import { Bytes } from '../types';
 import { Provider, defaultProvider } from '../provider';
 import { DeployHeader, DeployHeaderOptions } from './header';
-import { PlaintextRpcEncoder } from '../encoder';
+import { PlaintextRpcEncoder } from '../coder/encoder';
 import * as bytes from '../utils/bytes';
 
 /**
@@ -19,9 +19,13 @@ export default async function deploy(options: DeployOptions): Promise<Service> {
 
   let prov = provider(options);
 
-  let address = await prov.send(request);
+  let response = await prov.send(request);
 
-  return new Service(options.idl, address);
+  if (!response.address) {
+    throw new Error(`Invalid provider response: ${response}`);
+  }
+
+  return new Service(options.idl, response.address);
 }
 
 /**

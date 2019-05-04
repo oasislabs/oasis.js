@@ -9,17 +9,24 @@
       /**
        * Makes a service request and places the stringified request into the
        * `#test` html element.
+       *
+       * Tests the same service both with and without confidentiality.
        */
       async function runTest() {
-        // Dummy service address.
-        const address = '0x372FF3aeA1fc69B9C440A5fE0B4c23c38226Da68';
+        let nonConf = await runCase(nonConfidentialTest);
+        let conf = await runCase(confidentialTest);
 
-        const [input1, input2] = serviceInputs();
+        // Place the results in the html for consumption by the test runner.
+        document.getElementById('plaintext-test').innerHTML = JSON.stringify(nonConf);
+        document.getElementById('confidential-test').innerHTML = JSON.stringify(conf);
+      }
 
+      async function runCase(test) {
         let txDataPromise = new Promise(async resolve => {
           // Given a service.
           let service = new oasis.Service(idl, address, {
-            provider: new RequestMockProvider(resolve)
+            provider: test.provider(resolve),
+            db: test.db(),
           });
           // When I make an rpc request.
           await service.the(input1, input2);
@@ -28,11 +35,9 @@
         let request = await txDataPromise;
 
         // Then I should have given the provider the encoded wire format of the request.
-        let decoder = new oasis.utils.PlaintextRpcDecoder();
-        let req = await decoder.decode(request.data);
-
-        document.getElementById('test').innerHTML = JSON.stringify(req);
+        return test.coder.decode(request.data);
       }
+
       /**
        * Returns inputs for the `DefTy` service `the` rpc to be used for testing.
        * See test/idls/test-contract.ts.
@@ -53,6 +58,7 @@
 
         return [input1, input2];
       }
+
       /**
        * Implements the Provider interface to make requests for a service.
        */
@@ -65,12 +71,99 @@
           this.requestResolve = requestResolve;
         }
         async send(request) {
-          this.requestResolve(request);
+          if (request.method === 'oasis_getPublicKey') {
+            // Signals *not* confidential.
+            return {};
+          } else if (request.method === 'oasis_rpc') {
+            this.requestResolve(request);
+          }
         }
       }
+
+      /**
+       * Provider for the confidential contract.
+       */
+      class ConfidentialMockProvider {
+        constructor(requestResolve) {
+          this.requestResolve = requestResolve;
+        }
+        async send(request) {
+          if (request.method === 'oasis_getPublicKey') {
+            // Signals confidential.
+            return { publicKey: keys.peerPublicKey };
+          } else if (request.method === 'oasis_rpc') {
+            this.requestResolve(request);
+          }
+        }
+      }
+
+      /**
+       * Storage to use for the test cases.
+       */
+      class DummyStorage {
+        constructor() {
+          this.storage = new Map();
+        }
+        get(key) {
+          return this.storage.get(key);
+        }
+        set(key, value) {
+          this.storage.set(key, value);
+        }
+      }
+
+      // Constants for the test case follow.
+
+      // Dummy service address.
+      const address = '0x372FF3aeA1fc69B9C440A5fE0B4c23c38226Da68';
+      // Inputs to the rpc function called.
+      const [input1, input2] = serviceInputs();
+      // Keys used for encryption.
+      const keys = {
+        publicKey: new Uint8Array(
+          [76, 194, 101, 195, 41, 86, 188, 68, 20, 196, 45, 88, 50, 28, 101, 65, 169, 62, 20, 86, 188, 169, 250, 131, 121, 184, 83, 198, 108, 127, 191, 59]
+        ),
+        privateKey:  new Uint8Array(
+          [77, 65, 100, 57, 158, 249, 115, 170, 228, 223, 8, 122, 34, 16, 7, 109, 121, 80, 221, 98, 147, 57, 33, 10, 117, 181, 183, 181, 119, 248, 6, 97]
+        ),
+        peerPublicKey: new Uint8Array(
+          [11, 22, 95, 106, 208, 178, 217, 236, 126, 30, 21, 232, 31, 89, 61, 20, 62, 53, 45, 10, 43, 25, 109, 77, 213, 84, 134, 55, 254, 242, 21, 87]
+        ),
+        peerPrivateKey: new Uint8Array(
+          [102, 213, 202, 145, 129, 99, 154, 30, 39, 120, 107, 223, 154, 170, 91, 51, 180, 126, 147, 208, 28, 232, 221, 65, 142, 189, 187, 37, 158, 134, 218, 171]
+        ),
+      };
+
+      // Non-confidential test case.
+      let nonConfidentialTest = {
+          provider: (resolve) => new RequestMockProvider(resolve),
+          db: () => new DummyStorage(),
+          coder: new oasis.utils.RpcCoder.plaintext(),
+      };
+      // Confidential test case.
+      let confidentialTest = {
+          provider: (resolve) => new ConfidentialMockProvider(resolve),
+          db: () => {
+            // Create a db with the local keys preset, so that we can
+            // always decrypt on the receiving end.
+            let db = new DummyStorage();
+            db.set('me', JSON.stringify({
+              publicKey: oasis.utils.bytes.toHex(keys.publicKey),
+              privateKey: oasis.utils.bytes.toHex(keys.privateKey),
+            }));
+            return db;
+          },
+          coder: new oasis.utils.RpcCoder.confidential({
+            publicKey: keys.peerPublicKey,
+            privateKey: keys.peerPrivateKey,
+            peerPublicKey: keys.publicKey,
+            peerPrivateKey: keys.peerPrivateKey,
+          })
+      };
     </script>
   </head>
   <body>
-    <h1 id="test">Running Test</h1>
+    <h1 id="plaintext-test">Running Test</h1>
+    <h1 id="confidential-test">Running Test</h1>
   </body>
 </html>

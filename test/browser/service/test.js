@@ -13,16 +13,19 @@ async function runTest() {
   await page.goto('localhost:8000/test/browser/service');
 
   // Get the test's html content.
-  const h1 = await page.$('#test');
-  let output = await page.evaluate(element => element.innerHTML, h1);
+  const plainH1 = await page.$('#plaintext-test');
+  let plainOutput = await page.evaluate(element => element.innerHTML, plainH1);
+
+  const confH1 = await page.$('#confidential-test');
+  let confOutput = await page.evaluate(element => element.innerHTML, confH1);
 
   // Shut down.
   await browser.close();
 
   // Check the test worked as expected.
-  if (output !== expectedTitle) {
-	console.error(`Invalid output. ${output} != ${expectedTitle}`);
-	process.exit(1);
+  if (plainOutput !== expectedTitle || confOutput !== expectedTitle) {
+    console.error(`Invalid output. ${output} != ${expectedTitle}`);
+    process.exit(1);
   }
 }
 

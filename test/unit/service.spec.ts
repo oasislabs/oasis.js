@@ -1,10 +1,16 @@
 import { Idl } from '../../src/idl';
 import Service from '../../src/service';
-import { PlaintextRpcDecoder } from '../../src/decoder';
+import {
+  PlaintextRpcDecoder,
+  ConfidentialRpcDecoder
+} from '../../src/coder/decoder';
 import { Request } from '../../src/provider';
-import { RequestMockProvider } from './utils';
+import { RequestMockProvider, ConfidentialMockProvider } from './utils';
 import * as bytes from '../../src/utils/bytes';
 import { idl } from './idls/test-contract';
+import { DummyStorage } from '../../src/db';
+
+const nacl = require('tweetnacl');
 
 describe('Service', () => {
   const address = '0x372FF3aeA1fc69B9C440A5fE0B4c23c38226Da68';
@@ -25,7 +31,9 @@ describe('Service', () => {
     // Given an idl.
 
     // When.
-    let service = new Service(idl, address);
+    let service = new Service(idl, address, {
+      db: new DummyStorage()
+    });
 
     // Then.
     // Rpcs are directly on the service object.
@@ -44,7 +52,9 @@ describe('Service', () => {
 
   it('throws an exception when the incorrect number of arguments are passed to an rpc', async () => {
     // Given.
-    let service = new Service(idl, address);
+    let service = new Service(idl, address, {
+      db: new DummyStorage()
+    });
 
     // When.
     let input = defType();
@@ -64,7 +74,8 @@ describe('Service', () => {
     let txDataPromise: Promise<Request> = new Promise(async resolve => {
       // Given a service.
       let service = new Service(idl, address, {
-        provider: new RequestMockProvider(resolve)
+        provider: new RequestMockProvider(resolve),
+        db: new DummyStorage()
       });
 
       // When we make an rpc request.
@@ -79,6 +90,39 @@ describe('Service', () => {
     expect(bytes.toHex(req.sighash!)).toEqual('0xddefa4ab');
     expect(JSON.stringify(req.input)).toEqual(JSON.stringify([input1, input2]));
     expect(request.method).toEqual('oasis_rpc');
+  });
+
+  it('encodes an rpc request for a confidential service', async () => {
+    // Inputs to the rpc.
+    let input1 = defType();
+    let input2 = bytes.parseHex('1234');
+
+    let serviceKeyPair = nacl.box.keyPair();
+
+    let txDataPromise: Promise<Request> = new Promise(async resolve => {
+      // Given a service.
+      let service = new Service(idl, address, {
+        provider: new ConfidentialMockProvider(
+          resolve,
+          serviceKeyPair.publicKey
+        ),
+        db: new DummyStorage()
+      });
+
+      // When we make an rpc request.
+      await service.rpc.the(input1, input2);
+    });
+
+    let request = await txDataPromise;
+
+    // Then the receipient should be able to decrypt it.
+    let decoder = new ConfidentialRpcDecoder(serviceKeyPair.secretKey);
+    let plaintext = await decoder.decode(request.data);
+
+    expect(bytes.toHex(plaintext.sighash!)).toEqual('0xddefa4ab');
+    expect(JSON.stringify(plaintext.input)).toEqual(
+      JSON.stringify([input1, input2])
+    );
   });
 });
 
