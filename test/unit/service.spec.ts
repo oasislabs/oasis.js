@@ -4,8 +4,8 @@ import {
   PlaintextRpcDecoder,
   ConfidentialRpcDecoder
 } from '../../src/coder/decoder';
-import { Request } from '../../src/provider';
-import { RequestMockProvider, ConfidentialMockProvider } from './utils';
+import { RpcRequest } from '../../src/provider';
+import { RpcRequestMockProvider, ConfidentialMockProvider } from './utils';
 import * as bytes from '../../src/utils/bytes';
 import { idl } from './idls/test-contract';
 import { DummyStorage } from '../../src/db';
@@ -71,10 +71,10 @@ describe('Service', () => {
     let input1 = defType();
     let input2 = bytes.parseHex('1234');
 
-    let txDataPromise: Promise<Request> = new Promise(async resolve => {
+    let txDataPromise: Promise<RpcRequest> = new Promise(async resolve => {
       // Given a service.
       let service = new Service(idl, address, {
-        provider: new RequestMockProvider(resolve),
+        provider: new RpcRequestMockProvider(resolve),
         db: new DummyStorage()
       });
 
@@ -99,7 +99,7 @@ describe('Service', () => {
 
     let serviceKeyPair = nacl.box.keyPair();
 
-    let txDataPromise: Promise<Request> = new Promise(async resolve => {
+    let txDataPromise: Promise<RpcRequest> = new Promise(async resolve => {
       // Given a service.
       let service = new Service(idl, address, {
         provider: new ConfidentialMockProvider(
