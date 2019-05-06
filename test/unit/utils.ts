@@ -1,18 +1,28 @@
-import { Provider, Request } from '../../src/provider';
+import { Provider, RpcRequest, SubscribeRequest } from '../../src/provider';
 import * as bytes from '../../src/utils/bytes';
 import { PublicKey } from '../../src/types';
+import * as EventEmitter from 'eventemitter3';
+
+export class EmptyProvider implements Provider {
+  public async send(request: RpcRequest): Promise<any> {}
+  public subscribe(request: SubscribeRequest): EventEmitter {
+    return new EventEmitter();
+  }
+}
 
 /**
- * RequestMockProvider is a mock provider to pull out the request sent to a provider.
+ * RpcRequestMockProvider is a mock provider to pull out the request sent to a provider.
  */
-export class RequestMockProvider implements Provider {
+export class RpcRequestMockProvider extends EmptyProvider {
   /**
    * @param requestResolve is a promise's resolve function returning the
    *        request received by this provider.
    */
-  constructor(private requestResolve: Function) {}
+  constructor(private requestResolve: Function) {
+    super();
+  }
 
-  async send(request: Request): Promise<any> {
+  async send(request: RpcRequest): Promise<any> {
     if (request.method == 'oasis_getPublicKey') {
       // Signals as a non-confidential service.
       return {};
@@ -24,7 +34,7 @@ export class RequestMockProvider implements Provider {
 /**
  * Provider that deploys a contract with a fixed adress.
  */
-export class DeployMockProvider extends RequestMockProvider {
+export class DeployMockProvider extends RpcRequestMockProvider {
   /**
    * The address the conrtract will be deployed at.
    */
@@ -34,7 +44,7 @@ export class DeployMockProvider extends RequestMockProvider {
     super(requestResolve);
   }
 
-  async send(request: Request): Promise<any> {
+  async send(request: RpcRequest): Promise<any> {
     super.send(request);
     return {
       address: DeployMockProvider.address
@@ -42,7 +52,7 @@ export class DeployMockProvider extends RequestMockProvider {
   }
 }
 
-export class ConfidentialMockProvider extends RequestMockProvider {
+export class ConfidentialMockProvider extends RpcRequestMockProvider {
   private publicKey: PublicKey;
 
   constructor(requestResolve: Function, publicKey: PublicKey) {
@@ -60,7 +70,7 @@ export class ConfidentialMockProvider extends RequestMockProvider {
   }
 }
 
-export class PublicKeyMockProvider implements Provider {
+export class PublicKeyMockProvider extends EmptyProvider {
   public static publicKey = new Uint8Array([
     212,
     68,
@@ -98,7 +108,7 @@ export class PublicKeyMockProvider implements Provider {
 
   public static address = '0x5c7b817e80680fec250a6f638c504d39ad353b26';
 
-  async send(request: Request): Promise<any> {
+  async send(request: RpcRequest): Promise<any> {
     if (request.method !== 'oasis_getPublicKey') {
       throw new Error(`Expected oasis_getPublicKey but go ${request}`);
     }
@@ -118,8 +128,22 @@ export class PublicKeyMockProvider implements Provider {
   }
 }
 
-export class NoPublicKeyMockProvider implements Provider {
-  async send(request: Request): Promise<any> {
+export class NoPublicKeyMockProvider extends EmptyProvider {
+  async send(request: RpcRequest): Promise<any> {
     return null;
+  }
+}
+
+export class EventEmitterMockProvider extends EmptyProvider {
+  /**
+   * @param remote is this remote control for this provider. Firing an event on it will
+   *        fire an event on this provider.
+   */
+  public constructor(private remote: EventEmitter) {
+    super();
+  }
+
+  public subscribe(request: SubscribeRequest): EventEmitter {
+    return this.remote;
   }
 }

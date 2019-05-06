@@ -1,8 +1,7 @@
 import { Idl, RpcFn } from './idl';
 import { Address } from './types';
 import { Rpcs, RpcFactory } from './rpc';
-import { EventEmitter } from 'events';
-import { Provider, WebsocketProvider } from './provider';
+import { Provider, WebsocketProvider, SubscribeRequest } from './provider';
 import { Db, LocalStorage } from './db';
 
 /**
@@ -13,6 +12,7 @@ export default class Service {
   public address: Address;
 
   private idl: Idl;
+  private options: ServiceOptions;
 
   /**
    * The Service constructor to dynamically generate service objects from a
@@ -25,12 +25,12 @@ export default class Service {
    * @param options? are the optinos configuring the Service client.
    */
   public constructor(idl: Idl, address: Address, options?: ServiceOptions) {
-    options = this.setupOptions(options);
+    this.options = this.setupOptions(options);
 
     // Attach the rpcs onto the rpc interface so that we can generate dynamic
     // rpc methods while keeping the compiler happy. Without this, we need
     // to use a types file when using a service within TypeScript.
-    this.rpc = RpcFactory.build(idl, address, options);
+    this.rpc = RpcFactory.build(idl, address, this.options);
     // Attach the rpcs directly onto the Service object so that we can have
     // the nice service.myMethod() syntax in JavaScript.
     Object.assign(this, this.rpc);
@@ -54,7 +54,55 @@ export default class Service {
     }
     return options;
   }
+
+  /**
+   * addEventListener is the api to register for observing service events.
+   *
+   * @param event is the name of the event to listen to.
+   * @param optionsOrCallback is either the listener options, or, if not defined,
+   *        then the callback to call when the event is emitted.
+   * @param callback? is the callback to call when an event is emitted in the
+   *        case where listener options are provided as the second argument.
+   */
+  public addEventListener(
+    event: string,
+    optionsOrCallback: ListenerOptions | Listener,
+    callback?: Listener
+  ) {
+    let filter: Object | undefined = undefined;
+    if (typeof optionsOrCallback === 'function') {
+      // The second argument is a callback so no options were provided.
+      callback = optionsOrCallback;
+    } else {
+      // The second argument is not a callback, so they are options.
+      filter = optionsOrCallback.filter;
+    }
+
+    let eventEmitter = this.options.provider!.subscribe({
+      filter,
+      event
+    });
+
+    eventEmitter.addListener(event, callback as Listener);
+  }
 }
+
+/**
+ * Options for adding a a service event listener.
+ */
+type ListenerOptions = {
+  filter?: Object;
+};
+
+/**
+ * Listener is a callback method to respond to ServiceEvents.
+ */
+type Listener = (event: ServiceEvent) => void;
+
+/**
+ * An event emitted by  a service object.
+ */
+type ServiceEvent = any;
 
 export type ServiceOptions = {
   provider?: Provider;

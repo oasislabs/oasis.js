@@ -1,7 +1,7 @@
 import { Idl } from '../../src/idl';
 import * as oasis from '../../src/index';
 import { DeployMockProvider } from './utils';
-import { Request } from '../../src/provider';
+import { RpcRequest } from '../../src/provider';
 import { DeployHeaderReader } from '../../src/deploy/header';
 import { PlaintextRpcDecoder } from '../../src/coder/decoder';
 import { idl } from './idls/test-contract';
@@ -36,7 +36,7 @@ describe('Service deploys', () => {
       // Given an idl, and deploy options.
       let args = ['constructor-arg'];
       let service: Service | undefined = undefined;
-      let deployRequestPromise: Promise<Request> = new Promise(
+      let deployRequestPromise: Promise<RpcRequest> = new Promise(
         async resolve => {
           // When I deploy.
           service = await oasis.deploy({
