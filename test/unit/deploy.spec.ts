@@ -1,7 +1,7 @@
 import { Idl } from '../../src/idl';
-import * as oasis from '../../src/index';
-import { DeployMockProvider } from './utils';
-import { RpcRequest } from '../../src/provider';
+import oasis from '../../src/index';
+import { DeployMockOasisGateway } from './utils';
+import { RpcRequest } from '../../src/oasis-gateway';
 import { DeployHeaderReader } from '../../src/deploy/header';
 import { PlaintextRpcDecoder } from '../../src/coder/decoder';
 import { idl } from './idls/test-contract';
@@ -44,9 +44,9 @@ describe('Service deploys', () => {
             bytecode: test.bytecode,
             arguments: args,
             header: test.header,
-            provider: new DeployMockProvider(resolve)
+            provider: new DeployMockOasisGateway(resolve)
           });
-          expect(service!.address).toEqual(DeployMockProvider.address);
+          expect(service!.address).toEqual(DeployMockOasisGateway.address);
         }
       );
 
@@ -55,10 +55,7 @@ describe('Service deploys', () => {
 
       // Then it should have made a request to oasis_deploy with the correct deploy code.
 
-      // 1) Check request endpoint:
-      expect(deployRequest.method).toEqual('oasis_deploy');
-
-      // 2) Check the request data:
+      // Check the request data:
       let deployCode: Buffer = deployRequest.data as Buffer;
 
       // Check header.

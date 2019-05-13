@@ -2,4 +2,10 @@ import Service from './service';
 import deploy from './deploy';
 import * as utils from './utils';
 
-export { Service, deploy, utils };
+const oasis = {
+  Service,
+  deploy,
+  utils
+};
+
+export default oasis;

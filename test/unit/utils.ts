@@ -1,19 +1,24 @@
-import { Provider, RpcRequest, SubscribeRequest } from '../../src/provider';
+import {
+  OasisGateway,
+  RpcRequest,
+  SubscribeRequest
+} from '../../src/oasis-gateway';
 import * as bytes from '../../src/utils/bytes';
-import { PublicKey } from '../../src/types';
+import { Address, PublicKey } from '../../src/types';
 import * as EventEmitter from 'eventemitter3';
 
-export class EmptyProvider implements Provider {
-  public async send(request: RpcRequest): Promise<any> {}
+export class EmptyOasisGateway implements OasisGateway {
+  public async rpc(request: RpcRequest): Promise<any> {}
   public subscribe(request: SubscribeRequest): EventEmitter {
     return new EventEmitter();
   }
+  public async publicKey(address: Address): Promise<any> {}
 }
 
 /**
  * RpcRequestMockProvider is a mock provider to pull out the request sent to a provider.
  */
-export class RpcRequestMockProvider extends EmptyProvider {
+export class RpcRequestMockOasisGateway extends EmptyOasisGateway {
   /**
    * @param requestResolve is a promise's resolve function returning the
    *        request received by this provider.
@@ -22,19 +27,19 @@ export class RpcRequestMockProvider extends EmptyProvider {
     super();
   }
 
-  async send(request: RpcRequest): Promise<any> {
-    if (request.method == 'oasis_getPublicKey') {
-      // Signals as a non-confidential service.
-      return {};
-    }
+  async rpc(request: RpcRequest): Promise<any> {
     this.requestResolve(request);
+  }
+
+  async publicKey(address: Address): Promise<any> {
+    return undefined;
   }
 }
 
 /**
  * Provider that deploys a contract with a fixed adress.
  */
-export class DeployMockProvider extends RpcRequestMockProvider {
+export class DeployMockOasisGateway extends RpcRequestMockOasisGateway {
   /**
    * The address the conrtract will be deployed at.
    */
@@ -44,34 +49,39 @@ export class DeployMockProvider extends RpcRequestMockProvider {
     super(requestResolve);
   }
 
-  async send(request: RpcRequest): Promise<any> {
-    super.send(request);
+  async rpc(request: RpcRequest): Promise<any> {
+    super.rpc(request);
     return {
-      address: DeployMockProvider.address
+      address: DeployMockOasisGateway.address
     };
+  }
+
+  async publicKey(address: Address): Promise<any> {
+    return undefined;
   }
 }
 
-export class ConfidentialMockProvider extends RpcRequestMockProvider {
-  private publicKey: PublicKey;
+export class ConfidentialMockOasisGateway extends RpcRequestMockOasisGateway {
+  private _publicKey: PublicKey;
 
   constructor(requestResolve: Function, publicKey: PublicKey) {
     super(requestResolve);
-    this.publicKey = publicKey;
+    this._publicKey = publicKey;
   }
 
-  async send(request) {
-    if (request.method === 'oasis_getPublicKey') {
-      // Signals confidential.
-      return { publicKey: this.publicKey };
-    } else if (request.method === 'oasis_rpc') {
-      super.send(request);
+  async rpc(request) {
+    if (request.method === 'oasis_rpc') {
+      super.rpc(request);
     }
+  }
+
+  async publicKey(address: Address): Promise<any> {
+    return this._publicKey;
   }
 }
 
-export class PublicKeyMockProvider extends EmptyProvider {
-  public static publicKey = new Uint8Array([
+export class PublicKeyMockProvider extends EmptyOasisGateway {
+  public static _publicKey = new Uint8Array([
     212,
     68,
     31,
@@ -108,12 +118,12 @@ export class PublicKeyMockProvider extends EmptyProvider {
 
   public static address = '0x5c7b817e80680fec250a6f638c504d39ad353b26';
 
-  async send(request: RpcRequest): Promise<any> {
-    if (request.method !== 'oasis_getPublicKey') {
-      throw new Error(`Expected oasis_getPublicKey but go ${request}`);
-    }
+  async rpc(request: RpcRequest): Promise<any> {
+    throw new Error(`Expected oasis_getPublicKey but got ${request}`);
+  }
 
-    let givenAddress = bytes.toHex(request.data as Uint8Array);
+  async publicKey(address: Address): Promise<any> {
+    let givenAddress = bytes.toHex(address as Uint8Array);
     if (givenAddress !== PublicKeyMockProvider.address) {
       throw new Error(
         `Unexpected data. Expected ${
@@ -122,19 +132,11 @@ export class PublicKeyMockProvider extends EmptyProvider {
       );
     }
 
-    return {
-      publicKey: PublicKeyMockProvider.publicKey
-    };
+    return PublicKeyMockProvider._publicKey;
   }
 }
 
-export class NoPublicKeyMockProvider extends EmptyProvider {
-  async send(request: RpcRequest): Promise<any> {
-    return null;
-  }
-}
-
-export class EventEmitterMockProvider extends EmptyProvider {
+export class EventEmitterMockOasisGateway extends EmptyOasisGateway {
   /**
    * @param remote is this remote control for this provider. Firing an event on it will
    *        fire an event on this provider.

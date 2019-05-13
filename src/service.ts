@@ -1,7 +1,11 @@
 import { Idl, RpcFn } from './idl';
 import { Address } from './types';
 import { Rpcs, RpcFactory } from './rpc';
-import { Provider, WebsocketProvider, SubscribeRequest } from './provider';
+import {
+  OasisGateway,
+  defaultOasisGateway,
+  SubscribeRequest
+} from './oasis-gateway';
 import { Db, LocalStorage } from './db';
 
 /**
@@ -78,7 +82,7 @@ export default class Service {
       filter = optionsOrCallback.filter;
     }
 
-    let eventEmitter = this.options.provider!.subscribe({
+    let eventEmitter = this.options.gateway!.subscribe({
       filter,
       event
     });
@@ -105,13 +109,13 @@ type Listener = (event: ServiceEvent) => void;
 type ServiceEvent = any;
 
 export type ServiceOptions = {
-  provider?: Provider;
+  gateway?: OasisGateway;
   db?: Db;
 };
 
 function defaultOptions(): ServiceOptions {
   return {
-    provider: new WebsocketProvider('wss://web3.oasiscloud.io'),
+    gateway: defaultOasisGateway(),
     db: new LocalStorage()
   };
 }
