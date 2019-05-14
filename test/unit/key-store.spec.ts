@@ -13,10 +13,10 @@ describe('KeyStore', () => {
 
       let service = PublicKeyMockProvider.address;
       let key = await keyStore.publicKey(service);
-      expect(key).toEqual(PublicKeyMockProvider.publicKey);
+      expect(key).toEqual(PublicKeyMockProvider._publicKey);
       // @ts-ignore
       expect(keyStore.db.get(PublicKeyMockProvider.address)).toEqual(
-        bytes.toHex(PublicKeyMockProvider.publicKey)
+        bytes.toHex(PublicKeyMockProvider._publicKey)
       );
     });
 

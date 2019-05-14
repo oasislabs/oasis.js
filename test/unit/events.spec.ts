@@ -1,6 +1,6 @@
 import Service from '../../src/service';
 import { idl } from './idls/test-contract';
-import { EventEmitterMockProvider } from './utils';
+import { EventEmitterMockOasisGateway } from './utils';
 import * as EventEmitter from 'eventemitter3';
 import { DummyStorage } from '../../src/db';
 
@@ -10,7 +10,7 @@ describe('Events', () => {
     let remote = new EventEmitter();
 
     let service = new Service(idl, address, {
-      provider: new EventEmitterMockProvider(remote),
+      gateway: new EventEmitterMockOasisGateway(remote),
       db: new DummyStorage()
     });
 

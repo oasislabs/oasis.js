@@ -25,7 +25,7 @@
         let txDataPromise = new Promise(async resolve => {
           // Given a service.
           let service = new oasis.Service(idl, address, {
-            provider: test.provider(resolve),
+            gateway: test.gateway(resolve),
             db: test.db(),
           });
           // When I make an rpc request.
@@ -34,7 +34,7 @@
 
         let request = await txDataPromise;
 
-        // Then I should have given the provider the encoded wire format of the request.
+        // Then I should have given the gateway the encoded wire format of the request.
         return test.coder.decode(request.data);
       }
 
@@ -60,40 +60,38 @@
       }
 
       /**
-       * Implements the Provider interface to make requests for a service.
+       * Implements the Gateway interface to make requests for a service.
        */
-      class RequestMockProvider {
+      class RequestMockOasisGateway {
         /**
          * @param requestResolve is a promise's resolve function returning the
-         *        request received by this provider.
+         *        request received by this gateway.
          */
         constructor(requestResolve) {
           this.requestResolve = requestResolve;
         }
-        async send(request) {
-          if (request.method === 'oasis_getPublicKey') {
-            // Signals *not* confidential.
-            return {};
-          } else if (request.method === 'oasis_rpc') {
-            this.requestResolve(request);
-          }
+        async rpc(request) {
+          this.requestResolve(request);
+        }
+        async publicKey(address) {
+          return undefined;
         }
       }
 
       /**
-       * Provider for the confidential contract.
+       * Gateway for the confidential contract.
        */
-      class ConfidentialMockProvider {
+      class ConfidentialMockOasisGateway {
         constructor(requestResolve) {
           this.requestResolve = requestResolve;
         }
-        async send(request) {
-          if (request.method === 'oasis_getPublicKey') {
-            // Signals confidential.
-            return { publicKey: keys.peerPublicKey };
-          } else if (request.method === 'oasis_rpc') {
+        async rpc(request) {
+          if (request.method === 'oasis_rpc') {
             this.requestResolve(request);
           }
+        }
+        async publicKey(address) {
+          return keys.peerPublicKey;
         }
       }
 
@@ -136,13 +134,13 @@
 
       // Non-confidential test case.
       let nonConfidentialTest = {
-          provider: (resolve) => new RequestMockProvider(resolve),
+          gateway: (resolve) => new RequestMockOasisGateway(resolve),
           db: () => new DummyStorage(),
           coder: new oasis.utils.RpcCoder.plaintext(),
       };
       // Confidential test case.
       let confidentialTest = {
-          provider: (resolve) => new ConfidentialMockProvider(resolve),
+          gateway: (resolve) => new ConfidentialMockOasisGateway(resolve),
           db: () => {
             // Create a db with the local keys preset, so that we can
             // always decrypt on the receiving end.

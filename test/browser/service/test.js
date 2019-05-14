@@ -23,8 +23,12 @@ async function runTest() {
   await browser.close();
 
   // Check the test worked as expected.
-  if (plainOutput !== expectedTitle || confOutput !== expectedTitle) {
-    console.error(`Invalid output. ${output} != ${expectedTitle}`);
+  if (plainOutput !== expectedTitle) {
+    console.error(`Invalid output. ${plainOutput} != ${expectedTitle}`);
+    process.exit(1);
+  }
+  if (confOutput !== expectedTitle) {
+    console.error(`Invalid output. ${confOutput} != ${expectedTitle}`);
     process.exit(1);
   }
 }

@@ -1,6 +1,6 @@
 import { Address, PublicKey, PrivateKey } from '../types';
 import { Db } from '../db';
-import { Provider, defaultProvider } from '../provider';
+import { OasisGateway, defaultOasisGateway } from '../oasis-gateway';
 import * as bytes from '../utils/bytes';
 import nacl from '../utils/tweetnacl';
 
@@ -13,19 +13,19 @@ export default class KeyStore {
    * provider is the Provider to make network requests to get public keys of
    * services.
    */
-  private provider: Provider;
+  private gateway: OasisGateway;
 
   /**
    * LOCAL_KEYS is the db key where the local keypair is stored.
    */
   private static LOCAL_KEYPAIR_KEY: string = 'me';
 
-  public constructor(db: Db, provider?: Provider) {
+  public constructor(db: Db, gateway?: OasisGateway) {
     this.db = db;
-    if (!provider) {
-      this.provider = defaultProvider();
+    if (!gateway) {
+      this.gateway = defaultOasisGateway();
     } else {
-      this.provider = provider;
+      this.gateway = gateway;
     }
   }
 
@@ -79,15 +79,11 @@ export default class KeyStore {
   ): Promise<PublicKey | undefined> {
     // Ensure we are using Uint8Array.
     service = typeof service !== 'string' ? service : bytes.parseHex(service);
-    let request = {
-      data: service,
-      method: 'oasis_getPublicKey'
-    };
-    let response = await this.provider.send(request);
-    if (!response || !response.publicKey) {
+    let pk = await this.gateway.publicKey(service);
+    if (!pk) {
       return undefined;
     }
-    return response.publicKey;
+    return pk;
   }
 
   /**

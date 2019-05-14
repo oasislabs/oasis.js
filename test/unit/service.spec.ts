@@ -4,8 +4,11 @@ import {
   PlaintextRpcDecoder,
   ConfidentialRpcDecoder
 } from '../../src/coder/decoder';
-import { RpcRequest } from '../../src/provider';
-import { RpcRequestMockProvider, ConfidentialMockProvider } from './utils';
+import { RpcRequest } from '../../src/oasis-gateway';
+import {
+  RpcRequestMockOasisGateway,
+  ConfidentialMockOasisGateway
+} from './utils';
 import * as bytes from '../../src/utils/bytes';
 import { idl } from './idls/test-contract';
 import { DummyStorage } from '../../src/db';
@@ -74,7 +77,7 @@ describe('Service', () => {
     let txDataPromise: Promise<RpcRequest> = new Promise(async resolve => {
       // Given a service.
       let service = new Service(idl, address, {
-        provider: new RpcRequestMockProvider(resolve),
+        gateway: new RpcRequestMockOasisGateway(resolve),
         db: new DummyStorage()
       });
 
@@ -84,12 +87,11 @@ describe('Service', () => {
 
     let request = await txDataPromise;
 
-    // Then we should have given the provider the encoded wire format of the request.
+    // Then we should have given the gateway the encoded wire format of the request.
     let decoder = new PlaintextRpcDecoder();
     let req = await decoder.decode(request.data);
     expect(bytes.toHex(req.sighash!)).toEqual('0xddefa4ab');
     expect(JSON.stringify(req.input)).toEqual(JSON.stringify([input1, input2]));
-    expect(request.method).toEqual('oasis_rpc');
   });
 
   it('encodes an rpc request for a confidential service', async () => {
@@ -102,7 +104,7 @@ describe('Service', () => {
     let txDataPromise: Promise<RpcRequest> = new Promise(async resolve => {
       // Given a service.
       let service = new Service(idl, address, {
-        provider: new ConfidentialMockProvider(
+        gateway: new ConfidentialMockOasisGateway(
           resolve,
           serviceKeyPair.publicKey
         ),

@@ -1,7 +1,7 @@
 import Service from '../service';
 import { Idl } from '../idl';
 import { Bytes } from '../types';
-import { Provider, defaultProvider } from '../provider';
+import { OasisGateway, defaultOasisGateway } from '../oasis-gateway';
 import { DeployHeader, DeployHeaderOptions } from './header';
 import { PlaintextRpcEncoder } from '../coder/encoder';
 import * as bytes from '../utils/bytes';
@@ -15,11 +15,11 @@ export default async function deploy(options: DeployOptions): Promise<Service> {
   sanitizeOptions(options);
 
   let data = await deploycode(options);
-  let request = { data, method: 'oasis_deploy' };
+  let request = { data };
 
-  let prov = provider(options);
+  let gateway = functionsGateway(options);
 
-  let response = await prov.send(request);
+  let response = await gateway.rpc(request);
 
   if (!response.address) {
     throw new Error(`Invalid provider response: ${response}`);
@@ -75,8 +75,8 @@ async function initcode(options: DeployOptions): Promise<Bytes> {
 /**
  * @returns the provider to use for deploying the Service.
  */
-function provider(options: DeployOptions): Provider {
-  return options.provider || defaultProvider();
+function functionsGateway(options: DeployOptions): OasisGateway {
+  return options.provider || defaultOasisGateway();
 }
 
 /**
@@ -87,5 +87,5 @@ type DeployOptions = {
   bytecode: Bytes;
   arguments?: Array<any>;
   header?: DeployHeaderOptions;
-  provider?: Provider;
+  provider?: OasisGateway;
 };
