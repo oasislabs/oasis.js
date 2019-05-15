@@ -22,9 +22,13 @@ export type Rpc = (...args: any[]) => Promise<any>;
  */
 export class RpcFactory {
   /**
-   * functions is the interface for making network requests to the gateway.
+   * gateway is the interface for making network requests to the gateway.
    */
   private gateway: OasisGateway;
+  /**
+   * address is the service address to which rpc's are invoked.
+   */
+  private address: Address;
   /**
    * coder is the rpc encoder and decoder, transforming to/from an idl and input to
    * the serialized wire format. Note that this is a promise because we cannot
@@ -44,7 +48,7 @@ export class RpcFactory {
     gateway: OasisGateway
   ) {
     this.gateway = gateway;
-
+    this.address = address;
     this.coder = new Promise(async resolve => {
       // Ask the key store if this service is confidential.
       let serviceKey = await keyStore.publicKey(address);
@@ -95,7 +99,7 @@ export class RpcFactory {
     return async (...args: any[]) => {
       let coder = await this.coder;
       let txData = await coder.encode(fn, args);
-      let request = { data: txData, method: 'oasis_rpc' };
+      let request = { data: txData, address: this.address };
       return this.gateway.rpc(request);
     };
   }

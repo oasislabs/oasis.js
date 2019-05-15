@@ -1,0 +1,69 @@
+import { OasisGateway, RpcRequest, SubscribeRequest } from '../';
+import { Address, PublicKey, Bytes } from '../../types';
+import PollingService from './polling';
+import * as bytes from '../../utils/bytes';
+import axios from 'axios';
+import * as EventEmitter from 'eventemitter3';
+import DeveloperGateway from './index';
+import { ExecuteServiceEvent, ErrorEvent } from './api';
+
+export class HttpDeveloperGateway implements OasisGateway {
+  /**
+   * http makes network requests to the gateway.
+   */
+  private http: Http;
+
+  /**
+   * polling is the pllinig service collectiing all responses from the developer gateway.
+   */
+  private polling: PollingService;
+
+  public constructor(private url: string) {
+    this.http = new HttpRequest(url);
+    this.polling = PollingService.instance(url);
+  }
+
+  public async rpc(request: RpcRequest): Promise<any> {
+    const response = await this.http.post('v0/api/service/execute', {
+      data: bytes.toHex(request.data),
+      address: bytes.toHex(request.address as Bytes)
+    });
+    let event = await this.polling.response(response.id);
+    if ((event as ErrorEvent).cause) {
+      throw new Error(`rpc error: ${event}`);
+    }
+    return (event as ExecuteServiceEvent).output;
+  }
+
+  public subscribe(request: SubscribeRequest): EventEmitter {
+    // TODO
+    return new EventEmitter();
+  }
+
+  public async publicKey(address: Address): Promise<PublicKey | undefined> {
+    // todo
+    return undefined;
+  }
+}
+
+/**
+ * Http interface for making http requests to the developer gateway.
+ */
+export interface Http {
+  post(api: string, body: Object): Promise<any>;
+}
+
+export class HttpRequest implements Http {
+  public constructor(public url: string) {}
+
+  public async post(api: string, body: Object): Promise<any> {
+    const uri = `${this.url}/${api}`;
+    let response = await axios.post(uri, body, {
+      headers: {
+        'X-INSECURE-AUTH': 'example',
+        'Content-type': 'application/json'
+      }
+    });
+    return response.data;
+  }
+}
