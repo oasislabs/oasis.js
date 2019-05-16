@@ -27,7 +27,7 @@
     "serve": "yarn build && python3 -m http.server 8000",
     "start": "rollup -c rollup.config.ts -w",
     "test": "yarn test:unit && yarn test:browser",
-    "test:unit": "jest --coverage",
+    "test:unit": "jest --coverage test/unit",
     "test:browser": "scripts/test-browser.sh",
     "test:watch": "jest --coverage --watch",
     "precommit": "lint-staged",
