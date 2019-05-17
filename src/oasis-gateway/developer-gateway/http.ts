@@ -5,7 +5,7 @@ import * as bytes from '../../utils/bytes';
 import axios from 'axios';
 import * as EventEmitter from 'eventemitter3';
 import DeveloperGateway from './index';
-import { ExecuteServiceEvent, ErrorEvent } from './api';
+import { Event, ExecuteServiceEvent, ErrorEvent, PublicKeyEvent } from './api';
 
 export class HttpDeveloperGateway implements OasisGateway {
   /**
@@ -24,14 +24,10 @@ export class HttpDeveloperGateway implements OasisGateway {
   }
 
   public async rpc(request: RpcRequest): Promise<any> {
-    const response = await this.http.post('v0/api/service/execute', {
+    let event = await this.postAndPoll('v0/api/service/execute', {
       data: bytes.toHex(request.data),
       address: bytes.toHex(request.address as Bytes)
     });
-    let event = await this.polling.response(response.id);
-    if ((event as ErrorEvent).cause) {
-      throw new Error(`rpc error: ${event}`);
-    }
     return (event as ExecuteServiceEvent).output;
   }
 
@@ -41,8 +37,28 @@ export class HttpDeveloperGateway implements OasisGateway {
   }
 
   public async publicKey(address: Address): Promise<PublicKey | undefined> {
-    // todo
-    return undefined;
+    let e = await this.postAndPoll('/v0/api/service/getPublicKey', {
+      address: bytes.toHex(address)
+    });
+    let event: PublicKeyEvent = e as PublicKeyEvent;
+
+    // TODO: validate signature
+    //       https://github.com/oasislabs/oasis-client/issues/39
+
+    return bytes.parseHex(event.publicKey);
+  }
+
+  /**
+   * Performs the asynchronous developer gateway request by posting a request
+   * and then polling for the response.
+   */
+  private async postAndPoll(url: string, body: Object): Promise<Event> {
+    const response = await this.http.post(url, body);
+    let event = await this.polling.response(response.id);
+    if ((event as ErrorEvent).cause) {
+      throw new Error(`poll error: ${event}`);
+    }
+    return event;
   }
 }
 

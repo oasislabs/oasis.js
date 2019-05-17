@@ -6,6 +6,7 @@ import {
 } from '../../src/coder/decoder';
 import { RpcRequest } from '../../src/oasis-gateway';
 import {
+  EmptyOasisGateway,
   RpcRequestMockOasisGateway,
   ConfidentialMockOasisGateway
 } from './utils';
@@ -18,14 +19,18 @@ const nacl = require('tweetnacl');
 describe('Service', () => {
   const address = '0x372FF3aeA1fc69B9C440A5fE0B4c23c38226Da68';
   it('constructs a service with a hex string address', () => {
-    let service = new Service(idl, address);
+    let service = new Service(idl, address, {
+      gateway: new EmptyOasisGateway()
+    });
 
     expect(service.address).toEqual(address);
   });
 
   it('constructs a service with a buffer address', () => {
     let bufferAddress = Buffer.from(address, 'hex');
-    let service = new Service(idl, address);
+    let service = new Service(idl, address, {
+      gateway: new EmptyOasisGateway()
+    });
 
     expect(service.address).toEqual(address);
   });
@@ -35,7 +40,8 @@ describe('Service', () => {
 
     // When.
     let service = new Service(idl, address, {
-      db: new DummyStorage()
+      db: new DummyStorage(),
+      gateway: new EmptyOasisGateway()
     });
 
     // Then.
@@ -56,7 +62,8 @@ describe('Service', () => {
   it('throws an exception when the incorrect number of arguments are passed to an rpc', async () => {
     // Given.
     let service = new Service(idl, address, {
-      db: new DummyStorage()
+      db: new DummyStorage(),
+      gateway: new EmptyOasisGateway()
     });
 
     // When.
