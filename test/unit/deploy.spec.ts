@@ -44,7 +44,7 @@ describe('Service deploys', () => {
             bytecode: test.bytecode,
             arguments: args,
             header: test.header,
-            provider: new DeployMockOasisGateway(resolve)
+            gateway: new DeployMockOasisGateway(resolve)
           });
           expect(service!.address).toEqual(DeployMockOasisGateway.address);
         }

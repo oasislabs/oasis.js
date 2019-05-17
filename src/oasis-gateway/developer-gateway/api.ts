@@ -6,7 +6,7 @@
 /**
  *  Event is an interface for types that can be fetched by polling on a service.
  */
-export type Event = ExecuteServiceEvent | ErrorEvent;
+export type Event = ExecuteServiceEvent | PublicKeyEvent | ErrorEvent;
 
 /**
  * ExecuteServiceResponse is an asynchronous response that will be obtained
@@ -33,6 +33,12 @@ export type ExecuteServiceEvent = {
   id: number;
   address: string;
   output: string;
+};
+
+export type PublicKeyEvent = {
+  publicKey: string;
+  timestamp: number;
+  signature: string;
 };
 
 /**

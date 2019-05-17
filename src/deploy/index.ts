@@ -17,15 +17,17 @@ export default async function deploy(options: DeployOptions): Promise<Service> {
   let data = await deploycode(options);
   let request = { data };
 
-  let gateway = functionsGateway(options);
+  let gateway = oasisGateway(options);
 
   let response = await gateway.rpc(request);
 
   if (!response.address) {
-    throw new Error(`Invalid provider response: ${response}`);
+    throw new Error(`Invalid gateway response: ${response}`);
   }
 
-  return new Service(options.idl, response.address);
+  return new Service(options.idl, response.address, {
+    gateway
+  });
 }
 
 /**
@@ -73,10 +75,10 @@ async function initcode(options: DeployOptions): Promise<Bytes> {
 }
 
 /**
- * @returns the provider to use for deploying the Service.
+ * @returns the gateway to use for deploying the Service.
  */
-function functionsGateway(options: DeployOptions): OasisGateway {
-  return options.provider || defaultOasisGateway();
+function oasisGateway(options: DeployOptions): OasisGateway {
+  return options.gateway || defaultOasisGateway();
 }
 
 /**
@@ -87,5 +89,5 @@ type DeployOptions = {
   bytecode: Bytes;
   arguments?: Array<any>;
   header?: DeployHeaderOptions;
-  provider?: OasisGateway;
+  gateway?: OasisGateway;
 };
