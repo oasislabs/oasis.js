@@ -54,6 +54,12 @@ export default class Service {
     if (options === undefined) {
       options = defaultOptions();
     } else {
+      // Remove all undefined fields so that Object.assign overwrites them.
+      Object.keys(options).forEach(key => {
+        if (options![key] === undefined) {
+          delete options![key];
+        }
+      });
       options = Object.assign(defaultOptions(), options);
     }
     return options;

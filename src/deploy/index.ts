@@ -5,6 +5,7 @@ import { OasisGateway, defaultOasisGateway } from '../oasis-gateway';
 import { DeployHeader, DeployHeaderOptions } from './header';
 import { PlaintextRpcEncoder } from '../coder/encoder';
 import * as bytes from '../utils/bytes';
+import { Db } from '../db';
 
 /**
  * deploy creates a service on the Oasis cloud.
@@ -23,9 +24,9 @@ export default async function deploy(options: DeployOptions): Promise<Service> {
   if (!response.address) {
     throw new Error(`Invalid gateway response: ${response}`);
   }
-
   return new Service(options.idl, response.address, {
-    gateway
+    gateway,
+    db: options.db
   });
 }
 
@@ -89,4 +90,5 @@ type DeployOptions = {
   arguments?: Array<any>;
   header?: DeployHeaderOptions;
   gateway?: OasisGateway;
+  db?: Db;
 };

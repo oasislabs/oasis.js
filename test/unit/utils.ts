@@ -40,6 +40,7 @@ export class RpcRequestMockOasisGateway extends EmptyOasisGateway {
 
   async rpc(request: RpcRequest): Promise<any> {
     this.requestResolve(request);
+    return { output: '' };
   }
 }
 

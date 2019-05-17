@@ -1,6 +1,7 @@
 import {
   OasisGateway,
   RpcRequest,
+  RpcResponse,
   SubscribeRequest,
   DeployRequest,
   DeployResponse,
@@ -18,7 +19,10 @@ import {
   ExecuteServiceEvent,
   ErrorEvent,
   PublicKeyEvent,
-  DeployEvent
+  DeployEvent,
+  DeployApi,
+  RpcApi,
+  PublicKeyApi
 } from './api';
 
 export class HttpDeveloperGateway implements OasisGateway {
@@ -38,7 +42,7 @@ export class HttpDeveloperGateway implements OasisGateway {
   }
 
   public async deploy(request: DeployRequest): Promise<DeployResponse> {
-    let e = await this.postAndPoll('v0/api/service/deploy', {
+    let e = await this.postAndPoll(DeployApi, {
       data: request.data
     });
     let event = e as DeployEvent;
@@ -46,12 +50,14 @@ export class HttpDeveloperGateway implements OasisGateway {
     return { address };
   }
 
-  public async rpc(request: RpcRequest): Promise<any> {
-    let event = await this.postAndPoll('v0/api/service/execute', {
+  public async rpc(request: RpcRequest): Promise<RpcResponse> {
+    let event = await this.postAndPoll(RpcApi, {
       data: bytes.toHex(request.data),
       address: bytes.toHex(request.address as Bytes)
     });
-    return (event as ExecuteServiceEvent).output;
+    return {
+      output: (event as ExecuteServiceEvent).output
+    };
   }
 
   public subscribe(request: SubscribeRequest): EventEmitter {
@@ -62,7 +68,7 @@ export class HttpDeveloperGateway implements OasisGateway {
   public async publicKey(
     request: PublicKeyRequest
   ): Promise<PublicKeyResponse> {
-    let e = await this.postAndPoll('v0/api/service/getPublicKey', {
+    let e = await this.postAndPoll(PublicKeyApi, {
       address: bytes.toHex(request.address)
     });
     let event: PublicKeyEvent = e as PublicKeyEvent;
@@ -70,7 +76,9 @@ export class HttpDeveloperGateway implements OasisGateway {
     // TODO: validate signature
     //       https://github.com/oasislabs/oasis-client/issues/39
 
-    let publicKey = bytes.parseHex(event.publicKey);
+    let publicKey = event.publicKey
+      ? bytes.parseHex(event.publicKey)
+      : undefined;
     return { publicKey };
   }
 
