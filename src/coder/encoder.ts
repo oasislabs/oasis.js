@@ -47,7 +47,7 @@ export class ConfidentialRpcEncoder extends PlaintextRpcEncoder {
   }
 }
 
-class Sighash {
+export class Sighash {
   public static from(fn: RpcFn): Bytes4 {
     let sighash = bytes.parseHex(keccak256(Sighash.format(fn)));
     return sighash.slice(0, 4);
@@ -60,7 +60,19 @@ class Sighash {
   public static format(fn: RpcFn): string {
     let name = fn.name;
 
-    let inputs = ''; // TODO. See https://github.com/oasislabs/oasis-client/issues/15.
+    let inputs = '';
+
+    fn.inputs.forEach(input => {
+      let paramType = input.type;
+      if (paramType === 'defined') {
+        paramType = input.params.type;
+      }
+      inputs += `${paramType},`;
+    });
+
+    if (inputs.length > 0) {
+      inputs = inputs.substr(0, inputs.length - 1);
+    }
 
     return `${name}(${inputs})`;
   }

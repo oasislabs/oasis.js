@@ -97,7 +97,7 @@ describe('Service', () => {
     // Then we should have given the gateway the encoded wire format of the request.
     let decoder = new PlaintextRpcDecoder();
     let req = await decoder.decode(request.data);
-    expect(bytes.toHex(req.sighash!)).toEqual('0xddefa4ab');
+    expect(bytes.toHex(req.sighash!)).toEqual('0xccc7cde3');
     expect(JSON.stringify(req.input)).toEqual(JSON.stringify([input1, input2]));
   });
 
@@ -128,7 +128,7 @@ describe('Service', () => {
     let decoder = new ConfidentialRpcDecoder(serviceKeyPair.secretKey);
     let plaintext = await decoder.decode(request.data);
 
-    expect(bytes.toHex(plaintext.sighash!)).toEqual('0xddefa4ab');
+    expect(bytes.toHex(plaintext.sighash!)).toEqual('0xccc7cde3');
     expect(JSON.stringify(plaintext.input)).toEqual(
       JSON.stringify([input1, input2])
     );
