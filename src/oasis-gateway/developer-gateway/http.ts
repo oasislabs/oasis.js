@@ -1,11 +1,25 @@
-import { OasisGateway, RpcRequest, SubscribeRequest } from '../';
+import {
+  OasisGateway,
+  RpcRequest,
+  SubscribeRequest,
+  DeployRequest,
+  DeployResponse,
+  PublicKeyRequest,
+  PublicKeyResponse
+} from '../';
 import { Address, PublicKey, Bytes } from '../../types';
 import PollingService from './polling';
 import * as bytes from '../../utils/bytes';
 import axios from 'axios';
 import * as EventEmitter from 'eventemitter3';
 import DeveloperGateway from './index';
-import { Event, ExecuteServiceEvent, ErrorEvent, PublicKeyEvent } from './api';
+import {
+  Event,
+  ExecuteServiceEvent,
+  ErrorEvent,
+  PublicKeyEvent,
+  DeployEvent
+} from './api';
 
 export class HttpDeveloperGateway implements OasisGateway {
   /**
@@ -23,6 +37,15 @@ export class HttpDeveloperGateway implements OasisGateway {
     this.polling = PollingService.instance(url);
   }
 
+  public async deploy(request: DeployRequest): Promise<DeployResponse> {
+    let e = await this.postAndPoll('v0/api/service/deploy', {
+      data: request.data
+    });
+    let event = e as DeployEvent;
+    let address = bytes.parseHex(event.address);
+    return { address };
+  }
+
   public async rpc(request: RpcRequest): Promise<any> {
     let event = await this.postAndPoll('v0/api/service/execute', {
       data: bytes.toHex(request.data),
@@ -36,16 +59,19 @@ export class HttpDeveloperGateway implements OasisGateway {
     return new EventEmitter();
   }
 
-  public async publicKey(address: Address): Promise<PublicKey | undefined> {
+  public async publicKey(
+    request: PublicKeyRequest
+  ): Promise<PublicKeyResponse> {
     let e = await this.postAndPoll('v0/api/service/getPublicKey', {
-      address: bytes.toHex(address)
+      address: bytes.toHex(request.address)
     });
     let event: PublicKeyEvent = e as PublicKeyEvent;
 
     // TODO: validate signature
     //       https://github.com/oasislabs/oasis-client/issues/39
 
-    return bytes.parseHex(event.publicKey);
+    let publicKey = bytes.parseHex(event.publicKey);
+    return { publicKey };
   }
 
   /**

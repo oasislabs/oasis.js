@@ -100,7 +100,8 @@ export class RpcFactory {
       let coder = await this.coder;
       let txData = await coder.encode(fn, args);
       let request = { data: txData, address: this.address };
-      return this.gateway.rpc(request);
+      let response = await this.gateway.rpc(request);
+      return response.output;
     };
   }
 }
