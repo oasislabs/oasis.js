@@ -15,11 +15,10 @@ export default async function deploy(options: DeployOptions): Promise<Service> {
   sanitizeOptions(options);
 
   let data = await deploycode(options);
-  let request = { data };
 
   let gateway = oasisGateway(options);
 
-  let response = await gateway.rpc(request);
+  let response = await gateway.deploy({ data });
 
   if (!response.address) {
     throw new Error(`Invalid gateway response: ${response}`);

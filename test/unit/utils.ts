@@ -1,7 +1,11 @@
 import {
   OasisGateway,
   RpcRequest,
-  SubscribeRequest
+  SubscribeRequest,
+  PublicKeyRequest,
+  PublicKeyResponse,
+  DeployRequest,
+  DeployResponse
 } from '../../src/oasis-gateway';
 import * as bytes from '../../src/utils/bytes';
 import { Address, PublicKey } from '../../src/types';
@@ -12,7 +16,14 @@ export class EmptyOasisGateway implements OasisGateway {
   public subscribe(request: SubscribeRequest): EventEmitter {
     return new EventEmitter();
   }
-  public async publicKey(address: Address): Promise<any> {}
+  public async publicKey(
+    request: PublicKeyRequest
+  ): Promise<PublicKeyResponse> {
+    return {};
+  }
+  public async deploy(request: DeployRequest): Promise<DeployResponse> {
+    throw new Error('cannot deploy from an empty gateway');
+  }
 }
 
 /**
@@ -30,10 +41,6 @@ export class RpcRequestMockOasisGateway extends EmptyOasisGateway {
   async rpc(request: RpcRequest): Promise<any> {
     this.requestResolve(request);
   }
-
-  async publicKey(address: Address): Promise<any> {
-    return undefined;
-  }
 }
 
 /**
@@ -45,19 +52,12 @@ export class DeployMockOasisGateway extends RpcRequestMockOasisGateway {
    */
   public static address = '0x5C7b817e80680fec250a6f638c504d39AD353b26';
 
-  constructor(requestResolve: Function) {
-    super(requestResolve);
-  }
-
-  async rpc(request: RpcRequest): Promise<any> {
+  async deploy(request: DeployRequest): Promise<DeployResponse> {
+    // So that we resolve the promise for the test to see this request.
     super.rpc(request);
     return {
       address: DeployMockOasisGateway.address
     };
-  }
-
-  async publicKey(address: Address): Promise<any> {
-    return undefined;
   }
 }
 
@@ -69,8 +69,8 @@ export class ConfidentialMockOasisGateway extends RpcRequestMockOasisGateway {
     this._publicKey = publicKey;
   }
 
-  async publicKey(address: Address): Promise<any> {
-    return this._publicKey;
+  async publicKey(request: PublicKeyRequest): Promise<PublicKeyResponse> {
+    return { publicKey: this._publicKey };
   }
 }
 
@@ -116,8 +116,8 @@ export class PublicKeyMockProvider extends EmptyOasisGateway {
     throw new Error(`Expected oasis_getPublicKey but got ${request}`);
   }
 
-  async publicKey(address: Address): Promise<any> {
-    let givenAddress = bytes.toHex(address as Uint8Array);
+  async publicKey(request: PublicKeyRequest): Promise<PublicKeyResponse> {
+    let givenAddress = bytes.toHex(request.address as Uint8Array);
     if (givenAddress !== PublicKeyMockProvider.address) {
       throw new Error(
         `Unexpected data. Expected ${
@@ -126,7 +126,7 @@ export class PublicKeyMockProvider extends EmptyOasisGateway {
       );
     }
 
-    return PublicKeyMockProvider._publicKey;
+    return { publicKey: PublicKeyMockProvider._publicKey };
   }
 }
 

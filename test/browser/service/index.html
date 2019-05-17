@@ -74,7 +74,7 @@
           this.requestResolve(request);
         }
         async publicKey(address) {
-          return undefined;
+          return {};
         }
       }
 
@@ -89,7 +89,7 @@
           this.requestResolve(request);
         }
         async publicKey(address) {
-          return keys.peerPublicKey;
+          return { publicKey: keys.peerPublicKey };
         }
       }
 
