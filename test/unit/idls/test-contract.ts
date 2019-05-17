@@ -1,5 +1,5 @@
 const idl = {
-  name: 'TestContract',
+  name: 'TestService',
   namespace: 'test_idl_gen',
   imports: [
     {
@@ -14,21 +14,57 @@ const idl = {
       variants: ['Field1', 'Field2']
     },
     {
+      type: 'event',
+      name: 'TestEvent',
+      fields: [
+        {
+          name: 'indexed',
+          type: {
+            type: 'defined',
+            params: {
+              type: 'DefTy'
+            }
+          },
+          indexed: true
+        },
+        {
+          name: 'non_indexed',
+          type: {
+            type: 'tuple',
+            params: [
+              {
+                type: 'u32'
+              },
+              {
+                type: 'u32'
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
       type: 'struct',
       name: 'DefTy',
       fields: [
         {
           name: 'f1',
           type: {
-            optional: 'i64'
+            type: 'optional',
+            params: {
+              type: 'i64'
+            }
           }
         },
         {
           name: 'f2',
           type: {
-            list: {
-              optional: {
-                defined: {
+            type: 'list',
+            params: {
+              type: 'optional',
+              params: {
+                type: 'defined',
+                params: {
                   type: 'DefTy'
                 }
               }
@@ -38,10 +74,14 @@ const idl = {
         {
           name: 'f3',
           type: {
-            map: [
-              'string',
+            type: 'map',
+            params: [
               {
-                defined: {
+                type: 'string'
+              },
+              {
+                type: 'defined',
+                params: {
                   type: 'InnerTy'
                 }
               }
@@ -51,14 +91,49 @@ const idl = {
         {
           name: 'f4',
           type: {
-            tuple: ['h256', 'u256', 'address']
+            type: 'tuple',
+            params: [
+              {
+                type: 'h256'
+              },
+              {
+                type: 'u256'
+              },
+              {
+                type: 'address'
+              }
+            ]
           }
+        }
+      ]
+    },
+    {
+      type: 'event',
+      name: 'TestEvent2',
+      fields: [
+        {
+          name: 'indexed1',
+          type: {
+            type: 'u32'
+          },
+          indexed: true
+        },
+        {
+          name: 'indexed2',
+          type: {
+            type: 'u32'
+          },
+          indexed: true
         }
       ]
     }
   ],
   constructor: {
-    inputs: ['string']
+    inputs: [
+      {
+        type: 'string'
+      }
+    ]
   },
   functions: [
     {
@@ -66,16 +141,23 @@ const idl = {
       mutability: 'immutable',
       inputs: [
         {
-          list: {
-            defined: {
+          type: 'list',
+          params: {
+            type: 'defined',
+            params: {
               type: 'DefTy'
             }
           }
         },
-        'bytes'
+        {
+          type: 'bytes'
+        }
       ],
       output: {
-        set: 'address'
+        type: 'set',
+        params: {
+          type: 'address'
+        }
       }
     },
     {
@@ -83,15 +165,27 @@ const idl = {
       mutability: 'mutable',
       inputs: [
         {
-          map: [
-            'bool',
+          type: 'map',
+          params: [
             {
-              array: ['u32', 12]
+              type: 'bool'
+            },
+            {
+              type: 'array',
+              params: [
+                {
+                  type: 'u32'
+                },
+                12
+              ]
             }
           ]
         },
         {
-          set: 'i64'
+          type: 'set',
+          params: {
+            type: 'i64'
+          }
         }
       ]
     },
@@ -105,14 +199,23 @@ const idl = {
       mutability: 'mutable',
       inputs: [
         {
-          defined: {
+          type: 'defined',
+          params: {
             namespace: 'testlib',
             type: 'RpcType'
           }
         }
       ],
       output: {
-        tuple: ['bool', 'i8']
+        type: 'tuple',
+        params: [
+          {
+            type: 'bool'
+          },
+          {
+            type: 'i8'
+          }
+        ]
       }
     }
   ],
