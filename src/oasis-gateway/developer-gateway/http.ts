@@ -37,7 +37,7 @@ export class HttpDeveloperGateway implements OasisGateway {
   }
 
   public async publicKey(address: Address): Promise<PublicKey | undefined> {
-    let e = await this.postAndPoll('/v0/api/service/getPublicKey', {
+    let e = await this.postAndPoll('v0/api/service/getPublicKey', {
       address: bytes.toHex(address)
     });
     let event: PublicKeyEvent = e as PublicKeyEvent;
