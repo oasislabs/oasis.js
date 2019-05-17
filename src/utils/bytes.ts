@@ -1,3 +1,5 @@
+import { Bytes } from '../types';
+
 /**
  * Return a Uint8Array of an ethereum hex-encoded key (EthHex)
  * @param {String} keystring The EthHex encoding of the value
@@ -21,7 +23,9 @@ export function parseHex(keystring: string): Uint8Array {
  * @param {Uint8Array} keybytes
  * @returns {String} The EthHex encoding
  */
-export function toHex(keybytes: Uint8Array): string {
+export function toHex(keybytes: Bytes): string {
+  // Already a hex strig so return.
+  if (typeof keybytes === 'string') return keybytes;
   return keybytes.reduce(
     (str, byte) => str + byte.toString(16).padStart(2, '0'),
     '0x'

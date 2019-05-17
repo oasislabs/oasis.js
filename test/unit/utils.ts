@@ -69,12 +69,6 @@ export class ConfidentialMockOasisGateway extends RpcRequestMockOasisGateway {
     this._publicKey = publicKey;
   }
 
-  async rpc(request) {
-    if (request.method === 'oasis_rpc') {
-      super.rpc(request);
-    }
-  }
-
   async publicKey(address: Address): Promise<any> {
     return this._publicKey;
   }

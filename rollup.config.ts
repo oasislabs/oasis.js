@@ -4,6 +4,8 @@ import sourceMaps from 'rollup-plugin-sourcemaps';
 import camelCase from 'lodash.camelcase';
 import typescript from 'rollup-plugin-typescript2';
 import json from 'rollup-plugin-json';
+import builtins from 'rollup-plugin-node-builtins';
+import globals from 'rollup-plugin-node-globals';
 
 const pkg = require('./package.json');
 
@@ -32,9 +34,11 @@ export default {
     include: 'src/**',
   },
   plugins: [
+    commonjs(),
+    globals(),
+    builtins(),
     json(),
     typescript({ useTsconfigDeclarationDir: true }),
-    commonjs(),
     resolve(),
     sourceMaps(),
   ],

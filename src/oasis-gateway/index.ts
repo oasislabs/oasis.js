@@ -1,4 +1,5 @@
-import { Address, PublicKey, Bytes } from '../../src/types';
+import { Address, PublicKey, Bytes } from '../types';
+import DeveloperGateway from './developer-gateway';
 import * as EventEmitter from 'eventemitter3';
 
 /**
@@ -8,24 +9,6 @@ export interface OasisGateway {
   rpc(request: RpcRequest): Promise<any>;
   subscribe(request: SubscribeRequest): EventEmitter;
   publicKey(address: Address): Promise<PublicKey | undefined>;
-}
-
-export class HttpGateway implements OasisGateway {
-  public constructor(private url: string) {}
-
-  public async rpc(request: RpcRequest): Promise<any> {
-    // TODO
-  }
-
-  public subscribe(request: SubscribeRequest): EventEmitter {
-    // TODO
-    return new EventEmitter();
-  }
-
-  public async publicKey(address: Address): Promise<PublicKey | undefined> {
-    // todo
-    return undefined;
-  }
 }
 
 export type RpcRequest = {
@@ -39,5 +22,5 @@ export type SubscribeRequest = {
 };
 
 export function defaultOasisGateway(): OasisGateway {
-  return new HttpGateway('https://web3.oasiscloud.io/');
+  return DeveloperGateway.http('http://localhost:1234');
 }

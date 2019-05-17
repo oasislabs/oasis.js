@@ -86,9 +86,7 @@
           this.requestResolve = requestResolve;
         }
         async rpc(request) {
-          if (request.method === 'oasis_rpc') {
-            this.requestResolve(request);
-          }
+          this.requestResolve(request);
         }
         async publicKey(address) {
           return keys.peerPublicKey;
