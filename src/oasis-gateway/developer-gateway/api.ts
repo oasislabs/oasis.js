@@ -4,9 +4,35 @@
  */
 
 /**
+ * DeveloperGatewayApi represents the path for a URI for the developer gateway.
+ */
+export type DeveloperGatewayApi = string;
+
+/**
+ * Deploys a services.
+ */
+export const DeployApi: DeveloperGatewayApi = 'v0/api/service/deploy';
+/**
+ * Invokes an rpc on a service.
+ */
+export const RpcApi: DeveloperGatewayApi = 'v0/api/service/execute';
+/**
+ * Retrieives the public key for a service.
+ */
+export const PublicKeyApi: DeveloperGatewayApi = 'v0/api/service/getPublicKey';
+/**
+ * Polls for an event previously requested.
+ */
+export const PollApi: DeveloperGatewayApi = 'v0/api/service/poll';
+
+/**
  *  Event is an interface for types that can be fetched by polling on a service.
  */
-export type Event = ExecuteServiceEvent | PublicKeyEvent | ErrorEvent;
+export type Event =
+  | ExecuteServiceEvent
+  | PublicKeyEvent
+  | DeployEvent
+  | ErrorEvent;
 
 /**
  * ExecuteServiceResponse is an asynchronous response that will be obtained
@@ -36,12 +62,14 @@ export type ExecuteServiceEvent = {
 };
 
 export type PublicKeyEvent = {
+  id: number;
   publicKey: string;
   timestamp: number;
   signature: string;
 };
 
 export type DeployEvent = {
+  id: number;
   address: string;
 };
 

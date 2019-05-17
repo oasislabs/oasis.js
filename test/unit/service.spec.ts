@@ -136,7 +136,7 @@ describe('Service', () => {
 });
 
 // Returns a `DefTy` object to be used for testing. See idls/test-contract.ts.
-function defType() {
+export function defType() {
   return {
     f1: 1,
     f3: {

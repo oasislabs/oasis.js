@@ -1,6 +1,6 @@
 import EventEmitter from '../../utils/eventemitter3';
 import { Http, HttpRequest } from './http';
-import { Event } from './api';
+import { PollApi, Event } from './api';
 
 export default class PollingService {
   /**
@@ -99,7 +99,7 @@ export default class PollingService {
   }
 
   private async pollOnce() {
-    let responses = await this.http.post('v0/api/service/poll', {
+    let responses = await this.http.post(PollApi, {
       offset: this.responseWindow.start,
       discardPrevious: true
     });
