@@ -1,7 +1,8 @@
-import { ConfidentialRpcEncoder } from '../../src/coder/encoder';
+import { ConfidentialRpcEncoder, Sighash } from '../../src/coder/encoder';
 import { ConfidentialRpcDecoder } from '../../src/coder/decoder';
 import KeyStore from '../../src/confidential/key-store';
 import { DummyStorage } from '../../src/db';
+import { idl } from './idls/test-contract';
 
 describe('Encoders', () => {
   describe('ConfidentialRpcEncoder', () => {
@@ -34,10 +35,26 @@ describe('Encoders', () => {
 
       // Check it equals the original input.
       let expectedResult = {
-        sighash: new Uint8Array([216, 126, 223, 139]),
+        sighash: new Uint8Array([212, 107, 45, 194]),
         input: rpcInput
       };
       expect(JSON.stringify(result)).toEqual(JSON.stringify(expectedResult));
+    });
+  });
+
+  describe('Sighash', () => {
+    it('formats the sighash', () => {
+      let expected = [
+        'the(list,bytes)',
+        'it(map,set)',
+        'void()',
+        'import(RpcType)'
+      ];
+      for (let k = 0; k < expected.length; k += 1) {
+        let fn = idl.functions[k];
+        let fnSignature = Sighash.format(fn);
+        expect(expected[k]).toEqual(fnSignature);
+      }
     });
   });
 });

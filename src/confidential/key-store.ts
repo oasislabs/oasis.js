@@ -79,11 +79,11 @@ export default class KeyStore {
   ): Promise<PublicKey | undefined> {
     // Ensure we are using Uint8Array.
     service = typeof service !== 'string' ? service : bytes.parseHex(service);
-    let pk = await this.gateway.publicKey(service);
-    if (!pk) {
+    let response = await this.gateway.publicKey({ address: service });
+    if (!response.publicKey) {
       return undefined;
     }
-    return pk;
+    return response.publicKey;
   }
 
   /**

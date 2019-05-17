@@ -41,6 +41,10 @@ export type PublicKeyEvent = {
   signature: string;
 };
 
+export type DeployEvent = {
+  address: string;
+};
+
 /**
  * ErrorEvent is the event that can be polled by the user as a result
  * to a request that failed.
