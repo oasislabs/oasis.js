@@ -3,6 +3,8 @@ import {
   RpcRequest,
   RpcResponse,
   SubscribeRequest,
+  UnsubscribeRequest,
+  SubscribeTopic,
   DeployRequest,
   DeployResponse,
   PublicKeyRequest,
@@ -22,8 +24,12 @@ import {
   DeployEvent,
   DeployApi,
   RpcApi,
-  PublicKeyApi
+  PublicKeyApi,
+  SubscribeApi,
+  ServicePollApi,
+  SubscribePollApi
 } from './api';
+import UrlEncoder from '../../utils/url-encoder';
 
 export class HttpDeveloperGateway implements OasisGateway {
   /**
@@ -32,13 +38,19 @@ export class HttpDeveloperGateway implements OasisGateway {
   private http: Http;
 
   /**
-   * polling is the pllinig service collectiing all responses from the developer gateway.
+   * polling collects all non-subscribe fresponses from the developer gateway.
    */
   private polling: PollingService;
 
+  /**
+   * Maps event name to the polling service queueId. One for each subscription.
+   */
+  private subscriptions: Map<string, number>;
+
   public constructor(private url: string) {
     this.http = new HttpRequest(url);
-    this.polling = PollingService.instance(url);
+    this.polling = PollingService.instance({ url });
+    this.subscriptions = new Map();
   }
 
   public async deploy(request: DeployRequest): Promise<DeployResponse> {
@@ -61,8 +73,46 @@ export class HttpDeveloperGateway implements OasisGateway {
   }
 
   public subscribe(request: SubscribeRequest): EventEmitter {
-    // TODO
-    return new EventEmitter();
+    let events = new EventEmitter();
+    this.http
+      .post(SubscribeApi, {
+        events: ['logs'],
+        filter: UrlEncoder.encode(request.filter)
+      })
+      .then(response => {
+        if (response.id === undefined || response.id === null) {
+          throw new Error(`subscription failed: ${response}`);
+        }
+
+        // Store the event -> queueId mapping so that we can unsubscribe later.
+        this.subscriptions.set(request.event, response.id);
+
+        PollingService.instance({
+          url: this.url,
+          queueId: response.id
+        }).subscribe(response.id, event => {
+          events.emit(request.event, event);
+        });
+      })
+      .catch(err => {
+        events.emit('error', err);
+      });
+
+    return events;
+  }
+
+  public unsubscribe(request: UnsubscribeRequest) {
+    let queueId = this.subscriptions.get(request.event);
+    if (queueId === undefined) {
+      throw new Error(`no subscriptions exist for ${request}`);
+    }
+
+    PollingService.instance({
+      url: this.url,
+      queueId
+    }).stop();
+
+    this.subscriptions.delete(request.event);
   }
 
   public async publicKey(

@@ -21,9 +21,17 @@ export const RpcApi: DeveloperGatewayApi = 'v0/api/service/execute';
  */
 export const PublicKeyApi: DeveloperGatewayApi = 'v0/api/service/getPublicKey';
 /**
- * Polls for an event previously requested.
+ * Polls for an event on a service.
  */
-export const PollApi: DeveloperGatewayApi = 'v0/api/service/poll';
+export const ServicePollApi: DeveloperGatewayApi = 'v0/api/service/poll';
+/**
+ * Subscribes to a gateway topic.
+ */
+export const SubscribeApi: DeveloperGatewayApi = 'v0/api/event/subscribe';
+/**
+ * Polls for an event on a subcription.
+ */
+export const SubscribePollApi: DeveloperGatewayApi = 'v0/api/event/poll';
 
 /**
  *  Event is an interface for types that can be fetched by polling on a service.

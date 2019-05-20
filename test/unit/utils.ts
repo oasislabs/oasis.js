@@ -2,6 +2,7 @@ import {
   OasisGateway,
   RpcRequest,
   SubscribeRequest,
+  UnsubscribeRequest,
   PublicKeyRequest,
   PublicKeyResponse,
   DeployRequest,
@@ -16,6 +17,7 @@ export class EmptyOasisGateway implements OasisGateway {
   public subscribe(request: SubscribeRequest): EventEmitter {
     return new EventEmitter();
   }
+  public unsubscribe(request: UnsubscribeRequest) {}
   public async publicKey(
     request: PublicKeyRequest
   ): Promise<PublicKeyResponse> {

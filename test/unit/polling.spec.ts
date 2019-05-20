@@ -150,7 +150,7 @@ function emptyPollResponse(): PollServiceResponse {
 
 function successPollResponse(id: number): PollServiceResponse {
   return {
-    offset: 0,
+    offset: id,
     events: [successEvent(id)]
   };
 }
@@ -171,7 +171,11 @@ function pollingService(responses: PollServiceResponse[]): PollingService {
 
   let http = new MockHttp(responses);
 
-  return PollingService.instance('test', http, POLLING_INTERVAL);
+  return PollingService.instance({
+    url: 'test',
+    http,
+    interval: POLLING_INTERVAL
+  });
 }
 
 function shuffle(a) {

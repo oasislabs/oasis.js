@@ -9,6 +9,7 @@ export interface OasisGateway {
   deploy(request: DeployRequest): Promise<DeployResponse>;
   rpc(request: RpcRequest): Promise<RpcResponse>;
   subscribe(request: SubscribeRequest): EventEmitter;
+  unsubscribe(request: UnsubscribeRequest);
   publicKey(request: PublicKeyRequest): Promise<PublicKeyResponse>;
 }
 
@@ -38,9 +39,15 @@ export type SubscribeRequest = {
   filter?: Object;
 };
 
+export type UnsubscribeRequest = {
+  event: string;
+};
+
 export type PublicKeyResponse = {
   publicKey?: PublicKey;
 };
+
+export const SubscribeTopic = 'subscription';
 
 export function defaultOasisGateway(): OasisGateway {
   return DeveloperGateway.http('http://localhost:1234');
