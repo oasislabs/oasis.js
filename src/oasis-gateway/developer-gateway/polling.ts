@@ -1,6 +1,12 @@
 import EventEmitter from '../../utils/eventemitter3';
 import { Http, HttpRequest } from './http';
-import { PollApi, Event } from './api';
+import {
+  DeveloperGatewayApi,
+  ServicePollApi,
+  SubscribePollApi,
+  Event
+} from './api';
+import { SubscribeTopic } from '../';
 
 export default class PollingService {
   /**
@@ -33,11 +39,12 @@ export default class PollingService {
   private polling?: any;
 
   /**
-   * The constructor should never be invoked diriectly. To access the PollingService
+   * The constructor should never be invoked directly. To access the PollingService
    * use `PollingService.instance`.
    */
   private constructor(
     private http: Http,
+    private queueId?: number,
     responseWindow?: Window<Event>,
     interval?: number
   ) {
@@ -49,22 +56,43 @@ export default class PollingService {
   /**
    * @returns the instance of PollingService for the given url.
    */
-  public static instance(
-    url: string,
-    http?: Http,
-    interval?: number
-  ): PollingService {
-    if (!PollingService.SERVICES.get(url)) {
+  public static instance(options: PollingServiceOptions): PollingService {
+    let id = PollingService.id(options);
+
+    if (!PollingService.SERVICES.get(id)) {
       PollingService.SERVICES.set(
-        url,
+        id,
         new PollingService(
-          http ? http : new HttpRequest(url),
-          undefined,
-          interval
+          options.http ? options.http : new HttpRequest(options.url),
+          options.queueId,
+          // Set the end point of the window to 2**53 if the queueId exists since
+          // it implies a subscription and subscriptions never auto close.
+          options.queueId !== undefined ? new Window(0, 2 ** 53) : new Window(),
+          options.interval
         )
       );
     }
-    return PollingService.SERVICES.get(url)!;
+    return PollingService.SERVICES.get(id)!;
+  }
+
+  /**
+   * @returns the internal identifier for the service specified by the given options.
+   *          This identifier is used to track each individual PollingService object
+   *          cached in PollingService.SERVICES.
+   *
+   *          Not only will different polling services be created for each
+   *          distinct developer gateway url, but also for each unique message
+   *          queue handled by the developer gateway.
+   *
+   *          For the ServicePollApi, there is a single queue for all responses
+   *          related to service apis. For subscriptions, however, there is a
+   *          unique queue for each individudual subscription--hence the use of
+   *          queueId to form the id.
+   */
+  private static id(options: PollingServiceOptions): string {
+    return options.queueId !== undefined
+      ? `${options.url}/${SubscribePollApi}/${options.queueId}`
+      : `${options.url}/${ServicePollApi}`;
   }
 
   /**
@@ -82,24 +110,24 @@ export default class PollingService {
         return resolve(cached);
       }
       this.responseWindow.extend(requestId);
-      if (!this.polling) {
-        this.start();
-      }
       this.responses.once(`${requestId}`, (response: Event) => {
         resolve(response);
       });
+      if (!this.polling) {
+        this.start();
+      }
     });
   }
 
   /**
    * Initiates the polling service to begin polling for responses.
    */
-  private start() {
+  public start() {
     this.polling = setInterval(this.pollOnce.bind(this), this.interval);
   }
 
   private async pollOnce() {
-    let responses = await this.http.post(PollApi, {
+    let responses = await this.http.post(this.api(), {
       offset: this.responseWindow.start,
       discardPrevious: true
     });
@@ -109,16 +137,51 @@ export default class PollingService {
       return;
     }
     responses.events.forEach(r => {
-      this.responses.emit(`${r.id}`, r);
+      this.responses.emit(this.topic(r), r);
       this.responseWindow.slide(r.id, r);
       if (this.responseWindow.isClosed()) {
-        // Stop polling because we have accrued all desired responses.
-        clearInterval(this.polling);
-        this.polling = undefined;
+        this.stop();
       }
     });
   }
+
+  /**
+   * Force stops the polling service.
+   */
+  public stop() {
+    clearInterval(this.polling);
+    this.polling = undefined;
+  }
+
+  public subscribe(requestId: number, callback: Function) {
+    if (this.polling) {
+      throw new Error('cannot make a new subscription when already polling');
+    }
+    this.responses.addListener(SubscribeTopic, callback);
+    this.start();
+  }
+
+  /**
+   * @returns the DeveloperGatewayApi currently being polled.
+   */
+  private api(): DeveloperGatewayApi {
+    return this.queueId !== undefined ? SubscribePollApi : ServicePollApi;
+  }
+
+  /**
+   * @returns the topic to publish the given response to.
+   */
+  private topic(response: Event): string {
+    return this.queueId !== undefined ? SubscribeTopic : `${response.id}`;
+  }
 }
+
+export type PollingServiceOptions = {
+  url: string;
+  queueId?: number;
+  http?: Http;
+  interval?: number;
+};
 
 class Window<T> {
   /**
@@ -137,8 +200,8 @@ class Window<T> {
   public end: number;
 
   constructor(start?: number, end?: number) {
-    this.start = start ? start : -1;
-    this.end = end ? end : -1;
+    this.start = start !== undefined ? start : -1;
+    this.end = end !== undefined ? end : -1;
   }
 
   /**

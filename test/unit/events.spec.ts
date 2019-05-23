@@ -20,12 +20,17 @@ describe('Events', () => {
       });
     });
 
-    let expectedEvent = { MyEvent: 'This is a method' };
-
-    remote.emit('MyEvent', expectedEvent);
+    // The service will decode all subscription responses from the gateway, so
+    // make sure to emit the encoded version.
+    remote.emit('MyEvent', {
+      data:
+        '7b2264617461223a223078613236383639366536343635373836353634333130313638363936653634363537383635363433323031227d',
+      id: 0
+    });
 
     let event = await eventPromise;
 
-    expect(event).toEqual(expectedEvent);
+    // The result of decoding the above data.
+    expect(event).toEqual({ indexed1: 1, indexed2: 1 });
   });
 });

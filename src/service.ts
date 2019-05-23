@@ -4,9 +4,14 @@ import { Rpcs, RpcFactory } from './rpc';
 import {
   OasisGateway,
   defaultOasisGateway,
-  SubscribeRequest
+  SubscribeRequest,
+  SubscribeTopic
 } from './oasis-gateway';
 import { Db, LocalStorage } from './db';
+import keccak256 from './utils/keccak256';
+import * as bytes from './utils/bytes';
+import cbor from './utils/cbor';
+import EventEmitter from './utils/eventemitter3';
 
 /**
  * Service is the object representation of an Oasis rpc service.
@@ -17,6 +22,21 @@ export default class Service {
 
   private idl: Idl;
   private options: ServiceOptions;
+
+  /**
+   * Internal event emitter to track registration for the both the
+   * add/removeEventListener apis.
+   */
+  // @ts-ignore
+  private listeners: EventEmitter;
+
+  /**
+   * Maps event names to subscriptions to the OasisGateway. For each
+   * event, we can have no more than a single subscription (though many
+   * listeners can register for each event/subscription).
+   */
+  // @ts-ignore
+  private subscriptions: Map<string, EventEmitter>;
 
   /**
    * The Service constructor to dynamically generate service objects from a
@@ -41,6 +61,8 @@ export default class Service {
 
     this.idl = idl;
     this.address = address;
+    this.listeners = new EventEmitter();
+    this.subscriptions = new Map();
   }
 
   /**
@@ -74,26 +96,50 @@ export default class Service {
    * @param callback? is the callback to call when an event is emitted in the
    *        case where listener options are provided as the second argument.
    */
-  public addEventListener(
-    event: string,
-    optionsOrCallback: ListenerOptions | Listener,
-    callback?: Listener
-  ) {
-    let filter: Object | undefined = undefined;
-    if (typeof optionsOrCallback === 'function') {
-      // The second argument is a callback so no options were provided.
-      callback = optionsOrCallback;
-    } else {
-      // The second argument is not a callback, so they are options.
-      filter = optionsOrCallback.filter;
+  public addEventListener(event: string, callback: Listener) {
+    // Register the listener. We allow many for a single event subscription.
+    this.listeners.addListener(event, callback);
+
+    let subscription = this.subscriptions.get(event);
+    if (subscription !== undefined) {
+      // The subscription is already setup so exit.
+      return;
     }
 
-    let eventEmitter = this.options.gateway!.subscribe({
-      filter,
-      event
+    // Create and save the subscription.
+    subscription = this.options.gateway!.subscribe({
+      event,
+      filter: {
+        address: this.address,
+        topics: [keccak256(event)]
+      }
     });
+    this.subscriptions.set(event, subscription);
 
-    eventEmitter.addListener(event, callback as Listener);
+    // Decode the gateway's response and return it to the listener.
+    subscription.addListener(event, e => {
+      e = cbor.decode(
+        bytes.parseHex(
+          JSON.parse(Buffer.from(e.data, 'hex').toString('utf-8')).data
+        )
+      );
+      this.listeners.emit(event, e);
+    });
+  }
+
+  public removeEventListener(event: string, listener: Listener) {
+    let subscription = this.subscriptions.get(event);
+    if (subscription === undefined) {
+      throw new Error(`no subscriptions found for ${event}`);
+    }
+
+    this.listeners.removeListener(event, listener);
+
+    // Remove the subscription if no listeners remain.
+    if (this.listeners.listeners(event).length === 0) {
+      this.options.gateway!.unsubscribe({ event });
+      this.subscriptions.delete(event);
+    }
   }
 }
 
