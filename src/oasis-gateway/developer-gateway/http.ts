@@ -140,7 +140,7 @@ export class HttpDeveloperGateway implements OasisGateway {
     const response = await this.http.post(url, body);
     let event = await this.polling.response(response.id);
     if ((event as ErrorEvent).cause) {
-      throw new Error(`poll error: ${event}`);
+      throw new Error(`poll error: ${JSON.stringify(event)}`);
     }
     return event;
   }

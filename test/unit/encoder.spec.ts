@@ -1,5 +1,8 @@
-import { ConfidentialRpcEncoder, Sighash } from '../../src/coder/encoder';
-import { ConfidentialRpcDecoder } from '../../src/coder/decoder';
+import {
+  ConfidentialRpcEncoder,
+  ConfidentialRpcDecoder,
+  Sighash
+} from '../../src/coder/oasis';
 import KeyStore from '../../src/confidential/key-store';
 import { DummyStorage } from '../../src/db';
 import { idl } from './idls/test-contract';
@@ -24,7 +27,7 @@ describe('Encoders', () => {
       // Create input.
       let rpcDefinition = {
         name: 'my_method',
-        inputs: ['bytes', 'string']
+        inputs: [{ type: 'bytes' }, { type: 'string' }]
       };
       let rpcInput = [new Uint8Array([1, 2, 3]), 'encrypt me!'];
 
@@ -35,7 +38,7 @@ describe('Encoders', () => {
 
       // Check it equals the original input.
       let expectedResult = {
-        sighash: new Uint8Array([212, 107, 45, 194]),
+        sighash: new Uint8Array([248, 152, 201, 10]),
         input: rpcInput
       };
       expect(JSON.stringify(result)).toEqual(JSON.stringify(expectedResult));

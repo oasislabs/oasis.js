@@ -1,6 +1,7 @@
 import { Idl, RpcFn } from './idl';
 import { Address } from './types';
 import { Rpcs, RpcFactory } from './rpc';
+import { RpcCoder } from './coder';
 import {
   OasisGateway,
   defaultOasisGateway,
@@ -19,8 +20,6 @@ import EventEmitter from './utils/eventemitter3';
 export default class Service {
   public rpc: Rpcs;
   public address: Address;
-
-  private idl: Idl;
   private options: ServiceOptions;
 
   /**
@@ -59,7 +58,6 @@ export default class Service {
     // the nice service.myMethod() syntax in JavaScript.
     Object.assign(this, this.rpc);
 
-    this.idl = idl;
     this.address = address;
     this.listeners = new EventEmitter();
     this.subscriptions = new Map();
@@ -163,6 +161,7 @@ type ServiceEvent = any;
 export type ServiceOptions = {
   gateway?: OasisGateway;
   db?: Db;
+  coder?: RpcCoder;
 };
 
 function defaultOptions(): ServiceOptions {

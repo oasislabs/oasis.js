@@ -3,7 +3,8 @@ import * as cbor from './cbor';
 import keccak256 from './keccak256';
 import { Deoxysii, encrypt, decrypt } from '../confidential';
 import { DeployHeaderReader, DeployHeaderWriter } from '../deploy/header';
-import RpcCoder from '../coder';
+import { OasisCoder } from '../coder/oasis';
+import { EthereumCoder } from '../coder/ethereum';
 
 export {
   bytes,
@@ -11,7 +12,8 @@ export {
   encrypt,
   decrypt,
   keccak256,
-  RpcCoder,
+  OasisCoder,
+  EthereumCoder,
   Deoxysii,
   DeployHeaderReader,
   DeployHeaderWriter

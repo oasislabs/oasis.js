@@ -3,9 +3,10 @@ import { Idl } from '../idl';
 import { Bytes } from '../types';
 import { OasisGateway, defaultOasisGateway } from '../oasis-gateway';
 import { DeployHeader, DeployHeaderOptions } from './header';
-import { PlaintextRpcEncoder } from '../coder/encoder';
+import { OasisCoder } from '../coder/oasis';
 import * as bytes from '../utils/bytes';
 import { Db } from '../db';
+import { RpcCoder } from '../coder';
 
 /**
  * deploy creates a service on the Oasis cloud.
@@ -26,7 +27,8 @@ export default async function deploy(options: DeployOptions): Promise<Service> {
   }
   return new Service(options.idl, response.address, {
     gateway,
-    db: options.db
+    db: options.db,
+    coder: options.coder
   });
 }
 
@@ -64,14 +66,12 @@ async function deploycode(options: DeployOptions): Promise<Bytes> {
  * @returns the initcode, i.e., BYTECODE || ABI_ENCODED(args).
  */
 async function initcode(options: DeployOptions): Promise<Bytes> {
-  let encoder = new PlaintextRpcEncoder();
-  let constructorArgs = options.idl.constructor.inputs;
-  let args = await encoder.encode(
-    { name: 'constructor', inputs: constructorArgs },
-    options.arguments || []
+  let encoder = options.coder ? options.coder : OasisCoder.plaintext();
+  return encoder.initcode(
+    options.idl,
+    options.arguments || [],
+    options.bytecode
   );
-  let bytecode = options.bytecode as Uint8Array;
-  return bytes.concat([bytecode, args]);
 }
 
 /**
@@ -91,4 +91,5 @@ type DeployOptions = {
   header?: DeployHeaderOptions;
   gateway?: OasisGateway;
   db?: Db;
+  coder?: RpcCoder;
 };

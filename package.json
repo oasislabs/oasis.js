@@ -102,6 +102,7 @@
     "typescript": "^3.0.3"
   },
   "dependencies": {
+    "ethers": "^4.0.27",
     "axios": "^0.18.0",
     "cbor-js": "^0.1.0",
     "deoxysii": "^0.0.1",
