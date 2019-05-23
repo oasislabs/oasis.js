@@ -55,7 +55,7 @@ export class HttpDeveloperGateway implements OasisGateway {
 
   public async deploy(request: DeployRequest): Promise<DeployResponse> {
     let e = await this.postAndPoll(DeployApi, {
-      data: request.data
+      data: bytes.toHex(request.data)
     });
     let event = e as DeployEvent;
     let address = bytes.parseHex(event.address);
