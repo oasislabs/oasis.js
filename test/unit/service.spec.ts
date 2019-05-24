@@ -3,7 +3,7 @@ import Service from '../../src/service';
 import {
   PlaintextRpcDecoder,
   ConfidentialRpcDecoder
-} from '../../src/coder/decoder';
+} from '../../src/coder/oasis';
 import { RpcRequest } from '../../src/oasis-gateway';
 import {
   EmptyOasisGateway,

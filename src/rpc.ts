@@ -1,7 +1,8 @@
 import { Idl, RpcFn, RpcInput } from './idl';
 import { ServiceOptions } from './service';
 import { OasisGateway } from './oasis-gateway';
-import RpcCoder from './coder';
+import { RpcCoder } from './coder';
+import { OasisCoder } from './coder/oasis';
 import { Address } from './types';
 import { KeyStore } from './confidential';
 
@@ -22,53 +23,6 @@ export type Rpc = (...args: any[]) => Promise<any>;
  */
 export class RpcFactory {
   /**
-   * gateway is the interface for making network requests to the gateway.
-   */
-  private gateway: OasisGateway;
-  /**
-   * address is the service address to which rpc's are invoked.
-   */
-  private address: Address;
-  /**
-   * coder is the rpc encoder and decoder, transforming to/from an idl and input to
-   * the serialized wire format. Note that this is a promise because we cannot
-   * code an RPC request without *first* knowing if a Service is confidential or
-   * not, and so we must make a request to the key store and await the response
-   * before using the coder.
-   */
-  private coder: Promise<RpcCoder>;
-
-  /**
-   * @param address is the address of the service for which we want to encode.
-   * @param options are the ServiceOptions used to configure the service.
-   */
-  public constructor(
-    address: Address,
-    keyStore: KeyStore,
-    gateway: OasisGateway
-  ) {
-    this.gateway = gateway;
-    this.address = address;
-    this.coder = new Promise(async resolve => {
-      // Ask the key store if this service is confidential.
-      let serviceKey = await keyStore.publicKey(address);
-      // No key so the contract is not confidential. Don't encrypt.
-      if (!serviceKey) {
-        return resolve(RpcCoder.plaintext());
-      }
-      // A service key exists so it's confidential. Encrypt.
-      let myKeyPair = keyStore.localKeys();
-      resolve(
-        RpcCoder.confidential({
-          peerPublicKey: serviceKey,
-          publicKey: myKeyPair.publicKey,
-          privateKey: myKeyPair.privateKey
-        })
-      );
-    });
-  }
-
-  /**
    * build dynamically generates RPC methods.
    *
    * @returns an object with all the RPC methods attached.
@@ -78,30 +32,53 @@ export class RpcFactory {
     address: Address,
     options: ServiceOptions
   ): Rpcs {
-    let keyStore = new KeyStore(options.db!, options.gateway);
-    let factory = new RpcFactory(address, keyStore, options.gateway!);
+    let functions = options.coder
+      ? options.coder.functions(idl)
+      : OasisCoder.plaintext().functions(idl);
+    let rpcCoder: Promise<RpcCoder> = new Promise(resolve => {
+      options.coder
+        ? resolve(options.coder)
+        : RpcFactory.discover(address, options).then(resolve);
+    });
 
     let rpcs: Rpcs = {};
 
-    idl.functions.forEach((fn: RpcFn) => {
-      rpcs[fn.name] = factory.rpc(idl, fn);
+    functions.forEach((fn: RpcFn) => {
+      rpcs[fn.name] = async (...args: any[]) => {
+        let coder = await rpcCoder;
+        let txData = await coder.encode(fn, args);
+        let request = { data: txData, address: address };
+        let response = await options.gateway!.rpc(request);
+        return response.output;
+      };
     });
 
     return rpcs;
   }
 
   /**
-   * rpc constructs a method.
+   * discover finds out if the contract at `address` is confidential.
    *
-   * @returns an invokable rpc function that makes a request to an oasis service.
+   * @returns the OasisCoder to use based upon whether it's confidential.
    */
-  private rpc(idl: Idl, fn: RpcFn): Rpc {
-    return async (...args: any[]) => {
-      let coder = await this.coder;
-      let txData = await coder.encode(fn, args);
-      let request = { data: txData, address: this.address };
-      let response = await this.gateway.rpc(request);
-      return response.output;
-    };
+  private static async discover(
+    address: Address,
+    options: ServiceOptions
+  ): Promise<OasisCoder> {
+    let keyStore = new KeyStore(options.db!, options.gateway!);
+    // Ask the key store if this service is confidential.
+    let serviceKey = await keyStore.publicKey(address);
+    // No key so the contract is not confidential. Don't encrypt.
+    if (!serviceKey) {
+      return OasisCoder.plaintext();
+    }
+    // A service key exists so it's confidential. Encrypt.
+    let myKeyPair = keyStore.localKeys();
+
+    return OasisCoder.confidential({
+      peerPublicKey: serviceKey,
+      publicKey: myKeyPair.publicKey,
+      privateKey: myKeyPair.privateKey
+    });
   }
 }

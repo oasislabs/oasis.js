@@ -3,7 +3,7 @@ import oasis from '../../src/index';
 import { DeployMockOasisGateway } from './utils';
 import { RpcRequest } from '../../src/oasis-gateway';
 import { DeployHeaderReader } from '../../src/deploy/header';
-import { PlaintextRpcDecoder } from '../../src/coder/decoder';
+import { PlaintextRpcDecoder } from '../../src/coder/oasis';
 import { idl } from './idls/test-contract';
 import Service from '../../src/service';
 
