@@ -36,7 +36,12 @@ export type RpcResponse = {
 
 export type SubscribeRequest = {
   event: string;
-  filter?: Object;
+  filter?: SubscribeFilter;
+};
+
+export type SubscribeFilter = {
+  address: Address;
+  topics: Bytes[];
 };
 
 export type UnsubscribeRequest = {

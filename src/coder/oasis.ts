@@ -25,6 +25,10 @@ export class OasisCoder implements RpcCoder {
     return idl.functions;
   }
 
+  public topic(event: string, idl: Idl): string {
+    return keccak256(event);
+  }
+
   public async initcode(
     idl: Idl,
     params: any[],

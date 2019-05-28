@@ -6,6 +6,8 @@ import {
 import KeyStore from '../../src/confidential/key-store';
 import { DummyStorage } from '../../src/db';
 import { idl } from './idls/test-contract';
+import * as ethereum from '../../src/coder/ethereum';
+import { abi } from './idls/counter-ethereum';
 
 describe('Encoders', () => {
   describe('ConfidentialRpcEncoder', () => {
@@ -46,7 +48,7 @@ describe('Encoders', () => {
   });
 
   describe('Sighash', () => {
-    it('formats the sighash', () => {
+    it('formats sighash with an oasis idl', () => {
       let expected = [
         'the(list,bytes)',
         'it(map,set)',
@@ -58,6 +60,11 @@ describe('Encoders', () => {
         let fnSignature = Sighash.format(fn);
         expect(expected[k]).toEqual(fnSignature);
       }
+    });
+
+    it('formats sighash wiith an ethereum abi', () => {
+      let format = ethereum.sighashFormat('Incremented', abi);
+      expect(format).toEqual('Incremented(uint256)');
     });
   });
 });

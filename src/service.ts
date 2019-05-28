@@ -38,6 +38,18 @@ export default class Service {
   private subscriptions: Map<string, EventEmitter>;
 
   /**
+   * idl defines the service's interface.
+   */
+  private idl: Idl;
+
+  /**
+   * coder encodes all rpcs and subscriptions to the service. Wrapped in a
+   * promise because it must wait to know whether the coder should be
+   * confidenteial or not, which requires a request to the gateway.
+   */
+  private coder: Promise<RpcCoder>;
+
+  /**
    * The Service constructor to dynamically generate service objects from a
    * given idl.
    *
@@ -48,12 +60,13 @@ export default class Service {
    * @param options? are the optinos configuring the Service client.
    */
   public constructor(idl: Idl, address: Address, options?: ServiceOptions) {
+    this.idl = idl;
     this.options = this.setupOptions(options);
 
     // Attach the rpcs onto the rpc interface so that we can generate dynamic
     // rpc methods while keeping the compiler happy. Without this, we need
     // to use a types file when using a service within TypeScript.
-    this.rpc = RpcFactory.build(idl, address, this.options);
+    [this.rpc, this.coder] = RpcFactory.build(idl, address, this.options);
     // Attach the rpcs directly onto the Service object so that we can have
     // the nice service.myMethod() syntax in JavaScript.
     Object.assign(this, this.rpc);
@@ -104,25 +117,32 @@ export default class Service {
       return;
     }
 
-    // Create and save the subscription.
-    subscription = this.options.gateway!.subscribe({
-      event,
-      filter: {
-        address: this.address,
-        topics: [keccak256(event)]
-      }
-    });
-    this.subscriptions.set(event, subscription);
+    this.coder
+      .then(coder => {
+        // Create the subscription.
+        subscription = this.options.gateway!.subscribe({
+          event,
+          filter: {
+            address: this.address,
+            topics: [coder.topic(event, this.idl)]
+          }
+        });
+        // Save the subscription so that we can remove it on demand.
+        this.subscriptions.set(event, subscription);
 
-    // Decode the gateway's response and return it to the listener.
-    subscription.addListener(event, e => {
-      e = cbor.decode(
-        bytes.parseHex(
-          JSON.parse(Buffer.from(e.data, 'hex').toString('utf-8')).data
-        )
-      );
-      this.listeners.emit(event, e);
-    });
+        // Decode the gateway's response and return it to the listener.
+        subscription.addListener(event, e => {
+          e = cbor.decode(
+            bytes.parseHex(
+              JSON.parse(Buffer.from(e.data, 'hex').toString('utf-8')).data
+            )
+          );
+          this.listeners.emit(event, e);
+        });
+      })
+      .catch(err => {
+        console.error(`${err}`);
+      });
   }
 
   public removeEventListener(event: string, listener: Listener) {

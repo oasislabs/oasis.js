@@ -31,7 +31,7 @@ export class RpcFactory {
     idl: Idl,
     address: Address,
     options: ServiceOptions
-  ): Rpcs {
+  ): [Rpcs, Promise<RpcCoder>] {
     let functions = options.coder
       ? options.coder.functions(idl)
       : OasisCoder.plaintext().functions(idl);
@@ -53,7 +53,7 @@ export class RpcFactory {
       };
     });
 
-    return rpcs;
+    return [rpcs, rpcCoder];
   }
 
   /**
