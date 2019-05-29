@@ -132,12 +132,9 @@ export default class Service {
 
         // Decode the gateway's response and return it to the listener.
         subscription.addListener(event, e => {
-          e = cbor.decode(
-            bytes.parseHex(
-              JSON.parse(Buffer.from(e.data, 'hex').toString('utf-8')).data
-            )
-          );
-          this.listeners.emit(event, e);
+          let decoded = coder.decodeSubscriptionEvent(e, this.idl);
+
+          this.listeners.emit(event, decoded);
         });
       })
       .catch(err => {

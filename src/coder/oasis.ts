@@ -29,6 +29,14 @@ export class OasisCoder implements RpcCoder {
     return keccak256(event);
   }
 
+  public decodeSubscriptionEvent(e: any, idl: Idl): any {
+    return cbor.decode(
+      bytes.parseHex(
+        JSON.parse(Buffer.from(e.data, 'hex').toString('utf-8')).data
+      )
+    );
+  }
+
   public async initcode(
     idl: Idl,
     params: any[],

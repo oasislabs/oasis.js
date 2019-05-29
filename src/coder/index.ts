@@ -5,7 +5,8 @@ export type RpcCoder = RpcEncoder &
   RpcDecoder &
   RpcFunctions &
   RpcInitcode &
-  RpcSubscribeTopic;
+  RpcSubscribeTopic &
+  RpcSubscriptionEventDecoder;
 
 export interface RpcEncoder {
   encode(fn: RpcFn, args: any[]): Promise<Uint8Array>;
@@ -31,3 +32,7 @@ export type RpcRequest = {
   sighash?: Bytes4;
   input: any[];
 };
+
+interface RpcSubscriptionEventDecoder {
+  decodeSubscriptionEvent(e: any, idl: Idl): any;
+}
