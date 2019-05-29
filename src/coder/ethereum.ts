@@ -3,6 +3,7 @@ import { Idl, RpcFn } from '../idl';
 import { Bytes4, Bytes } from '../types';
 import { RpcCoder, RpcRequest } from './';
 import * as bytes from '../utils/bytes';
+import keccak256 from '../utils/keccak256';
 
 export class EthereumCoder implements RpcCoder {
   public async encode(fn: RpcFn, args: any[]): Promise<Uint8Array> {
@@ -30,4 +31,18 @@ export class EthereumCoder implements RpcCoder {
   public functions(idl: Idl): RpcFn[] {
     return idl.filter(fn => fn.type === 'function');
   }
+
+  public topic(event: string, idl: Idl): string {
+    let format = sighashFormat(event, idl);
+    return keccak256(format);
+  }
+}
+
+export function sighashFormat(event: string, idl: Idl): string {
+  let items = idl.filter(fn => fn.type === 'event' && fn.name === event);
+  if (items.length !== 1) {
+    throw new Error(`Must have a single event for ${event}`);
+  }
+  let inputs = items[0].inputs.map(i => i.type).join(',');
+  return `${event}(${inputs})`;
 }
