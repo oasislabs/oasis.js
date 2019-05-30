@@ -24,8 +24,13 @@ export function parseHex(keystring: string): Uint8Array {
  * @returns {String} The EthHex encoding
  */
 export function toHex(keybytes: Bytes): string {
-  // Already a hex strig so return.
-  if (typeof keybytes === 'string') return keybytes;
+  // Already a hex string so return.
+  if (typeof keybytes === 'string') {
+    if (!keybytes.startsWith('0x')) {
+      return '0x' + keybytes;
+    }
+    return keybytes;
+  }
   return keybytes.reduce(
     (str, byte) => str + byte.toString(16).padStart(2, '0'),
     '0x'

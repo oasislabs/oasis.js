@@ -65,7 +65,7 @@ export class HttpDeveloperGateway implements OasisGateway {
   public async rpc(request: RpcRequest): Promise<RpcResponse> {
     let event = await this.postAndPoll(RpcApi, {
       data: bytes.toHex(request.data),
-      address: bytes.toHex(request.address as Bytes)
+      address: bytes.toHex(request.address!)
     });
     return {
       output: (event as ExecuteServiceEvent).output

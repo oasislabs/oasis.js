@@ -36,6 +36,11 @@ export class EthereumCoder implements RpcCoder {
     let format = sighashFormat(event, idl);
     return keccak256(format);
   }
+
+  public decodeSubscriptionEvent(log: any, abi: Idl): any {
+    let iface = new Interface(abi as any[]);
+    return iface.parseLog(log).values;
+  }
 }
 
 export function sighashFormat(event: string, idl: Idl): string {
