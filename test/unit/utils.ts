@@ -8,8 +8,12 @@ import {
   DeployRequest,
   DeployResponse
 } from '../../src/oasis-gateway';
+import { RpcFn } from '../../src/idl';
+import { RpcRequest as FnRequest } from '../../src/coder';
 import * as bytes from '../../src/utils/bytes';
-import { Address, PublicKey } from '../../src/types';
+import * as cbor from '../../src/utils/cbor';
+import { Address, PublicKey, Bytes, PrivateKey } from '../../src/types';
+import { encrypt, decrypt } from '../../src/confidential';
 import * as EventEmitter from 'eventemitter3';
 
 export class EmptyOasisGateway implements OasisGateway {
@@ -144,5 +148,41 @@ export class EventEmitterMockOasisGateway extends EmptyOasisGateway {
 
   public subscribe(request: SubscribeRequest): EventEmitter {
     return this.remote;
+  }
+}
+
+export class GatewayRequestDecoder {
+  async decode(data: Bytes, constructor?: boolean): Promise<FnRequest> {
+    if (typeof data === 'string') {
+      data = bytes.parseHex(data);
+    }
+
+    // Constructor doesn't use a sighash.
+    if (constructor) {
+      return cbor.decode(data);
+    }
+
+    return {
+      sighash: data.slice(0, 4),
+      input: cbor.decode(data.slice(4))
+    };
+  }
+}
+
+export class ConfidentialGatewayRequestDecoder extends GatewayRequestDecoder {
+  constructor(private privateKey: PrivateKey) {
+    super();
+  }
+
+  async decode(encrypted: Bytes, constructor?: boolean): Promise<FnRequest> {
+    if (constructor) {
+      // Constructor rpcs aren't encrypted.
+      return super.decode(encrypted, constructor);
+    }
+    if (typeof encrypted === 'string') {
+      encrypted = bytes.parseHex(encrypted);
+    }
+    let decryption = await decrypt(encrypted, this.privateKey);
+    return super.decode(decryption.plaintext, constructor);
   }
 }

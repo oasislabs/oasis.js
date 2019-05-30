@@ -14,6 +14,7 @@ import {
 import { JsonRpcWebSocket } from './websocket';
 import { TransactionFactory, Transaction } from './transaction';
 import { Subscriptions } from './subscriptions';
+import TransactionObserver from './transaction-observer';
 import keccak256 from '../../utils/keccak256';
 
 export class EthereumGateway implements OasisGateway {
@@ -42,6 +43,8 @@ export class EthereumGateway implements OasisGateway {
     this.ws = new JsonRpcWebSocket(url, [this.subscriptions]);
     this.wallet = wallet;
     this.transactions = new TransactionFactory(this.wallet.address, this.ws);
+
+    TransactionObserver.observe(wallet.address, this);
   }
 
   async deploy(request: DeployRequest): Promise<DeployResponse> {
@@ -76,27 +79,33 @@ export class EthereumGateway implements OasisGateway {
       params: [rawTx]
     })).result;
 
+    let response = await TransactionObserver.outcome(txHash);
+
     return {
-      output: txHash
+      output: response
     };
   }
 
   subscribe(request: SubscribeRequest): EventEmitter {
+    return this.web3Subscribe(request.event, [
+      'logs',
+      {
+        address: bytes.toHex(request.filter!.address),
+        topics: request.filter!.topics.map(t => bytes.toHex(t))
+      }
+    ]);
+  }
+
+  web3Subscribe(eventName: string, params: any[]): EventEmitter {
     let events = new EventEmitter();
     this.ws
       .request({
         method: 'eth_subscribe',
-        params: [
-          'logs',
-          {
-            address: bytes.toHex(request.filter!.address),
-            topics: request.filter!.topics.map(t => bytes.toHex(t))
-          }
-        ]
+        params
       })
       .then(response => {
-        this.subscriptions.add(request.event, response.result, event => {
-          events.emit(request.event, event.params.result);
+        this.subscriptions.add(eventName, response.result, event => {
+          events.emit(eventName, event.params.result);
         });
       })
       .catch(console.error);

@@ -17,8 +17,12 @@ export class OasisCoder implements RpcCoder {
     return this.encoder.encode(fn, args);
   }
 
-  public async decode(data: Bytes, constructor?: boolean): Promise<RpcRequest> {
-    return this.decoder.decode(data, constructor);
+  public async decode(
+    fn: RpcFn,
+    data: Bytes,
+    constructor?: boolean
+  ): Promise<any> {
+    return this.decoder.decode(fn, data, constructor);
   }
 
   public functions(idl: Idl): RpcFn[] {
@@ -89,20 +93,9 @@ export class PlaintextRpcEncoder implements RpcEncoder {
 }
 
 export class PlaintextRpcDecoder {
-  async decode(data: Bytes, constructor?: boolean): Promise<RpcRequest> {
-    if (typeof data === 'string') {
-      data = bytes.parseHex(data);
-    }
-
-    // Constructor doesn't use a sighash.
-    if (constructor) {
-      return cbor.decode(data);
-    }
-
-    return {
-      sighash: data.slice(0, 4),
-      input: cbor.decode(data.slice(4))
-    };
+  async decode(fn: RpcFn, data: Bytes, constructor?: boolean): Promise<any> {
+    // TODO: https://github.com/oasislabs/oasis-client/issues/57
+    return data;
   }
 }
 
@@ -151,15 +144,19 @@ export class ConfidentialRpcDecoder extends PlaintextRpcDecoder {
     super();
   }
 
-  async decode(encrypted: Bytes, constructor?: boolean): Promise<RpcRequest> {
+  async decode(
+    fn: RpcFn,
+    encrypted: Bytes,
+    constructor?: boolean
+  ): Promise<any> {
     if (constructor) {
       // Constructor rpcs aren't encrypted.
-      return super.decode(encrypted);
+      return super.decode(fn, encrypted, constructor);
     }
     if (typeof encrypted === 'string') {
       encrypted = bytes.parseHex(encrypted);
     }
     let decryption = await decrypt(encrypted, this.privateKey);
-    return super.decode(decryption.plaintext, constructor);
+    return super.decode(fn, decryption.plaintext, constructor);
   }
 }

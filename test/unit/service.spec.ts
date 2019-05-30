@@ -1,18 +1,17 @@
 import { Idl } from '../../src/idl';
 import Service from '../../src/service';
-import {
-  PlaintextRpcDecoder,
-  ConfidentialRpcDecoder
-} from '../../src/coder/oasis';
 import { RpcRequest } from '../../src/oasis-gateway';
 import {
   EmptyOasisGateway,
   RpcRequestMockOasisGateway,
-  ConfidentialMockOasisGateway
+  ConfidentialMockOasisGateway,
+  GatewayRequestDecoder,
+  ConfidentialGatewayRequestDecoder
 } from './utils';
 import * as bytes from '../../src/utils/bytes';
 import { idl } from './idls/test-contract';
 import { DummyStorage } from '../../src/db';
+import { OasisCoder } from '../../src/coder/oasis';
 
 const nacl = require('tweetnacl');
 
@@ -95,7 +94,7 @@ describe('Service', () => {
     let request = await txDataPromise;
 
     // Then we should have given the gateway the encoded wire format of the request.
-    let decoder = new PlaintextRpcDecoder();
+    let decoder = new GatewayRequestDecoder();
     let req = await decoder.decode(request.data);
     expect(bytes.toHex(req.sighash!)).toEqual('0xccc7cde3');
     expect(JSON.stringify(req.input)).toEqual(JSON.stringify([input1, input2]));
@@ -115,9 +114,9 @@ describe('Service', () => {
           resolve,
           serviceKeyPair.publicKey
         ),
-        db: new DummyStorage()
+        db: new DummyStorage(),
+        coder: confidentialCoder(serviceKeyPair)
       });
-
       // When we make an rpc request.
       await service.rpc.the(input1, input2);
     });
@@ -125,7 +124,9 @@ describe('Service', () => {
     let request = await txDataPromise;
 
     // Then the receipient should be able to decrypt it.
-    let decoder = new ConfidentialRpcDecoder(serviceKeyPair.secretKey);
+    let decoder = new ConfidentialGatewayRequestDecoder(
+      serviceKeyPair.secretKey
+    );
     let plaintext = await decoder.decode(request.data);
 
     expect(bytes.toHex(plaintext.sighash!)).toEqual('0xccc7cde3');
@@ -134,6 +135,22 @@ describe('Service', () => {
     );
   });
 });
+
+function confidentialCoder(serviceKeyPair) {
+  let keys = nacl.box.keyPair();
+  let coder = new OasisCoder.confidential({
+    publicKey: keys.publicKey,
+    privateKey: keys.secretKey,
+    peerPublicKey: serviceKeyPair.publicKey,
+    // @ts-ignore
+    peerPrivateKey: serviceKeyPair.secretKey
+  });
+  // Don't bother decoding in tests since the gateway is mocked out.
+  coder.decode = async (fn, data, constructor) => {
+    return data;
+  };
+  return coder;
+}
 
 // Returns a `DefTy` object to be used for testing. See idls/test-contract.ts.
 export function defType() {

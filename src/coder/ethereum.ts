@@ -12,10 +12,19 @@ export class EthereumCoder implements RpcCoder {
     return iface.functions[fn.name].encode(args);
   }
 
-  public async decode(data: Bytes, constructor?: boolean): Promise<RpcRequest> {
-    // todo
+  public async decode(
+    fn: RpcFn,
+    data: Bytes,
+    constructor?: boolean
+  ): Promise<any> {
     // @ts-ignore
-    return {};
+    let iface = new Interface([fn]);
+    let output = iface.functions[fn.name].decode(data);
+    // @ts-ignore
+    if (fn.outputs.length === 1) {
+      return output[0];
+    }
+    return output;
   }
 
   public async initcode(
