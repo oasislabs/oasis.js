@@ -13,7 +13,7 @@ export interface RpcEncoder {
 }
 
 export interface RpcDecoder {
-  decode(data: Bytes, constructor?: boolean): Promise<RpcRequest>;
+  decode(fn: RpcFn, data: Bytes, constructor?: boolean): Promise<any>;
 }
 
 interface RpcFunctions {

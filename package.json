@@ -29,11 +29,12 @@
     "test": "yarn test:jest && yarn test:browser",
     "test:jest": "jest --coverage test/unit test/integration",
     "test:unit": "jest test/unit",
+    "test:e2e": "jest test/e2e",
     "test:integration": "jest test/integration",
     "test:browser": "scripts/test-browser.sh",
     "test:watch": "jest --coverage --watch",
     "precommit": "lint-staged",
-    "coverage": "jest --coverage && cat ./coverage/lcov.info | coveralls"
+    "coverage": "yarn test:jest && cat ./coverage/lcov.info | coveralls"
   },
   "lint-staged": {
     "{src,test}/**/*.ts": [

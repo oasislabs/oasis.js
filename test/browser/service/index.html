@@ -35,7 +35,7 @@
         let request = await txDataPromise;
 
         // Then I should have given the gateway the encoded wire format of the request.
-        return test.coder.decode(request.data);
+        return test.coder.decode({}, request.data);
       }
 
       /**
@@ -72,6 +72,7 @@
         }
         async rpc(request) {
           this.requestResolve(request);
+          return { output: "" }
         }
         async publicKey(address) {
           return {};
@@ -87,6 +88,7 @@
         }
         async rpc(request) {
           this.requestResolve(request);
+          return { output: oasis.utils.bytes.parseHex("0x8f4f6346d2dafe2a6a0cb664d4fa17130284e2e123459471e1f0863fb78ad4a45b110d15bcb3dbfe956ebcb14947324c76ec5f571b1a42643cb03bce81aae3f38e68a3") }
         }
         async publicKey(address) {
           return { publicKey: keys.peerPublicKey };

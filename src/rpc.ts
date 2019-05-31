@@ -49,7 +49,7 @@ export class RpcFactory {
         let txData = await coder.encode(fn, args);
         let request = { data: txData, address: address };
         let response = await options.gateway!.rpc(request);
-        return response.output;
+        return coder.decode(fn, response.output);
       };
     });
 

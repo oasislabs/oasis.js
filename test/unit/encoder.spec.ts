@@ -1,8 +1,5 @@
-import {
-  ConfidentialRpcEncoder,
-  ConfidentialRpcDecoder,
-  Sighash
-} from '../../src/coder/oasis';
+import { ConfidentialRpcEncoder, Sighash } from '../../src/coder/oasis';
+import { ConfidentialGatewayRequestDecoder } from './utils';
 import KeyStore from '../../src/confidential/key-store';
 import { DummyStorage } from '../../src/db';
 import { idl } from './idls/test-contract';
@@ -11,7 +8,7 @@ import { abi } from './idls/counter-ethereum';
 
 describe('Encoders', () => {
   describe('ConfidentialRpcEncoder', () => {
-    it('Encodes and decodes a confidential transansaction', async () => {
+    it('Encodes confidential transansaction', async () => {
       // Create keys.
       let keyStore = new KeyStore(new DummyStorage());
       let myKeys = keyStore.newKeyPair();
@@ -24,7 +21,9 @@ describe('Encoders', () => {
 
       // Create encoder and decoder.
       let encoder = new ConfidentialRpcEncoder(aeadKeys);
-      let decoder = new ConfidentialRpcDecoder(serviceKeys.privateKey);
+      let decoder = new ConfidentialGatewayRequestDecoder(
+        serviceKeys.privateKey
+      );
 
       // Create input.
       let rpcDefinition = {

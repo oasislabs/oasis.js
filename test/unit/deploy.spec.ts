@@ -1,9 +1,8 @@
 import { Idl } from '../../src/idl';
 import oasis from '../../src/index';
-import { DeployMockOasisGateway } from './utils';
+import { DeployMockOasisGateway, GatewayRequestDecoder } from './utils';
 import { RpcRequest } from '../../src/oasis-gateway';
 import { DeployHeaderReader } from '../../src/deploy/header';
-import { PlaintextRpcDecoder } from '../../src/coder/oasis';
 import { idl } from './idls/test-contract';
 import Service from '../../src/service';
 
@@ -77,7 +76,7 @@ describe('Service deploys', () => {
 
       // Finally check arguments.
       let encodedArgs = initcode.slice(test.bytecode.length);
-      let decoder = new PlaintextRpcDecoder();
+      let decoder = new GatewayRequestDecoder();
       let decodedArgs = await decoder.decode(encodedArgs, true);
       expect(decodedArgs).toEqual(args);
     });
