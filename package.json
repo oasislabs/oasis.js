@@ -23,6 +23,7 @@
     "lint": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
     "lint:fix": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts' --fix",
     "prebuild": "rimraf dist",
+    "prepack": "yarn install && yarn build",
     "build": "tsc --module commonjs && rollup -c rollup.config.ts && typedoc --out docs --target es6 --theme minimal --mode file src",
     "serve": "yarn build && python3 -m http.server 8000",
     "start": "rollup -c rollup.config.ts -w",

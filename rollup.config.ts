@@ -34,12 +34,14 @@ export default {
     include: 'src/**',
   },
   plugins: [
+    resolve({
+      browser: true,
+    }),
     commonjs(),
     globals(),
     builtins(),
     json(),
     typescript({ useTsconfigDeclarationDir: true }),
-    resolve(),
     sourceMaps(),
   ],
 };
