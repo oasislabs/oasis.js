@@ -4,6 +4,8 @@ import { Bytes4, Bytes } from '../types';
 import { RpcCoder, RpcRequest } from './';
 import * as bytes from '../utils/bytes';
 import keccak256 from '../utils/keccak256';
+import ConfidentialCoder from './confidential';
+import { AeadKeys } from '../confidential';
 
 export class EthereumCoder implements RpcCoder {
   public async encode(fn: RpcFn, args: any[]): Promise<Uint8Array> {
@@ -49,6 +51,14 @@ export class EthereumCoder implements RpcCoder {
   public decodeSubscriptionEvent(log: any, abi: Idl): any {
     let iface = new Interface(abi as any[]);
     return iface.parseLog(log).values;
+  }
+
+  public static plaintext(): RpcCoder {
+    return new EthereumCoder();
+  }
+
+  public static confidential(keys: AeadKeys): RpcCoder {
+    return new ConfidentialCoder(keys, EthereumCoder.plaintext());
   }
 }
 

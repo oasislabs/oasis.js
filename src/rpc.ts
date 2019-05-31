@@ -64,7 +64,7 @@ export class RpcFactory {
   private static async discover(
     address: Address,
     options: ServiceOptions
-  ): Promise<OasisCoder> {
+  ): Promise<RpcCoder> {
     let keyStore = new KeyStore(options.db!, options.gateway!);
     // Ask the key store if this service is confidential.
     let serviceKey = await keyStore.publicKey(address);

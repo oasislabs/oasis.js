@@ -3,8 +3,9 @@ import { Address, H256, Bytes4, Bytes, PublicKey, PrivateKey } from '../types';
 import * as bytes from '../utils/bytes';
 import cbor from '../utils/cbor';
 import keccak256 from '../utils/keccak256';
-import { AeadKeys, KeyStore, nonce, encrypt, decrypt } from '../confidential';
+import { AeadKeys } from '../confidential';
 import { RpcCoder, RpcEncoder, RpcDecoder, RpcRequest } from './';
+import ConfidentialCoder from './confidential';
 
 /**
  * RpcCoder encodes and decodes serivce rpc requests. Use the static factory methods to
@@ -58,17 +59,14 @@ export class OasisCoder implements RpcCoder {
   /**
    * Facotry method returning a confidential RpcCoder.
    */
-  public static confidential(keys: AeadKeys): OasisCoder {
-    return new OasisCoder(
-      new ConfidentialRpcEncoder(keys),
-      new ConfidentialRpcDecoder(keys.privateKey)
-    );
+  public static confidential(keys: AeadKeys): RpcCoder {
+    return new ConfidentialCoder(keys, OasisCoder.plaintext());
   }
 
   /**
    * Factory method returning a non-confidential RpcCoder.
    */
-  public static plaintext(): OasisCoder {
+  public static plaintext(): RpcCoder {
     return new OasisCoder(new PlaintextRpcEncoder(), new PlaintextRpcDecoder());
   }
 }
@@ -99,25 +97,6 @@ export class PlaintextRpcDecoder {
   }
 }
 
-export class ConfidentialRpcEncoder extends PlaintextRpcEncoder {
-  public constructor(private keys: AeadKeys) {
-    super();
-  }
-  /**
-   * @overrides PlaintextRpcEncoder, encrypting the data after encoding it.
-   */
-  public async encode(fn: RpcFn, args: any[]): Promise<Uint8Array> {
-    let data = await super.encode(fn, args);
-    return encrypt(
-      nonce(),
-      data,
-      this.keys.peerPublicKey,
-      this.keys.publicKey,
-      this.keys.privateKey
-    );
-  }
-}
-
 export class Sighash {
   public static from(fn: RpcFn): Bytes4 {
     let sighash = bytes.parseHex(keccak256(Sighash.format(fn)));
@@ -136,27 +115,5 @@ export class Sighash {
       .join(',');
 
     return `${name}(${inputs})`;
-  }
-}
-
-export class ConfidentialRpcDecoder extends PlaintextRpcDecoder {
-  constructor(private privateKey: PrivateKey) {
-    super();
-  }
-
-  async decode(
-    fn: RpcFn,
-    encrypted: Bytes,
-    constructor?: boolean
-  ): Promise<any> {
-    if (constructor) {
-      // Constructor rpcs aren't encrypted.
-      return super.decode(fn, encrypted, constructor);
-    }
-    if (typeof encrypted === 'string') {
-      encrypted = bytes.parseHex(encrypted);
-    }
-    let decryption = await decrypt(encrypted, this.privateKey);
-    return super.decode(fn, decryption.plaintext, constructor);
   }
 }
