@@ -30,6 +30,7 @@ import {
   SubscribePollApi
 } from './api';
 import UrlEncoder from '../../utils/url-encoder';
+import uuid from 'uuid/v4';
 
 export class HttpDeveloperGateway implements OasisGateway {
   /**
@@ -159,14 +160,21 @@ export interface Http {
 }
 
 export class HttpRequest implements Http {
-  public constructor(public url: string) {}
+  /**
+   * session key passed to the developer gateway in the header.
+   */
+  private sessionKey: string;
+
+  public constructor(public url: string) {
+    this.sessionKey = uuid();
+  }
 
   public async post(api: string, body: Object): Promise<any> {
     const uri = `${this.url}/${api}`;
     let response = await axios.post(uri, body, {
       headers: {
         'X-OASIS-INSECURE-AUTH': 'example',
-        'X-OASIS-SESSION-KEY': 'example-session',
+        'X-OASIS-SESSION-KEY': this.sessionKey,
         'Content-type': 'application/json'
       }
     });
