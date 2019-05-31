@@ -68,11 +68,12 @@ export class EthereumGateway implements OasisGateway {
   }
 
   async rpc(request: RpcRequest): Promise<RpcResponse> {
-    let tx = await this.transactions.create({
+    let txParams = Object.assign(request.options || {}, {
       value: '0x00',
       data: bytes.toHex(request.data),
       to: bytes.toHex(request.address!)
     });
+    let tx = await this.transactions.create(txParams);
     let rawTx = await this.wallet.sign(tx);
     let txHash = (await this.ws.request({
       method: 'eth_sendRawTransaction',

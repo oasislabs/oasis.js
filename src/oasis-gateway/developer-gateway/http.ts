@@ -63,6 +63,11 @@ export class HttpDeveloperGateway implements OasisGateway {
   }
 
   public async rpc(request: RpcRequest): Promise<RpcResponse> {
+    if (request.options) {
+      throw new Error(
+        'transaction options are not allowed by the developer gateway'
+      );
+    }
     let event = await this.postAndPoll(RpcApi, {
       data: bytes.toHex(request.data),
       address: bytes.toHex(request.address!)
