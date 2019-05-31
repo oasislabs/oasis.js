@@ -1,66 +1,32 @@
 {
-  "name": "oasis",
-  "version": "0.0.0",
-  "description": "",
+  "private": true,
   "keywords": [],
-  "main": "dist/index.umd.js",
-  "module": "dist/index.es5.js",
-  "typings": "dist/types/index.d.ts",
-  "files": [
-    "dist",
-    "src",
-    "test"
-  ],
-  "author": "Oasis Labs Inc. <info@oasislabs.com>",
-  "repository": {
-    "type": "git"
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
   },
   "license": "",
   "engines": {
     "node": ">=6.0.0"
   },
   "scripts": {
-    "lint": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
-    "lint:fix": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts' --fix",
+    "bootstrap": "lerna bootstrap",
+    "build": "lerna run build",
+    "lint": "lerna run lint --concurrency 1",
+    "lint:fix": "lerna run lint:fix --concurrency 1",
     "prebuild": "rimraf dist",
     "prepack": "yarn install && yarn build",
-    "build": "tsc --module commonjs && rollup -c rollup.config.ts && typedoc --out docs --target es6 --theme minimal --mode file src",
-    "serve": "yarn build && python3 -m http.server 8000",
-    "start": "rollup -c rollup.config.ts -w",
-    "test": "yarn test:jest && yarn test:browser",
-    "test:jest": "jest --coverage test/unit test/integration",
-    "test:unit": "jest test/unit",
-    "test:e2e": "jest test/e2e",
-    "test:integration": "jest test/integration",
-    "test:browser": "scripts/test-browser.sh",
-    "test:watch": "jest --coverage --watch",
+    "test": "lerna run test --concurrency 1 --stream",
     "precommit": "lint-staged",
-    "coverage": "yarn test:jest && cat ./coverage/lcov.info | coveralls"
+    "coverage": "lerna run coverage --concurrency 1 -- stream && yarn istanbul",
+    "istanbul": "istanbul-combine -d coverage -r lcov -r html ./packages/**/coverage-final.json",
+    "coveralls": "cat ./coverage/lcov.info | coveralls"
   },
   "lint-staged": {
-    "{src,test}/**/*.ts": [
+    "packages/*/{src,test}/**/*.ts": [
       "prettier --write",
       "git add"
-    ]
-  },
-  "jest": {
-    "transform": {
-      ".(ts|tsx)": "ts-jest"
-    },
-    "testEnvironment": "node",
-    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js"
-    ],
-    "coveragePathIgnorePatterns": [
-      "src/confidential/ecdh-tweak/browser.ts",
-      "src/utils/eventemitter3.ts",
-      "src/utils/cbor.ts",
-      "src/utils/keccak256.ts",
-      "src/utils/tweetnacl.ts",
-      "test/"
     ]
   },
   "prettier": {
@@ -75,13 +41,14 @@
   "devDependencies": {
     "@commitlint/cli": "^7.1.2",
     "@commitlint/config-conventional": "^7.1.2",
-    "@types/cbor": "^2.0.0",
-    "@types/eventemitter3": "^2.0.2",
+    "@oasis/test": "^0.0.0",
     "@types/jest": "^23.3.2",
     "coveralls": "^3.0.3",
     "husky": "^1.0.1",
+    "istanbul-combine": "^0.3.0",
     "jest": "^23.6.0",
     "jest-config": "^23.6.0",
+    "lerna": "3.14.1",
     "lint-staged": "^8.0.0",
     "lodash.camelcase": "^4.3.0",
     "prettier": "^1.14.3",
@@ -102,14 +69,5 @@
     "tslint-config-standard": "^8.0.1",
     "typedoc": "^0.12.0",
     "typescript": "^3.0.3"
-  },
-  "dependencies": {
-    "ethers": "^4.0.27",
-    "axios": "^0.18.0",
-    "cbor-js": "^0.1.0",
-    "deoxysii": "^0.0.1",
-    "eventemitter3": "^3.1.2",
-    "js-sha3": "^0.8.0",
-    "node-localstorage": "^1.3.1"
   }
 }

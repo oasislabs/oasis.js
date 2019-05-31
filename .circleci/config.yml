@@ -24,7 +24,7 @@ jobs:
       - checkout
 
       - <<: *restore_dependencies
-      - run: yarn install
+      - run: yarn
       - <<: *save_dependencies
 
       - run: yarn lint

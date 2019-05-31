@@ -1,0 +1,44 @@
+{
+  "name": "client",
+  "version": "0.0.0",
+  "description": "",
+  "keywords": [],
+  "main": "dist/index.umd.js",
+  "module": "dist/index.es5.js",
+  "typings": "dist/types/index.d.ts",
+  "files": [
+    "dist",
+    "src",
+    "test"
+  ],
+  "author": "Oasis Labs Inc. <info@oasislabs.com>",
+  "scripts": {
+    "lint": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
+    "lint:fix": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts' --fix",
+    "prebuild": "rimraf dist",
+    "build": "tsc --module commonjs && rollup -c rollup.config.ts",
+    "test": "yarn test:integration && yarn test:browser",
+    "test:e2e": "jest test/e2e",
+    "test:integration": "jest test/integration",
+    "test:browser": "scripts/test-browser.sh",
+    "coverage": "jest --coverage test/integration"
+  },
+  "jest": {
+    "transform": {
+      ".(ts|tsx)": "ts-jest"
+    },
+    "testEnvironment": "node",
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ]
+  },
+  "dependencies": {
+    "@oasis/common": "^0.0.0",
+    "@oasis/service": "^0.0.0",
+    "@oasis/developer-gateway": "^0.0.0",
+    "@oasis/ethereum": "^0.0.0"
+  }
+}

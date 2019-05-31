@@ -1,0 +1,41 @@
+{
+  "name": "@oasis/developer-gateway",
+  "version": "0.0.0",
+  "description": "",
+  "keywords": [],
+  "main": "dist/index.umd.js",
+  "module": "dist/index.es5.js",
+  "typings": "dist/types/index.d.ts",
+  "files": [
+    "dist",
+    "src",
+    "test"
+  ],
+  "author": "Oasis Labs Inc. <info@oasislabs.com>",
+  "scripts": {
+    "lint": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
+    "lint:fix": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts' --fix",
+    "prebuild": "rimraf dist",
+    "build": "tsc --module commonjs && rollup -c rollup.config.ts",
+    "test": "jest test",
+    "coverage": "jest test --coverage"
+  },
+  "jest": {
+    "transform": {
+      ".(ts|tsx)": "ts-jest"
+    },
+    "testEnvironment": "node",
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ]
+  },
+  "dependencies": {
+    "@oasis/types": "^0.0.0",
+    "@oasis/service": "^0.0.0",
+    "@oasis/common": "^0.0.0",
+    "axios": "^0.18.0"
+  }
+}
