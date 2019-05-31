@@ -30,7 +30,9 @@ describe('Service', () => {
   it('executes an rpc', async () => {
     let expectedOutput = 'rpc success!';
 
-    let beforeCount = await service!.rpc.getCounter();
+    let beforeCount = await service!.rpc.getCounter({
+      gasLimit: '0xf00000'
+    });
     await service!.rpc.incrementCounter();
     let afterCount = await service!.rpc.getCounter();
 

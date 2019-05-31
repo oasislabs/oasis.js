@@ -56,7 +56,7 @@ export default class Service {
    * @returns a service with all rpc methods attached to it.
    *
    * @param idl is the Idl definition generated for the Oasis service.
-   * @param address? is the address of the currently deployed
+   * @param address? is the address of the currently deployed service.
    * @param options? are the optinos configuring the Service client.
    */
   public constructor(idl: Idl, address: Address, options?: ServiceOptions) {

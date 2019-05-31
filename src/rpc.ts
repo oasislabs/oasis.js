@@ -1,6 +1,6 @@
 import { Idl, RpcFn, RpcInput } from './idl';
 import { ServiceOptions } from './service';
-import { OasisGateway } from './oasis-gateway';
+import { OasisGateway, RpcOptions } from './oasis-gateway';
 import { RpcCoder } from './coder';
 import { OasisCoder } from './coder/oasis';
 import { Address } from './types';
@@ -46,14 +46,32 @@ export class RpcFactory {
     functions.forEach((fn: RpcFn) => {
       rpcs[fn.name] = async (...args: any[]) => {
         let coder = await rpcCoder;
-        let txData = await coder.encode(fn, args);
-        let request = { data: txData, address: address };
-        let response = await options.gateway!.rpc(request);
+        let [rpcArgs, rpcOptions] = RpcFactory.parseOptions(fn, args);
+        let txData = await coder.encode(fn, rpcArgs);
+        let response = await options.gateway!.rpc({
+          data: txData,
+          address: address,
+          options: rpcOptions
+        });
         return coder.decode(fn, response.output);
       };
     });
 
     return [rpcs, rpcCoder];
+  }
+
+  private static parseOptions(
+    fn: RpcFn,
+    args: any[]
+  ): [any[], RpcOptions | undefined] {
+    let options = undefined;
+    if (args.length > fn.inputs.length) {
+      if (args.length !== fn.inputs.length + 1) {
+        throw new Error('provided too many arguments ${args}');
+      }
+      options = args.pop();
+    }
+    return [args, options];
   }
 
   /**

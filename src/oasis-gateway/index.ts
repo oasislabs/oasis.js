@@ -28,6 +28,12 @@ export type PublicKeyRequest = {
 export type RpcRequest = {
   data: Bytes;
   address?: Address;
+  options?: RpcOptions;
+};
+
+export type RpcOptions = {
+  gasLimit: string;
+  gasPrice: string;
 };
 
 export type RpcResponse = {
