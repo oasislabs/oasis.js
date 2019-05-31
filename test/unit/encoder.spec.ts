@@ -1,4 +1,4 @@
-import { ConfidentialRpcEncoder, Sighash } from '../../src/coder/oasis';
+import { OasisCoder, Sighash } from '../../src/coder/oasis';
 import { ConfidentialGatewayRequestDecoder } from './utils';
 import KeyStore from '../../src/confidential/key-store';
 import { DummyStorage } from '../../src/db';
@@ -20,7 +20,7 @@ describe('Encoders', () => {
       };
 
       // Create encoder and decoder.
-      let encoder = new ConfidentialRpcEncoder(aeadKeys);
+      let encoder = OasisCoder.confidential(aeadKeys);
       let decoder = new ConfidentialGatewayRequestDecoder(
         serviceKeys.privateKey
       );
