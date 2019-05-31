@@ -2,7 +2,6 @@ import oasis from '../../src/index';
 import Service from '../../src/service';
 import { EthereumGateway } from '../../src/oasis-gateway/ethereum-gateway';
 import { abi, bytecode } from '../unit/idls/counter-ethereum';
-import { Wallet } from 'ethers/wallet';
 
 describe('Service', () => {
   // Increase the timeout because this is meant to be run against Devnet.
@@ -15,7 +14,7 @@ describe('Service', () => {
     let coder = new oasis.utils.EthereumCoder();
     gateway = new oasis.utils.EthereumGateway(
       'wss://web3.oasiscloud.io/ws',
-      new Wallet(process.env['DEVNET_SECRET_KEY']!)
+      new oasis.Wallet(process.env['DEVNET_SECRET_KEY']!)
     );
     service = await oasis.deploy({
       idl: abi,

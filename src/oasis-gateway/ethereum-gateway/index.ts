@@ -16,6 +16,7 @@ import { TransactionFactory, Transaction } from './transaction';
 import { Subscriptions } from './subscriptions';
 import TransactionObserver from './transaction-observer';
 import keccak256 from '../../utils/keccak256';
+import Wallet from '../../wallet';
 
 export class EthereumGateway implements OasisGateway {
   /**
@@ -145,9 +146,4 @@ export class EthereumGateway implements OasisGateway {
   public disconnect() {
     this.ws.disconnect();
   }
-}
-
-interface Wallet {
-  sign(tx: Transaction): Promise<string>;
-  address: string;
 }
