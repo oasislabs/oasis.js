@@ -30,7 +30,19 @@ import {
   SubscribePollApi
 } from './api';
 import UrlEncoder from '../../utils/url-encoder';
-const uuid = require('uuid/v4');
+import _uuid from 'uuid';
+
+let uuid: any = undefined;
+
+// Browser.
+/* tslint:disable */
+if (typeof window !== 'undefined') {
+  uuid = _uuid.v4;
+}
+// Node.
+else {
+  uuid = require('uuid/v4');
+}
 
 export class HttpDeveloperGateway implements OasisGateway {
   /**
