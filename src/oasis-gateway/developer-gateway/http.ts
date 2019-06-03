@@ -30,7 +30,7 @@ import {
   SubscribePollApi
 } from './api';
 import UrlEncoder from '../../utils/url-encoder';
-import uuid from 'uuid/v4';
+const uuid = require('uuid/v4');
 
 export class HttpDeveloperGateway implements OasisGateway {
   /**
