@@ -8,7 +8,11 @@ import { RpcCoder } from './';
  * Wraps a coder to decrypt/decrypt encoded messages in addition to coding.
  */
 export default class ConfidentialCoder {
-  constructor(private keys: AeadKeys, private internalCoder: RpcCoder) {}
+  constructor(
+    private keys: AeadKeys,
+    private aad: string,
+    private internalCoder: RpcCoder
+  ) {}
 
   public async encode(fn: RpcFn, args: any[]): Promise<Uint8Array> {
     let data = await this.internalCoder.encode(fn, args);
@@ -17,7 +21,8 @@ export default class ConfidentialCoder {
       data,
       this.keys.peerPublicKey,
       this.keys.publicKey,
-      this.keys.privateKey
+      this.keys.privateKey,
+      this.aad
     );
   }
 

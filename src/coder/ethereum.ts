@@ -57,8 +57,8 @@ export class EthereumCoder implements RpcCoder {
     return new EthereumCoder();
   }
 
-  public static confidential(keys: AeadKeys): RpcCoder {
-    return new ConfidentialCoder(keys, EthereumCoder.plaintext());
+  public static confidential(keys: AeadKeys, aad: string): RpcCoder {
+    return new ConfidentialCoder(keys, aad, EthereumCoder.plaintext());
   }
 }
 

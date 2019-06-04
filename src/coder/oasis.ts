@@ -59,8 +59,8 @@ export class OasisCoder implements RpcCoder {
   /**
    * Facotry method returning a confidential RpcCoder.
    */
-  public static confidential(keys: AeadKeys): RpcCoder {
-    return new ConfidentialCoder(keys, OasisCoder.plaintext());
+  public static confidential(keys: AeadKeys, aad: string): RpcCoder {
+    return new ConfidentialCoder(keys, aad, OasisCoder.plaintext());
   }
 
   /**

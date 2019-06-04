@@ -179,6 +179,7 @@ export type ServiceOptions = {
   gateway?: OasisGateway;
   db?: Db;
   coder?: RpcCoder;
+  aad?: string;
 };
 
 function defaultOptions(): ServiceOptions {

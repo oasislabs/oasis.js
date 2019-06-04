@@ -93,10 +93,13 @@ export class RpcFactory {
     // A service key exists so it's confidential. Encrypt.
     let myKeyPair = keyStore.localKeys();
 
-    return OasisCoder.confidential({
-      peerPublicKey: serviceKey,
-      publicKey: myKeyPair.publicKey,
-      privateKey: myKeyPair.privateKey
-    });
+    return OasisCoder.confidential(
+      {
+        peerPublicKey: serviceKey,
+        publicKey: myKeyPair.publicKey,
+        privateKey: myKeyPair.privateKey
+      },
+      options.aad!
+    );
   }
 }
