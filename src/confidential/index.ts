@@ -97,23 +97,17 @@ function splitEncryptedPayload(
   );
 
   let ciphertext = new Uint8Array(cipherLength);
-  let aad = new Uint8Array(aadLength);
 
   ciphertext.set(encryption.slice(cipherOffset, cipherOffset + cipherLength));
-  aad.set(
+  let aad = bytes.decodeUtf8(
     encryption.slice(
       cipherOffset + cipherLength,
       cipherOffset + cipherLength + aadLength
     )
   );
-  nonce.set(
-    encryption.slice(
-      cipherOffset + cipherLength + aadLength,
-      cipherOffset + cipherLength + aadLength + 15
-    )
-  );
+  nonce.set(encryption.slice(cipherOffset + cipherLength + aadLength));
 
-  return [nonce, publicKey, ciphertext, bytes.decodeUtf8(aad)];
+  return [nonce, publicKey, ciphertext, aad];
 }
 
 type Decryption = {

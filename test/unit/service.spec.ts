@@ -106,6 +106,7 @@ describe('Service', () => {
     let input2 = bytes.parseHex('1234');
 
     let serviceKeyPair = nacl.box.keyPair();
+    let aad = 'some_aad';
 
     let txDataPromise: Promise<RpcRequest> = new Promise(async resolve => {
       // Given a service.
@@ -115,7 +116,7 @@ describe('Service', () => {
           serviceKeyPair.publicKey
         ),
         db: new DummyStorage(),
-        coder: confidentialCoder(serviceKeyPair)
+        coder: confidentialCoder(serviceKeyPair, aad)
       });
       // When we make an rpc request.
       await service.rpc.the(input1, input2);
@@ -136,15 +137,18 @@ describe('Service', () => {
   });
 });
 
-function confidentialCoder(serviceKeyPair) {
+function confidentialCoder(serviceKeyPair, aad) {
   let keys = nacl.box.keyPair();
-  let coder = new OasisCoder.confidential({
-    publicKey: keys.publicKey,
-    privateKey: keys.secretKey,
-    peerPublicKey: serviceKeyPair.publicKey,
-    // @ts-ignore
-    peerPrivateKey: serviceKeyPair.secretKey
-  });
+  let coder = new OasisCoder.confidential(
+    {
+      publicKey: keys.publicKey,
+      privateKey: keys.secretKey,
+      peerPublicKey: serviceKeyPair.publicKey,
+      // @ts-ignore
+      peerPrivateKey: serviceKeyPair.secretKey
+    },
+    aad
+  );
   // Don't bother decoding in tests since the gateway is mocked out.
   coder.decode = async (fn, data, constructor) => {
     return data;

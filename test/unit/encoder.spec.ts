@@ -18,9 +18,10 @@ describe('Encoders', () => {
         publicKey: myKeys.publicKey,
         privateKey: myKeys.privateKey
       };
+      let aad = 'some_aad';
 
       // Create encoder and decoder.
-      let encoder = OasisCoder.confidential(aeadKeys);
+      let encoder = OasisCoder.confidential(aeadKeys, aad);
       let decoder = new ConfidentialGatewayRequestDecoder(
         serviceKeys.privateKey
       );
