@@ -1,0 +1,44 @@
+{
+  "name": "@oasis/ethereum",
+  "version": "0.0.0",
+  "description": "",
+  "keywords": [],
+  "main": "dist/index.umd.js",
+  "module": "dist/index.es5.js",
+  "typings": "dist/types/index.d.ts",
+  "files": [
+    "dist",
+    "src",
+    "test"
+  ],
+  "author": "Oasis Labs Inc. <info@oasislabs.com>",
+  "scripts": {
+    "lint": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
+    "lint:fix": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts' --fix",
+    "prebuild": "rimraf dist",
+    "build": "tsc --module commonjs && rollup -c rollup.config.ts",
+    "test": "jest",
+    "coverage": "jest --coverage test"
+  },
+  "jest": {
+    "transform": {
+      ".(ts|tsx)": "ts-jest"
+    },
+    "testEnvironment": "node",
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ]
+  },
+  "dependencies": {
+    "@oasis/common": "^0.0.0",
+    "@oasis/service": "^0.0.0",
+	"@oasis/test": "^0.0.0",
+    "eventemitter3": "^3.1.2",
+    "axios": "^0.18.0",
+    "ethers": "^4.0.27",
+    "node-localstorage": "^1.3.1"
+  }
+}

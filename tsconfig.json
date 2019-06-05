@@ -10,16 +10,13 @@
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "declarationDir": "dist/types",
-    "outDir": "dist/lib",
     "noImplicitAny": false,
     "typeRoots": [
       "node_modules/@types",
-      "@types",
+	  "packages/*/dist/lib"
     ]
   },
   "include": [
-    "src",
-    "@types",
+    "src"
   ]
 }

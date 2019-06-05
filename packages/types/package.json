@@ -1,0 +1,26 @@
+{
+  "name": "@oasis/types",
+  "version": "0.0.0",
+  "description": "",
+  "keywords": [],
+  "files": [
+    "dist",
+    "src",
+    "test"
+  ],
+  "author": "Oasis Labs Inc. <info@oasislabs.com>",
+  "main": "dist/index.umd.js",
+  "module": "dist/index.es5.js",
+  "typings": "dist/types/index.d.ts",
+  "scripts": {
+    "prebuild": "rimraf dist",
+    "lint": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
+    "lint:fix": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts' --fix",
+    "build": "tsc --module commonjs && rollup -c rollup.config.ts"
+  },
+  "dependencies": {
+    "cbor-js": "^0.1.0",
+    "eventemitter3": "^3.1.2",
+    "js-sha3": "^0.8.0"
+  }
+}

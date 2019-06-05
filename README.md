@@ -6,25 +6,46 @@
 [![Coverage Status](https://coveralls.io/repos/github/oasislabs/oasis-client/badge.svg?branch=master&t=yu91jw)](https://coveralls.io/github/oasislabs/oasis-client?branch=master)
 [![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/Oasis-official/Lobby?source=orgpage)
 
+## Packages
+
+| Package                                                           | Version                                                                                                                   | Description                                                        |
+| ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| [`client`](/packages/client)                                      | [![npm](https://img.shields.io/npm/v/client.svg)](https://www.npmjs.com)                                                  | Client for interacting with services on the Oasis cloud            |
+| [`developer-gateway-client`](/packages/developer-gateway-client)  | [![npm](https://img.shields.io/npm/v/client.svg)](https://www.npmjs.com)                                                  | Lightweight client for interacting with developer-gateway services |
+| [`@oasis/developer-gateway`](/packages/developer-gateway)         | [![npm](https://img.shields.io/npm/v/client.svg)](https://www.npmjs.com)                                                  | Client backend for communicating with a developer-gateway          |
+| [`@oasis/service`](/packages/service)                             | [![npm](https://img.shields.io/npm/v/client.svg)](https://www.npmjs.com)                                                  | Implementations for deploying and interacting with services        |
+| [`@oasis/confidential`](/packages/confidential)                   | [![npm](https://img.shields.io/npm/v/client.svg)](https://www.npmjs.com)                                                  | Encryption tools for confidentiality on Oasis                      |
+| [`@oasis/common`](/packages/common)                               | [![npm](https://img.shields.io/npm/v/client.svg)](https://www.npmjs.com)                                                  | Common utilities for Oasis packages                                |
+| [`@oasis/types`](/packages/types)                                 | [![npm](https://img.shields.io/npm/v/client.svg)](https://www.npmjs.com)                                                  | Types for Oasis packages                                           |
+| [`@oasis/test`](/packages/test)                                   | [![npm](https://img.shields.io/npm/v/client.svg)](https://www.npmjs.com)                                                  | Tools used in Oasis tests                                          |
+
+
 ## Contributing
 
 ### Installing
 
-To get started:
+To get started first install the required build tools:
 
 ```
-yarn install
+npm install -g lerna
+npm install -g yarn
+```
+
+Then bootstrap the workspace:
+
+```
+yarn
 ```
 
 ### Building
 
-To build oasis.js:
+To build the workspace:
 
 ```
 yarn build
 ```
 
-The built javascript and typescript definitions will be in `dist/`. For direct browser testing, simply include the rollup artifact directly in your script tag, e.g., `<script src=/dist/index.umd.js></script>`.
+In each package, the built javascript and typescript definitions will be in `dist/`. For direct browser testing of a client, simply include the rollup artifact directly in your script tag, e.g., `<script src=/dist/index.umd.js></script>`. For example [here](https://github.com/oasislabs/oasis-client/blob/armani/wallet/packages/client/test/browser/service/index.html#L3).
 
 ### Testing
 
@@ -32,18 +53,6 @@ To run all tests:
 
 ```
 yarn test
-```
-
-To run tests tests both in Jest and for the browser:
-
-```
-yarn test:unit
-```
-
-or
-
-```
-yarn test:browser
 ```
 
 ### Linting

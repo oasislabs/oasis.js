@@ -1,0 +1,23 @@
+{
+  "name": "@oasis/test",
+  "version": "0.0.0",
+  "description": "Defines common utilities for testing Oasis packages.",
+  "keywords": [],
+  "main": "dist/index.umd.js",
+  "module": "dist/index.es5.js",
+  "typings": "dist/types/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "author": "Oasis Labs Inc. <info@oasislabs.com>",
+  "scripts": {
+    "lint": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
+    "lint:fix": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts' --fix",
+    "build": "tsc --module commonjs && rollup -c rollup.config.ts"
+  },
+  "dependencies": {
+    "@oasis/service": "^0.0.0",
+    "@oasis/common": "^0.0.0"
+  }
+}
