@@ -27,6 +27,7 @@
           let service = new oasis.Service(idl, address, {
             gateway: test.gateway(resolve),
             db: test.db(),
+            aad: test.aad,
           });
           // When I make an rpc request.
           await service.the(input1, input2);
@@ -131,6 +132,7 @@
           [102, 213, 202, 145, 129, 99, 154, 30, 39, 120, 107, 223, 154, 170, 91, 51, 180, 126, 147, 208, 28, 232, 221, 65, 142, 189, 187, 37, 158, 134, 218, 171]
         ),
       };
+      const aad = 'some_aad';
 
       // Non-confidential test case.
       let nonConfidentialTest = {
@@ -156,7 +158,8 @@
             privateKey: keys.peerPrivateKey,
             peerPublicKey: keys.publicKey,
             peerPrivateKey: keys.peerPrivateKey,
-          })
+          }, aad),
+          aad: aad,
       };
     </script>
   </head>
