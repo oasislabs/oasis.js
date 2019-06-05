@@ -1,11 +1,10 @@
-import * as EventEmitter from 'eventemitter3';
-import { WebSocket } from '@oasis/types';
+import { WebSocket, EventEmitter } from '@oasis/types';
 
 export class JsonRpcWebSocket {
   /**
    * responses implements a request-response pattern for `send` requests.
    */
-  private responses: EventEmitter = new EventEmitter();
+  private responses = new EventEmitter();
 
   /**
    * Middleware to plug into the websocket connection. Processes ws messages
@@ -16,13 +15,13 @@ export class JsonRpcWebSocket {
   /**
    * JSON rpc request id auto counter.
    */
-  private requestId: number = 0;
+  private requestId = 0;
 
   /**
    * lifecycle emits events pertaining to the lifecycle of the websocket,
    * e.g., when it opens or closes.
    */
-  private lifecycle: EventEmitter = new EventEmitter();
+  private lifecycle = new EventEmitter();
 
   /**
    * WebSocket through which all requests are sent.

@@ -16,7 +16,7 @@ export default {
   output: [
     {
       file: pkg.main,
-      name: 'index',
+      name: 'ethereum',
       format: 'umd',
       sourcemap: true,
       globals: {
@@ -37,7 +37,11 @@ export default {
     resolve({
       browser: true,
     }),
-    commonjs(),
+    commonjs({
+      namedExports: {
+        '../../node_modules/js-sha3/src/sha3.js': [ 'keccak256' ]
+      }
+    }),
     globals(),
     builtins(),
     json(),

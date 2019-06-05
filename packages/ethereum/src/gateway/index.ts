@@ -1,4 +1,5 @@
-import { EventEmitter, keccak256 } from '@oasis/types';
+import { keccak256 } from 'js-sha3';
+import { EventEmitter } from '@oasis/types';
 import { bytes } from '@oasis/common';
 import {
   OasisGateway,

@@ -1,6 +1,5 @@
 import cbor from './cbor';
 import EventEmitter from './eventemitter3';
-import keccak256 from './keccak256';
 import nacl from './tweetnacl';
 import WebSocket from './ws';
 
@@ -15,10 +14,4 @@ export type PublicKey = Uint8Array;
 export type PrivateKey = Uint8Array;
 export type Nonce = Uint8Array;
 
-export {
-  cbor,
-  keccak256,
-  nacl,
-  EventEmitter,
-  WebSocket
-};
+export { cbor, nacl, EventEmitter, WebSocket };

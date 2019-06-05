@@ -1,5 +1,6 @@
+import { keccak256 } from 'js-sha3';
 import { Interface } from 'ethers/utils/interface';
-import { Bytes4, Bytes, keccak256 } from '@oasis/types';
+import { Bytes4, Bytes } from '@oasis/types';
 import { bytes } from '@oasis/common';
 import { RpcCoder, RpcRequest, Idl, RpcFn, AeadKeys } from '@oasis/service';
 

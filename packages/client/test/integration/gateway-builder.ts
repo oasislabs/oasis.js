@@ -1,3 +1,4 @@
+import { keccak256 } from 'js-sha3';
 import {
   ServicePollApi,
   SubscribePollApi,
@@ -6,7 +7,7 @@ import {
   HttpDeveloperGateway,
   Http
 } from '@oasis/developer-gateway';
-import { Address, keccak256, cbor } from '@oasis/types';
+import { Address, cbor } from '@oasis/types';
 import { bytes } from '@oasis/common';
 
 /**
