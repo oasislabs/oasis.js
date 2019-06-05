@@ -16,7 +16,7 @@
     "lint": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts'",
     "lint:fix": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' --fix",
     "prebuild": "rimraf dist",
-    "build": "tsc --module commonjs && rollup -c rollup.config.ts"
+    "build": "tsc -b && rollup -c rollup.config.ts"
   },
   "jest": {
     "transform": {

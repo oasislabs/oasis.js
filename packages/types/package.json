@@ -14,9 +14,9 @@
   "typings": "dist/types/index.d.ts",
   "scripts": {
     "prebuild": "rimraf dist",
-    "lint": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
+    "lint": "tslint --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
     "lint:fix": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts' --fix",
-    "build": "tsc --module commonjs && rollup -c rollup.config.ts"
+    "build": "tsc -b && rollup -c rollup.config.ts"
   },
   "dependencies": {
     "cbor-js": "^0.1.0",
