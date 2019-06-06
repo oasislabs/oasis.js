@@ -16,7 +16,6 @@
     "lint": "lerna run lint --concurrency 1",
     "lint:fix": "lerna run lint:fix --concurrency 1",
     "prebuild": "rimraf dist",
-    "prepack": "yarn install && yarn build",
     "test": "lerna run test --concurrency 1 --stream",
     "precommit": "lint-staged",
     "coverage": "lerna run coverage --concurrency 1 -- stream && yarn istanbul",
