@@ -48,7 +48,7 @@ export class RpcFactory {
       rpcs[fn.name] = async (...args: any[]) => {
         let coder = await rpcCoder;
         let [rpcArgs, rpcOptions] = RpcFactory.parseOptions(fn, args);
-        let txData = await coder.encode(fn, rpcArgs);
+        let txData = await coder.encode(fn, rpcArgs, rpcOptions);
         let response = await options.gateway!.rpc({
           data: txData,
           address: address,

@@ -21,6 +21,7 @@
           input.publicKey,
           input.peerPublicKey,
           input.peerPrivateKey,
+          input.aad,
         );
 
         let decryption = await oasis.utils.decrypt(encryption, input.privateKey);
@@ -42,12 +43,14 @@
         let peerPrivateKey = new Uint8Array(
           [102, 213, 202, 145, 129, 99, 154, 30, 39, 120, 107, 223, 154, 170, 91, 51, 180, 126, 147, 208, 28, 232, 221, 65, 142, 189, 187, 37, 158, 134, 218, 171]
         );
+        let aad = oasis.utils.bytes.encodeUtf8('some_aad');
         return {
           nonce,
           publicKey,
           privateKey,
           peerPublicKey,
           peerPrivateKey,
+          aad,
         };
       }
     </script>

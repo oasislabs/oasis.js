@@ -8,23 +8,32 @@ const aead = new Deoxysii();
 
 /**
  * encrypt takes the given input and returns the encrypted wire format:
- * NONCE || PUBLIC_KEY || CIPHER.
+ * PUBLIC_KEY || CIPHER_LENGTH || AAD_LENGTH || CIPHER || AAD || NONCE
+ * where CIPHER_LENGTH and AAD_LENGTH are encoded big endian uint64
  */
 async function encrypt(
   nonce: Nonce,
   plaintext: Uint8Array,
   peerPublicKey: PublicKey,
   publicKey: PublicKey,
-  privateKey: PrivateKey
+  privateKey: PrivateKey,
+  aad: Uint8Array
 ): Promise<Uint8Array> {
   let ciphertext = await aead.seal(
     nonce,
     plaintext,
-    new Uint8Array([]),
+    aad,
     peerPublicKey,
     privateKey
   );
-  return bytes.concat([nonce, publicKey, ciphertext]);
+  return bytes.concat([
+    publicKey,
+    bytes.parseNumber(ciphertext.length, 8),
+    bytes.parseNumber(aad.length, 8),
+    ciphertext,
+    aad,
+    nonce
+  ]);
 }
 
 /**
@@ -36,18 +45,21 @@ async function decrypt(
   encryption: Uint8Array,
   secretKey: PrivateKey
 ): Promise<Decryption> {
-  let [nonce, peerPublicKey, ciphertext] = splitEncryptedPayload(encryption);
+  let [peerPublicKey, ciphertext, aad, nonce] = splitEncryptedPayload(
+    encryption
+  );
   let plaintext = await aead.open(
     nonce,
     ciphertext,
-    Uint8Array.from([]),
+    aad,
     peerPublicKey,
     secretKey
   );
   return {
     nonce,
     plaintext,
-    peerPublicKey
+    peerPublicKey,
+    aad
   };
 }
 
@@ -58,33 +70,49 @@ function nonce(): Nonce {
 /**
  * Splits the given ciphertext into it's constituent components.
  *
- * @param ciphertext is of the form NONCE || PUBLIC_KEY || CIPHER.
+ * @param ciphertext is of the form:
+ * PUBLIC_KEY || CIPHER_LENGTH || AAD_LENGTH || CIPHER || AAD || NONCE
+ * where CIPHER_LENGTH and AAD_LENGTH are encoded big endian uint64
  */
 function splitEncryptedPayload(
   encryption: Uint8Array
-): [Uint8Array, Uint8Array, Uint8Array] {
-  if (encryption.length < 15 + 32) {
+): [Uint8Array, Uint8Array, Uint8Array, Uint8Array] {
+  if (encryption.length < 64) {
     throw new Error(`Invalid encryption: ${encryption}`);
   }
   let nonce = new Uint8Array(15);
   let publicKey = new Uint8Array(32);
-  let ciphertext = new Uint8Array(
-    encryption.length - nonce.length - publicKey.length
+  let cipherLengthOffset = 32;
+  let aadLengthOffset = cipherLengthOffset + 8;
+  let cipherOffset = aadLengthOffset + 8;
+
+  publicKey.set(encryption.slice(0, publicKey.length));
+  let cipherLength = parseInt(
+    bytes.toHex(encryption.slice(cipherLengthOffset, cipherLengthOffset + 8)),
+    16
+  );
+  let aadLength = parseInt(
+    bytes.toHex(encryption.slice(aadLengthOffset, aadLengthOffset + 8)),
+    16
   );
 
-  nonce.set(encryption.slice(0, nonce.length), 0);
-  publicKey.set(
-    encryption.slice(nonce.length, nonce.length + publicKey.length)
-  );
-  ciphertext.set(encryption.slice(nonce.length + publicKey.length));
+  let ciphertext = new Uint8Array(cipherLength);
 
-  return [nonce, publicKey, ciphertext];
+  ciphertext.set(encryption.slice(cipherOffset, cipherOffset + cipherLength));
+  let aad = encryption.slice(
+    cipherOffset + cipherLength,
+    cipherOffset + cipherLength + aadLength
+  );
+  nonce.set(encryption.slice(cipherOffset + cipherLength + aadLength));
+
+  return [publicKey, ciphertext, aad, nonce];
 }
 
 type Decryption = {
   nonce: Nonce;
   plaintext: Uint8Array;
   peerPublicKey: PublicKey;
+  aad: Uint8Array;
 };
 
 export type AeadKeys = {

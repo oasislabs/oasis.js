@@ -1,9 +1,16 @@
-import { AeadKeys, KeyStore, nonce, encrypt, decrypt } from '@oasis/confidential';
+import {
+  AeadKeys,
+  KeyStore,
+  nonce,
+  encrypt,
+  decrypt
+} from '@oasis/confidential';
 import { Bytes, PublicKey, PrivateKey } from '@oasis/types';
 import { bytes } from '@oasis/common';
 
 import { Idl, RpcFn } from '../idl';
 import { RpcCoder } from './';
+import { RpcOptions } from '../oasis-gateway';
 
 /**
  * Wraps a coder to decrypt/decrypt encoded messages in addition to coding.
@@ -11,14 +18,20 @@ import { RpcCoder } from './';
 export default class ConfidentialCoder {
   constructor(private keys: AeadKeys, private internalCoder: RpcCoder) {}
 
-  public async encode(fn: RpcFn, args: any[]): Promise<Uint8Array> {
-    let data = await this.internalCoder.encode(fn, args);
+  public async encode(
+    fn: RpcFn,
+    args: any[],
+    options?: RpcOptions
+  ): Promise<Uint8Array> {
+    let aad = !options || !options.aad ? '' : options.aad;
+    let data = await this.internalCoder.encode(fn, args, options);
     return encrypt(
       nonce(),
       data,
       this.keys.peerPublicKey,
       this.keys.publicKey,
-      this.keys.privateKey
+      this.keys.privateKey,
+      bytes.encodeUtf8(aad)
     );
   }
 

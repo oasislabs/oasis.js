@@ -12,6 +12,7 @@ import {
 import { Idl, RpcFn } from '../idl';
 import ConfidentialCoder from './confidential';
 import { RpcCoder, RpcEncoder, RpcDecoder, RpcRequest } from './';
+import { RpcOptions } from '../oasis-gateway';
 
 /**
  * RpcCoder encodes and decodes serivce rpc requests. Use the static factory methods to
@@ -20,8 +21,12 @@ import { RpcCoder, RpcEncoder, RpcDecoder, RpcRequest } from './';
 export class OasisCoder implements RpcCoder {
   constructor(private encoder: RpcEncoder, private decoder: RpcDecoder) {}
 
-  public async encode(fn: RpcFn, args: any[]): Promise<Uint8Array> {
-    return this.encoder.encode(fn, args);
+  public async encode(
+    fn: RpcFn,
+    args: any[],
+    options?: RpcOptions
+  ): Promise<Uint8Array> {
+    return this.encoder.encode(fn, args, options);
   }
 
   public async decode(

@@ -1,5 +1,6 @@
 import { Bytes4, Bytes } from '@oasis/types';
 import { Idl, RpcFn } from '../idl';
+import { RpcOptions } from '../oasis-gateway';
 
 export type RpcCoder = RpcEncoder &
   RpcDecoder &
@@ -9,7 +10,7 @@ export type RpcCoder = RpcEncoder &
   RpcSubscriptionEventDecoder;
 
 export interface RpcEncoder {
-  encode(fn: RpcFn, args: any[]): Promise<Uint8Array>;
+  encode(fn: RpcFn, args: any[], options?: RpcOptions): Promise<Uint8Array>;
 }
 
 export interface RpcDecoder {

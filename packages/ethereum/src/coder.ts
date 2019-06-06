@@ -2,10 +2,21 @@ import { keccak256 } from 'js-sha3';
 import { Interface } from 'ethers/utils/interface';
 import { Bytes4, Bytes } from '@oasis/types';
 import { bytes } from '@oasis/common';
-import { RpcCoder, RpcRequest, Idl, RpcFn, AeadKeys } from '@oasis/service';
+import {
+  RpcCoder,
+  RpcRequest,
+  Idl,
+  RpcFn,
+  AeadKeys,
+  RpcOptions
+} from '@oasis/service';
 
 export class EthereumCoder implements RpcCoder {
-  public async encode(fn: RpcFn, args: any[]): Promise<Uint8Array> {
+  public async encode(
+    fn: RpcFn,
+    args: any[],
+    _options?: RpcOptions
+  ): Promise<Uint8Array> {
     // @ts-ignore
     let iface = new Interface([fn]);
     // @ts-ignore
