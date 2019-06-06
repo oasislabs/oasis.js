@@ -1,6 +1,6 @@
 import { keccak256 } from 'js-sha3';
 import DeveloperGateway from '@oasis/developer-gateway';
-import { bytes } from '@oasis/common';
+import { cbor, bytes } from '@oasis/common';
 import {
   Service,
   deploy,
@@ -9,7 +9,6 @@ import {
   DeployHeaderWriter,
   setDefaultOasisGateway
 } from '@oasis/service';
-import { cbor } from '@oasis/types';
 import { Deoxysii, encrypt, decrypt } from '@oasis/confidential';
 import {
   EthereumGateway,

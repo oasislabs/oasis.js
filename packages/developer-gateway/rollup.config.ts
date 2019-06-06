@@ -37,7 +37,11 @@ export default {
     resolve({
       browser: true,
     }),
-    commonjs(),
+    commonjs({
+      namedExports: {
+        '../../node_modules/eventemitter3/index.js': [ 'EventEmitter' ]     
+      }
+    }),
     globals(),
     builtins(),
     json(),

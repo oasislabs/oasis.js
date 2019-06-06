@@ -7,8 +7,8 @@ import {
   HttpDeveloperGateway,
   Http
 } from '@oasis/developer-gateway';
-import { Address, cbor } from '@oasis/types';
-import { bytes } from '@oasis/common';
+import { Address } from '@oasis/types';
+import { bytes, cbor } from '@oasis/common';
 
 /**
  * Builds a gateway with all HTTP requests mocked out.

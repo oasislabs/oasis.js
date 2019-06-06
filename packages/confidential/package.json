@@ -36,6 +36,7 @@
     "@oasis/common": "^0.0.0",
     "@oasis/types": "^0.0.0",
     "deoxysii": "^0.0.1",
+    "tweetnacl": "^1.0.1",
     "node-localstorage": "^1.3.1"
   }
 }

@@ -1,4 +1,4 @@
-import { EventEmitter } from '@oasis/types';
+import { EventEmitter } from 'eventemitter3';
 import { SubscribeTopic } from '@oasis/service';
 import { Http, HttpRequest } from './http';
 import {

@@ -1,4 +1,5 @@
-import { PublicKey, PrivateKey, nacl } from '@oasis/types';
+import { PublicKey, PrivateKey } from '@oasis/types';
+import nacl from '../tweetnacl';
 
 export async function ecdhTweak(
   peerPublicKey: PublicKey,
