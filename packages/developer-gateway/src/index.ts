@@ -28,6 +28,7 @@ import {
   SubscribePollApi
 } from './api';
 import { Http, HttpRequest } from './http';
+import uuid from 'uuid';
 
 // Re-export.
 export {
@@ -61,9 +62,18 @@ class HttpDeveloperGateway implements OasisGateway {
    */
   private subscriptions: Map<string, number>;
 
+  /**
+   * session key passed to the developer gateway in the header.
+   */
+  private sessionKey: string;
+
   public constructor(private url: string) {
-    this.http = new HttpRequest(url);
-    this.polling = PollingService.instance({ url });
+    this.sessionKey = uuid.v4();
+    this.http = new HttpRequest(url, this.sessionKey);
+    this.polling = PollingService.instance({
+      url: url,
+      sessionKey: this.sessionKey
+    });
     this.subscriptions = new Map();
   }
 
@@ -110,6 +120,7 @@ class HttpDeveloperGateway implements OasisGateway {
 
         PollingService.instance({
           url: this.url,
+          sessionKey: this.sessionKey,
           queueId: response.id
         }).subscribe(response.id, event => {
           events.emit(request.event, event);
@@ -130,6 +141,7 @@ class HttpDeveloperGateway implements OasisGateway {
 
     PollingService.instance({
       url: this.url,
+      sessionKey: this.sessionKey,
       queueId
     }).stop();
 

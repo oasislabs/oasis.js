@@ -63,7 +63,9 @@ export default class PollingService {
       PollingService.SERVICES.set(
         id,
         new PollingService(
-          options.http ? options.http : new HttpRequest(options.url),
+          options.http
+            ? options.http
+            : new HttpRequest(options.url, options.sessionKey!),
           options.queueId,
           // Set the end point of the window to 2**53 if the queueId exists since
           // it implies a subscription and subscriptions never auto close.
@@ -178,6 +180,7 @@ export default class PollingService {
 
 export type PollingServiceOptions = {
   url: string;
+  sessionKey?: string;
   queueId?: number;
   http?: Http;
   interval?: number;
