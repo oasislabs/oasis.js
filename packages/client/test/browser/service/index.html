@@ -135,7 +135,6 @@
           gateway: (resolve) => new RequestMockOasisGateway(resolve),
           db: () => new DummyStorage(),
           coder: new oasis.utils.OasisCoder.plaintext(),
-          options: {},
         };
         // Confidential test case.
         let confidentialTest = {
