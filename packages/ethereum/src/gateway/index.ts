@@ -1,5 +1,5 @@
+import { EventEmitter } from 'eventemitter3';
 import { keccak256 } from 'js-sha3';
-import { EventEmitter } from '@oasis/types';
 import { bytes } from '@oasis/common';
 import {
   OasisGateway,
@@ -88,8 +88,7 @@ export class EthereumGateway implements OasisGateway {
     };
   }
 
-  // @ts-ignore
-  subscribe(request: SubscribeRequest): EventEmitter {
+  subscribe(request: SubscribeRequest): any {
     return this.web3Subscribe(request.event, [
       'logs',
       {
@@ -99,8 +98,7 @@ export class EthereumGateway implements OasisGateway {
     ]);
   }
 
-  // @ts-ignore
-  web3Subscribe(eventName: string, params: any[]): EventEmitter {
+  web3Subscribe(eventName: string, params: any[]): any {
     let events = new EventEmitter();
     this.ws
       .request({

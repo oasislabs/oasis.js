@@ -1,6 +1,6 @@
-import { Nonce, PublicKey, PrivateKey, nacl } from '@oasis/types';
-
+import { Nonce, PublicKey, PrivateKey } from '@oasis/types';
 import { encrypt, decrypt } from '../src';
+import nacl from '../src/tweetnacl';
 
 describe('Crypto', () => {
   it('Encrypts to the wire format', async () => {

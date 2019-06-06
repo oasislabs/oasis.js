@@ -1,5 +1,4 @@
 import { bytes, DummyStorage } from '@oasis/common';
-import { nacl } from '@oasis/types';
 import { idl } from '@oasis/test';
 import { Idl } from '../src/idl';
 import Service from '../src/service';
@@ -104,17 +103,12 @@ describe('Service', () => {
     let input1 = defType();
     let input2 = bytes.parseHex('1234');
 
-    let serviceKeyPair = nacl.box.keyPair();
-
     let txDataPromise: Promise<RpcRequest> = new Promise(async resolve => {
       // Given a service.
       let service = new Service(idl, address, {
-        gateway: new ConfidentialMockOasisGateway(
-          resolve,
-          serviceKeyPair.publicKey
-        ),
+        gateway: new ConfidentialMockOasisGateway(resolve, keys.publicKey),
         db: new DummyStorage(),
-        coder: confidentialCoder(serviceKeyPair)
+        coder: confidentialCoder()
       });
       // When we make an rpc request.
       await service.rpc.the(input1, input2);
@@ -123,9 +117,7 @@ describe('Service', () => {
     let request = await txDataPromise;
 
     // Then the receipient should be able to decrypt it.
-    let decoder = new ConfidentialGatewayRequestDecoder(
-      serviceKeyPair.secretKey
-    );
+    let decoder = new ConfidentialGatewayRequestDecoder(keys.privateKey);
     let plaintext = await decoder.decode(request.data);
 
     expect(bytes.toHex(plaintext.sighash!)).toEqual('0xccc7cde3');
@@ -135,14 +127,13 @@ describe('Service', () => {
   });
 });
 
-function confidentialCoder(serviceKeyPair) {
-  let keys = nacl.box.keyPair();
+function confidentialCoder() {
   let coder = OasisCoder.confidential({
-    publicKey: keys.publicKey,
-    privateKey: keys.secretKey,
-    peerPublicKey: serviceKeyPair.publicKey,
+    publicKey: keys.peerPublicKey,
+    privateKey: keys.peerPrivateKey,
+    peerPublicKey: keys.publicKey,
     // @ts-ignore
-    peerPrivateKey: serviceKeyPair.secretKey
+    peerPrivateKey: keys.privateKey
   });
   // Don't bother decoding in tests since the gateway is mocked out.
   coder.decode = async (fn, data, constructor) => {
@@ -169,3 +160,142 @@ export function defType() {
     ]
   };
 }
+
+const keys = {
+  publicKey: new Uint8Array([
+    76,
+    194,
+    101,
+    195,
+    41,
+    86,
+    188,
+    68,
+    20,
+    196,
+    45,
+    88,
+    50,
+    28,
+    101,
+    65,
+    169,
+    62,
+    20,
+    86,
+    188,
+    169,
+    250,
+    131,
+    121,
+    184,
+    83,
+    198,
+    108,
+    127,
+    191,
+    59
+  ]),
+  privateKey: new Uint8Array([
+    77,
+    65,
+    100,
+    57,
+    158,
+    249,
+    115,
+    170,
+    228,
+    223,
+    8,
+    122,
+    34,
+    16,
+    7,
+    109,
+    121,
+    80,
+    221,
+    98,
+    147,
+    57,
+    33,
+    10,
+    117,
+    181,
+    183,
+    181,
+    119,
+    248,
+    6,
+    97
+  ]),
+  peerPublicKey: new Uint8Array([
+    11,
+    22,
+    95,
+    106,
+    208,
+    178,
+    217,
+    236,
+    126,
+    30,
+    21,
+    232,
+    31,
+    89,
+    61,
+    20,
+    62,
+    53,
+    45,
+    10,
+    43,
+    25,
+    109,
+    77,
+    213,
+    84,
+    134,
+    55,
+    254,
+    242,
+    21,
+    87
+  ]),
+  peerPrivateKey: new Uint8Array([
+    102,
+    213,
+    202,
+    145,
+    129,
+    99,
+    154,
+    30,
+    39,
+    120,
+    107,
+    223,
+    154,
+    170,
+    91,
+    51,
+    180,
+    126,
+    147,
+    208,
+    28,
+    232,
+    221,
+    65,
+    142,
+    189,
+    187,
+    37,
+    158,
+    134,
+    218,
+    171
+  ])
+};

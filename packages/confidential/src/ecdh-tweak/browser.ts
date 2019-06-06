@@ -1,5 +1,6 @@
 import * as deoxysii from 'deoxysii';
-import { PublicKey, PrivateKey, nacl } from '@oasis/types';
+import { PublicKey, PrivateKey } from '@oasis/types';
+import nacl from '../tweetnacl';
 
 let hmacKey: any = undefined;
 

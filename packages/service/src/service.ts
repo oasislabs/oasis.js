@@ -1,5 +1,6 @@
+import { EventEmitter } from 'eventemitter3';
 import { keccak256 } from 'js-sha3';
-import { Address, cbor, EventEmitter } from '@oasis/types';
+import { Address, cbor } from '@oasis/types';
 import { Db, LocalStorage, bytes } from '@oasis/common';
 import { Idl, RpcFn } from './idl';
 import { Rpcs, RpcFactory } from './rpc';

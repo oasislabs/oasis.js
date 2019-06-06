@@ -33,6 +33,7 @@
     ]
   },
   "dependencies": {
-    "@oasis/types": "^0.0.0"
+    "@oasis/types": "^0.0.0",
+    "cbor-js": "^0.1.0"
   }
 }

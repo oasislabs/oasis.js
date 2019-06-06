@@ -1,7 +1,8 @@
-import { Nonce, PublicKey, PrivateKey, nacl } from '@oasis/types';
+import { Nonce, PublicKey, PrivateKey } from '@oasis/types';
 import { bytes } from '@oasis/common';
 import { Deoxysii } from './aead';
 import { KeyStore } from './key-store';
+import nacl from './tweetnacl';
 
 const aead = new Deoxysii();
 

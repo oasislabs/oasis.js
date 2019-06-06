@@ -1,7 +1,7 @@
 import * as EventEmitter from 'eventemitter3';
-import { Address, PublicKey, Bytes, PrivateKey, cbor } from '@oasis/types';
+import { Address, PublicKey, Bytes, PrivateKey } from '@oasis/types';
 import { encrypt, decrypt } from '@oasis/confidential';
-import { bytes } from '@oasis/common';
+import { bytes, cbor } from '@oasis/common';
 import {
   OasisGateway,
   RpcRequest,

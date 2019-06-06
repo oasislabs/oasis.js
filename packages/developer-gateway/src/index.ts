@@ -1,3 +1,4 @@
+import { EventEmitter } from 'eventemitter3';
 import {
   OasisGateway,
   RpcRequest,
@@ -10,7 +11,7 @@ import {
   PublicKeyRequest,
   PublicKeyResponse
 } from '@oasis/service';
-import { Address, PublicKey, Bytes, EventEmitter } from '@oasis/types';
+import { Address, PublicKey, Bytes } from '@oasis/types';
 import { UrlEncoder, bytes } from '@oasis/common';
 import PollingService from './polling';
 import {

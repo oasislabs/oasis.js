@@ -1,6 +1,6 @@
-import { Address, H256, EventEmitter } from '@oasis/types';
+import { EventEmitter } from 'eventemitter3';
+import { Address, H256 } from '@oasis/types';
 import { bytes } from '@oasis/common';
-
 import { EthereumGateway } from './';
 
 export default class TransactionObserver {

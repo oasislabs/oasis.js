@@ -1,4 +1,4 @@
-import { WebSocket, EventEmitter } from '@oasis/types';
+import { EventEmitter } from 'eventemitter3';
 
 export class JsonRpcWebSocket {
   /**
@@ -26,12 +26,17 @@ export class JsonRpcWebSocket {
   /**
    * WebSocket through which all requests are sent.
    */
-  private websocket: WebSocket;
+  private websocket;
 
   constructor(private url: string, middleware: Middleware[]) {
     this.middleware = middleware;
-    // @ts-ignore
-    this.websocket = new WebSocket(this.url);
+    this.websocket =
+      // tslint:disable-next-line
+      typeof WebSocket !== 'undefined'
+        ? // Browser.
+          new WebSocket(url)
+        : // Node.
+          require('ws')(url);
     this.addEventListeners();
   }
 

@@ -36,6 +36,7 @@
     "@oasis/confidential": "^0.0.0",
     "@oasis/common": "^0.0.0",
     "@oasis/types": "^0.0.0",
-    "js-sha3": "^0.8.0"
+    "js-sha3": "^0.8.0",
+    "eventemitter3": "^3.1.2"
   }
 }
