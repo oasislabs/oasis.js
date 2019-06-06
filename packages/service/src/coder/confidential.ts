@@ -23,9 +23,7 @@ export default class ConfidentialCoder {
     args: any[],
     options?: RpcOptions
   ): Promise<Uint8Array> {
-    if (!options || !options.aad || options.aad.length === 0) {
-      throw new Error('Cannot encrypt confidential request without AAD');
-    }
+    let aad = !options || !options.aad ? '' : options.aad;
     let data = await this.internalCoder.encode(fn, args, options);
     return encrypt(
       nonce(),
@@ -33,7 +31,7 @@ export default class ConfidentialCoder {
       this.keys.peerPublicKey,
       this.keys.publicKey,
       this.keys.privateKey,
-      options.aad
+      aad
     );
   }
 

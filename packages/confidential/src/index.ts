@@ -45,7 +45,7 @@ async function decrypt(
   encryption: Uint8Array,
   secretKey: PrivateKey
 ): Promise<Decryption> {
-  let [nonce, peerPublicKey, ciphertext, aad] = splitEncryptedPayload(
+  let [peerPublicKey, ciphertext, aad, nonce] = splitEncryptedPayload(
     encryption
   );
   let plaintext = await aead.open(
@@ -76,7 +76,7 @@ function nonce(): Nonce {
  */
 function splitEncryptedPayload(
   encryption: Uint8Array
-): [Uint8Array, Uint8Array, Uint8Array, string] {
+): [Uint8Array, Uint8Array, string, Uint8Array] {
   if (encryption.length < 64) {
     throw new Error(`Invalid encryption: ${encryption}`);
   }
@@ -107,7 +107,7 @@ function splitEncryptedPayload(
   );
   nonce.set(encryption.slice(cipherOffset + cipherLength + aadLength));
 
-  return [nonce, publicKey, ciphertext, aad];
+  return [publicKey, ciphertext, aad, nonce];
 }
 
 type Decryption = {

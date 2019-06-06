@@ -102,7 +102,6 @@ describe('Service', () => {
     // Inputs to the rpc.
     let input1 = defType();
     let input2 = bytes.parseHex('1234');
-    let rpcOptions = { aad: 'some_aad' };
 
     let txDataPromise: Promise<RpcRequest> = new Promise(async resolve => {
       // Given a service.
@@ -112,7 +111,7 @@ describe('Service', () => {
         coder: confidentialCoder()
       });
       // When we make an rpc request.
-      await service.rpc.the(input1, input2, rpcOptions);
+      await service.rpc.the(input1, input2);
     });
 
     let request = await txDataPromise;

@@ -27,7 +27,7 @@
               db: test.db(),
             });
             // When I make an rpc request.
-            await service.the(input1, input2, test.options);
+            await service.the(input1, input2);
           });
 
           let request = await txDataPromise;
@@ -155,10 +155,7 @@
             privateKey: keys.peerPrivateKey,
             peerPublicKey: keys.publicKey,
             peerPrivateKey: keys.peerPrivateKey,
-          }),
-          options: {
-            aad: 'some_aad',
-          }
+          })
         };
         runTest();
       }
