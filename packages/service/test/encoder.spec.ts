@@ -16,6 +16,9 @@ describe('Encoders', () => {
         publicKey: myKeys.publicKey,
         privateKey: myKeys.privateKey
       };
+      let rpcOptions = {
+        aad: 'some_aad'
+      };
 
       // Create encoder and decoder.
       let encoder = OasisCoder.confidential(aeadKeys);
@@ -31,7 +34,7 @@ describe('Encoders', () => {
       let rpcInput = [new Uint8Array([1, 2, 3]), 'encrypt me!'];
 
       // Encode the rpc.
-      let encoded = await encoder.encode(rpcDefinition, rpcInput);
+      let encoded = await encoder.encode(rpcDefinition, rpcInput, rpcOptions);
       // Decode the rpc.
       let result = await decoder.decode(encoded);
 

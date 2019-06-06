@@ -1,19 +1,13 @@
 import { keccak256 } from 'js-sha3';
 import { AeadKeys } from '@oasis/confidential';
-<<<<<<< HEAD
 import { bytes, cbor } from '@oasis/common';
-=======
-import { bytes } from '@oasis/common';
->>>>>>> Add new wire format with option in rpc options
 import {
   Address,
   H256,
   Bytes4,
   Bytes,
   PublicKey,
-  PrivateKey,
-  cbor,
-  keccak256
+  PrivateKey
 } from '@oasis/types';
 import { Idl, RpcFn } from '../idl';
 import ConfidentialCoder from './confidential';

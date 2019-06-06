@@ -24,11 +24,11 @@ async function runTest() {
 
   // Check the test worked as expected.
   if (plainOutput !== expectedTitle) {
-    console.error(`Invalid output. ${plainOutput} != ${expectedTitle}`);
+    console.error(`Invalid plaintext output. ${plainOutput} != ${expectedTitle}`);
     process.exit(1);
   }
   if (confOutput !== expectedTitle) {
-    console.error(`Invalid output. ${confOutput} != ${expectedTitle}`);
+    console.error(`Invalid confidential output. ${confOutput} != ${expectedTitle}`);
     process.exit(1);
   }
 }
