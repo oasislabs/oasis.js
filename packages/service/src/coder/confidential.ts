@@ -31,7 +31,7 @@ export default class ConfidentialCoder {
       this.keys.peerPublicKey,
       this.keys.publicKey,
       this.keys.privateKey,
-      aad
+      bytes.encodeUtf8(aad)
     );
   }
 

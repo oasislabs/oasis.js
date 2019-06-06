@@ -23,15 +23,16 @@ describe('Crypto', () => {
     let cipherLength = parseInt(bytes.toHex(encryption.slice(32, 40)), 16);
     let aadLength = parseInt(bytes.toHex(encryption.slice(40, 48)), 16);
     let cipherResult = encryption.slice(48, 48 + cipherLength);
-    let aadResult = bytes.decodeUtf8(
-      encryption.slice(48 + cipherLength, 48 + cipherLength + aadLength)
+    let aadResult = encryption.slice(
+      48 + cipherLength,
+      48 + cipherLength + aadLength
     );
     let nonceResult = encryption.slice(48 + cipherLength + aadLength);
 
     expect(nonceResult).toEqual(nonce);
     expect(publicKeyResult).toEqual(me.publicKey);
     expect(cipherResult.length).toEqual(20);
-    expect(aadResult).toEqual(aad);
+    expect(aadResult.toString()).toEqual(aad.toString());
   });
 
   it('Decrypts the encrypted data', async () => {
@@ -53,11 +54,11 @@ describe('Crypto', () => {
     expect(decryption.nonce).toEqual(nonce);
     expect(decryption.peerPublicKey).toEqual(peer.publicKey);
     expect(decryption.plaintext).toEqual(plaintext);
-    expect(decryption.aad).toEqual(aad);
+    expect(decryption.aad.toString()).toEqual(aad.toString());
   });
 });
 
-function aeadInput(): [Nonce, KeyPair, KeyPair, string] {
+function aeadInput(): [Nonce, KeyPair, KeyPair, Uint8Array] {
   let keyPair = nacl.box.keyPair();
   let me = {
     publicKey: keyPair.publicKey,
@@ -72,7 +73,7 @@ function aeadInput(): [Nonce, KeyPair, KeyPair, string] {
 
   let nonce = nacl.randomBytes(15);
 
-  let aad = 'some_aad';
+  let aad = bytes.encodeUtf8('some_aad');
 
   return [nonce, peer, me, aad];
 }
