@@ -36,7 +36,7 @@ export class JsonRpcWebSocket {
         ? // Browser.
           new WebSocket(url)
         : // Node.
-          require('ws')(url);
+          new (require('ws'))(url);
     this.addEventListeners();
   }
 
