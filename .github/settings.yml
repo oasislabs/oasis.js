@@ -1,1 +1,12 @@
 _extends: private-global-settings
+
+collaborators:
+  - username: willscott
+    permission: admin
+
+  - username: armaniferrante
+    permission: admin
+
+  # Read only access for the oasislabs read the docs user
+  - username: oasisdocs-rtd
+    permission: pull
