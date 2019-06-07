@@ -1,12 +1,15 @@
 import { idl } from '@oasis/test';
-import { EmptyOasisGateway, DeployMockOasisGateway, GatewayRequestDecoder } from './utils';
+import {
+  EmptyOasisGateway,
+  DeployMockOasisGateway,
+  GatewayRequestDecoder
+} from './utils';
 import { Idl } from '../src/idl';
 import { deploy, Service } from '../src/index';
-import { RpcRequest, setDefaultOasisGateway } from '../src/oasis-gateway';
+import { RpcRequest, connect } from '../src/oasis-gateway';
 import { DeployHeaderReader } from '../src/deploy/header';
 
-
-setDefaultOasisGateway(new EmptyOasisGateway());
+connect(new EmptyOasisGateway());
 
 describe('Service deploys', () => {
   let testCases = [

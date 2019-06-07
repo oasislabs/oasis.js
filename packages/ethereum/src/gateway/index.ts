@@ -18,7 +18,7 @@ import { TransactionFactory, Transaction } from './transaction';
 import { Subscriptions } from './subscriptions';
 import TransactionObserver from './transaction-observer';
 
-export class EthereumGateway implements OasisGateway {
+export class Web3Gateway implements OasisGateway {
   /**
    * Websocket connection to the remote gateway.
    */

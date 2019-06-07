@@ -1,6 +1,8 @@
 import { Service, deploy } from '@oasis/service';
 
-export {
+const oasis = {
   Service,
   deploy
 };
+
+export default oasis;

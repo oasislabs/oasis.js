@@ -12,12 +12,13 @@ describe('Service', () => {
       .rpc(expectedOutput)
       .gateway();
 
+    oasis.connect(gateway);
+
     // Deploy the service.
     let service = await oasis.deploy({
       idl,
       bytecode: '0x1234',
       arguments: ['constructor-arg'],
-      gateway,
       db: new DummyStorage()
     });
 
@@ -36,12 +37,13 @@ describe('Service', () => {
       .subscribe({ indexed1: 3, indexed2: 3 })
       .gateway();
 
+    oasis.connect(gateway);
+
     // Deploy the service.
     let service = await oasis.deploy({
       idl,
       bytecode: '0x1234',
       arguments: ['constructor-arg'],
-      gateway,
       db: new DummyStorage()
     });
 

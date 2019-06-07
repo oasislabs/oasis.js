@@ -91,7 +91,7 @@ export default class Service {
           delete options![key];
         }
       });
-      options = Object.assign(defaultOptions(), options);
+      options = assignDefaultOptions(options);
     }
     return options;
   }
@@ -178,6 +178,16 @@ export type ServiceOptions = {
   db?: Db;
   coder?: RpcCoder;
 };
+
+function assignDefaultOptions(options: ServiceOptions): ServiceOptions {
+  if (!options.gateway) {
+    options.gateway = defaultOasisGateway();
+  }
+  if (!options.db) {
+    options.db = new LocalStorage();
+  }
+  return options;
+}
 
 function defaultOptions(): ServiceOptions {
   return {

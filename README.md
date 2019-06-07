@@ -1,5 +1,7 @@
 <img src="https://images.squarespace-cdn.com/content/5b368c164eddec44efc17fbb/1552443492143-VIVRAXWMICP0MBFR6B7Z/OasisLabs_Primary_Logo_Red_RGB.png?format=1500w&content-type=image%2Fpng"/>
 
+-------------------------------------
+
 # oasis.js
 
 [![CircleCI](https://circleci.com/gh/oasislabs/oasis-client.svg?style=svg&circle-token=696729782cc74168d05f5fbb37d49a3e5e6065d3)](https://circleci.com/gh/oasislabs/oasis-client)

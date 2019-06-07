@@ -1,6 +1,6 @@
 import oasis from '../../src/index';
 import { Service } from '@oasis/service';
-import { EthereumGateway } from '@oasis/ethereum';
+import { Web3Gateway } from '@oasis/ethereum';
 import { abi, bytecode } from '@oasis/test';
 
 describe('Service', () => {
@@ -8,14 +8,17 @@ describe('Service', () => {
   jest.setTimeout(200000);
 
   let service: Service | undefined = undefined;
-  let gateway: EthereumGateway | undefined = undefined;
+  let gateway: Web3Gateway | undefined = undefined;
 
   it('deploys a service', async () => {
     let coder = new oasis.utils.EthereumCoder();
-    gateway = new oasis.utils.EthereumGateway(
+    gateway = new oasis.gateways.Web3Gateway(
       'wss://web3.oasiscloud.io/ws',
       new oasis.Wallet(process.env['DEVNET_SECRET_KEY']!)
     );
+
+    oasis.connect(gateway);
+
     service = await oasis.deploy({
       idl: abi,
       bytecode,
