@@ -1,10 +1,6 @@
 import PollingService from '../src/polling';
-import { Http } from '../src/http';
-import {
-  PollServiceResponse,
-  ExecuteServiceEvent,
-  Event
-} from '../src/api';
+import { Session } from '../src/session';
+import { PollServiceResponse, ExecuteServiceEvent, Event } from '../src/api';
 
 const assert = require('assert');
 
@@ -91,7 +87,7 @@ describe('PollingService', () => {
 
       // Block http requests until the setup is complete.
       // @ts-ignore
-      service.http.isBlocked = true;
+      service.session.isBlocked = true;
 
       // Queue up requests for all the responses.
       let promises: Promise<Event>[] = [];
@@ -102,7 +98,7 @@ describe('PollingService', () => {
 
       // Unblock http requests. The polling service will not start receiving responses.
       // @ts-ignore
-      service.http.isBlocked = false;
+      service.session.isBlocked = false;
 
       let results = await Promise.all(promises);
 
@@ -118,7 +114,7 @@ describe('PollingService', () => {
 /**
  * MockHttp mocks out the http response from the developer gateway.
  */
-class MockHttp implements Http {
+class MockSession implements Session {
   public isBlocked: boolean = false;
 
   private responseCounter: number;
@@ -169,11 +165,11 @@ function pollingService(responses: PollServiceResponse[]): PollingService {
   // @ts-ignore
   PollingService.SERVICES = new Map();
 
-  let http = new MockHttp(responses);
+  let session = new MockSession(responses);
 
   return PollingService.instance({
     url: 'test',
-    http,
+    session: session,
     interval: POLLING_INTERVAL
   });
 }
