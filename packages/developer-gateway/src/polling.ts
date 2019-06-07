@@ -1,6 +1,6 @@
 import { EventEmitter } from 'eventemitter3';
 import { SubscribeTopic } from '@oasis/service';
-import { Session } from './session';
+import { Http } from './http';
 import {
   DeveloperGatewayApi,
   ServicePollApi,
@@ -43,7 +43,7 @@ export default class PollingService {
    * use `PollingService.instance`.
    */
   private constructor(
-    private session: Session,
+    private session: Http,
     private queueId?: number,
     responseWindow?: Window<Event>,
     interval?: number
@@ -178,7 +178,7 @@ export default class PollingService {
 
 export type PollingServiceOptions = {
   url: string;
-  session: Session;
+  session: Http;
   queueId?: number;
   interval?: number;
 };

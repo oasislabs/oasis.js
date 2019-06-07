@@ -28,14 +28,13 @@ import {
   SubscribePollApi
 } from './api';
 import { Http } from './http';
-import { Session, SessionRequest } from './session';
+import { HttpSession } from './session';
 
 // Re-export.
 export {
   Http,
   HttpDeveloperGateway,
   ServicePollApi,
-  Session,
   SubscribeApi,
   SubscribePollApi,
   PollingService
@@ -51,7 +50,7 @@ class HttpDeveloperGateway implements OasisGateway {
   /**
    * http makes network requests to the gateway.
    */
-  private session: Session;
+  private session: Http;
 
   /**
    * polling collects all non-subscribe fresponses from the developer gateway.
@@ -64,7 +63,7 @@ class HttpDeveloperGateway implements OasisGateway {
   private subscriptions: Map<string, number>;
 
   public constructor(private url: string) {
-    this.session = new SessionRequest(url);
+    this.session = new HttpSession(url);
     this.polling = PollingService.instance({
       url: url,
       session: this.session

@@ -1,5 +1,5 @@
 import PollingService from '../src/polling';
-import { Session } from '../src/session';
+import { Http } from '../src/http';
 import { PollServiceResponse, ExecuteServiceEvent, Event } from '../src/api';
 
 const assert = require('assert');
@@ -114,7 +114,7 @@ describe('PollingService', () => {
 /**
  * MockHttp mocks out the http response from the developer gateway.
  */
-class MockSession implements Session {
+class MockSession implements Http {
   public isBlocked: boolean = false;
 
   private responseCounter: number;

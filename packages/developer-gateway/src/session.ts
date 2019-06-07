@@ -2,9 +2,7 @@ import axios from 'axios';
 import uuid from 'uuid';
 import { Http } from './http';
 
-export type Session = Http;
-
-export class SessionRequest implements Session {
+export class HttpSession implements Http {
   /**
    * session key passed to the developer gateway in the header.
    */

@@ -5,7 +5,7 @@ import {
   SubscribeApi,
   PollingService,
   HttpDeveloperGateway,
-  Session
+  Http
 } from '@oasis/developer-gateway';
 import { Address } from '@oasis/types';
 import { bytes, cbor } from '@oasis/common';
@@ -94,7 +94,7 @@ export default class GatewayBuilder {
  * MockSession mocks out the http response from the developer gateway.
  * Supports a single subscription at a time.
  */
-class MockSession implements Session {
+class MockSession implements Http {
   // Flag for enabling/disabling logging to see what requests would be going to/from
   // the dev gateway. Useful for debugging.
   private logging = false;
