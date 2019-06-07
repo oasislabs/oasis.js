@@ -27,7 +27,8 @@ import {
   ServicePollApi,
   SubscribePollApi
 } from './api';
-import { Http, HttpRequest } from './http';
+import { Http } from './http';
+import { HttpSession } from './session';
 
 // Re-export.
 export {
@@ -49,7 +50,7 @@ class HttpDeveloperGateway implements OasisGateway {
   /**
    * http makes network requests to the gateway.
    */
-  private http: Http;
+  private session: Http;
 
   /**
    * polling collects all non-subscribe fresponses from the developer gateway.
@@ -62,8 +63,11 @@ class HttpDeveloperGateway implements OasisGateway {
   private subscriptions: Map<string, number>;
 
   public constructor(private url: string) {
-    this.http = new HttpRequest(url);
-    this.polling = PollingService.instance({ url });
+    this.session = new HttpSession(url);
+    this.polling = PollingService.instance({
+      url: url,
+      session: this.session
+    });
     this.subscriptions = new Map();
   }
 
@@ -95,7 +99,7 @@ class HttpDeveloperGateway implements OasisGateway {
   //       https://github.com/oasislabs/oasis-client/issues/25
   public subscribe(request: SubscribeRequest): any {
     let events = new EventEmitter();
-    this.http
+    this.session
       .post(SubscribeApi, {
         events: ['logs'],
         filter: UrlEncoder.encode(request.filter)
@@ -110,6 +114,7 @@ class HttpDeveloperGateway implements OasisGateway {
 
         PollingService.instance({
           url: this.url,
+          session: this.session,
           queueId: response.id
         }).subscribe(response.id, event => {
           events.emit(request.event, event);
@@ -130,6 +135,7 @@ class HttpDeveloperGateway implements OasisGateway {
 
     PollingService.instance({
       url: this.url,
+      session: this.session,
       queueId
     }).stop();
 
@@ -158,7 +164,7 @@ class HttpDeveloperGateway implements OasisGateway {
    * and then polling for the response.
    */
   private async postAndPoll(url: string, body: Object): Promise<Event> {
-    const response = await this.http.post(url, body);
+    const response = await this.session.post(url, body);
     let event = await this.polling.response(response.id);
     if ((event as ErrorEvent).cause) {
       throw new Error(`poll error: ${JSON.stringify(event)}`);

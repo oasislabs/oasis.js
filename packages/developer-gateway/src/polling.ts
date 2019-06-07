@@ -1,6 +1,6 @@
 import { EventEmitter } from 'eventemitter3';
 import { SubscribeTopic } from '@oasis/service';
-import { Http, HttpRequest } from './http';
+import { Http } from './http';
 import {
   DeveloperGatewayApi,
   ServicePollApi,
@@ -43,7 +43,7 @@ export default class PollingService {
    * use `PollingService.instance`.
    */
   private constructor(
-    private http: Http,
+    private session: Http,
     private queueId?: number,
     responseWindow?: Window<Event>,
     interval?: number
@@ -63,7 +63,7 @@ export default class PollingService {
       PollingService.SERVICES.set(
         id,
         new PollingService(
-          options.http ? options.http : new HttpRequest(options.url),
+          options.session,
           options.queueId,
           // Set the end point of the window to 2**53 if the queueId exists since
           // it implies a subscription and subscriptions never auto close.
@@ -127,7 +127,7 @@ export default class PollingService {
   }
 
   private async pollOnce() {
-    let responses = await this.http.post(this.api(), {
+    let responses = await this.session.post(this.api(), {
       offset: this.responseWindow.start,
       discardPrevious: true
     });
@@ -178,8 +178,8 @@ export default class PollingService {
 
 export type PollingServiceOptions = {
   url: string;
+  session: Http;
   queueId?: number;
-  http?: Http;
   interval?: number;
 };
 

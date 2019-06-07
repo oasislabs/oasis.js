@@ -51,11 +51,14 @@ export default class GatewayBuilder {
   public gateway(): HttpDeveloperGateway {
     let url = 'test';
     let gateway = new HttpDeveloperGateway(url);
-    let http = new MockHttp(this.serviceResponses, this.subscribeResponses);
+    let session = new MockSession(
+      this.serviceResponses,
+      this.subscribeResponses
+    );
     // @ts-ignore
-    gateway.http = http;
+    gateway.session = session;
     // @ts-ignore
-    gateway.polling.http = http;
+    gateway.polling.session = session;
     // @ts-ignore
     gateway.polling.interval = 100;
 
@@ -66,7 +69,7 @@ export default class GatewayBuilder {
       queueId: 0
     });
     // @ts-ignore
-    subscriptionPoll.http = http;
+    subscriptionPoll.session = session;
     // @ts-ignore
     subscriptionPoll.interval = 100;
     return gateway;
@@ -88,10 +91,10 @@ export default class GatewayBuilder {
 }
 
 /**
- * MockHttp mocks out the http response from the developer gateway.
+ * MockSession mocks out the http response from the developer gateway.
  * Supports a single subscription at a time.
  */
-class MockHttp implements Http {
+class MockSession implements Http {
   // Flag for enabling/disabling logging to see what requests would be going to/from
   // the dev gateway. Useful for debugging.
   private logging = false;
