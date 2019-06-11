@@ -1,10 +1,10 @@
 import Service from './service';
 import deploy from './deploy';
-import { DeployHeaderReader, DeployHeaderWriter } from './deploy/header';
+import { header } from './deploy/header';
 import { OasisCoder } from './coder/oasis';
 import { RpcCoder, RpcRequest } from './coder';
 import { Idl, RpcFn } from './idl';
-import { OasisGateway, SubscribeTopic, setDefaultOasisGateway } from './oasis-gateway';
+import { OasisGateway, SubscribeTopic, connect } from './oasis-gateway';
 
 export {
   Service,
@@ -16,7 +16,6 @@ export {
   SubscribeTopic,
   OasisGateway,
   OasisCoder,
-  DeployHeaderReader,
-  DeployHeaderWriter,
-  setDefaultOasisGateway
+  header,
+  connect
 };

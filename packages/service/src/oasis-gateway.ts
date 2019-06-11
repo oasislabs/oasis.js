@@ -66,14 +66,18 @@ export const SubscribeTopic = 'subscription';
  */
 let _defaultGateway: OasisGateway | undefined = undefined;
 
-export function setDefaultOasisGateway(gw: OasisGateway) {
+/**
+ * Connect sets the default oasis gateway so that all services use it
+ * unless explicity overriden upon construction of the service.
+ */
+export function connect(gw: OasisGateway) {
   _defaultGateway = gw;
 }
 
 //  return DeveloperGateway.http('http://localhost:1234');
 export function defaultOasisGateway(): OasisGateway {
   if (!_defaultGateway) {
-    throw new Error('the default gateway has not been set');
+    throw new Error('the client is not connected to an OasisGateway');
   }
   return _defaultGateway;
 }

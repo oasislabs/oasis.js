@@ -310,3 +310,13 @@ export class DeployHeaderWriter {
     return bytes.toHex(bytes.encodeUtf8(JSON.stringify(body)));
   }
 }
+
+// Alias.
+function parseHex(deploycode: Bytes): DeployHeader | null {
+  return DeployHeaderReader.header(deploycode);
+}
+
+// Convenience api export.
+export const header = {
+  parseHex
+};

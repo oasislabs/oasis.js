@@ -1,7 +1,7 @@
 import { EventEmitter } from 'eventemitter3';
 import { Address, H256 } from '@oasis/types';
 import { bytes } from '@oasis/common';
-import { EthereumGateway } from './';
+import { Web3Gateway } from './';
 
 export default class TransactionObserver {
   /**
@@ -24,7 +24,7 @@ export default class TransactionObserver {
    * Watches the given gateway for all completed transactions sent by `from`
    * and caches the transaction outcome locally.
    */
-  public static observe(address: Address, gw: EthereumGateway) {
+  public static observe(address: Address, gw: Web3Gateway) {
     let subscription = this.subscriptions.get(address);
     if (subscription) {
       return;
