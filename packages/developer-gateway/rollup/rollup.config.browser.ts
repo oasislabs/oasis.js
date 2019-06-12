@@ -4,19 +4,15 @@ import sourceMaps from 'rollup-plugin-sourcemaps';
 import camelCase from 'lodash.camelcase';
 import typescript from 'rollup-plugin-typescript2';
 import json from 'rollup-plugin-json';
-import builtins from 'rollup-plugin-node-builtins';
-import globals from 'rollup-plugin-node-globals';
-
-const pkg = require('./package.json');
 
 const libraryName = 'index';
 
 export default {
-  input: `src/${libraryName}.ts`,
+  input: `./src/${libraryName}.ts`,
   output: [
     {
-      file: pkg.main,
-      name: 'oasis',
+      file: './dist/index.browser.umd.js',
+      name: 'developer-gateway',
       format: 'umd',
       sourcemap: true,
       globals: {
@@ -24,7 +20,7 @@ export default {
       },
     },
     {
-      file: pkg.module,
+      file: './dist/index.browser.es5.js',
       format: 'es',
       sourcemap: true,
     },
@@ -39,11 +35,9 @@ export default {
     }),
     commonjs({
       namedExports: {
-        '../../node_modules/js-sha3/src/sha3.js': [ 'keccak256' ]
+        '../../node_modules/eventemitter3/index.js': [ 'EventEmitter' ]     
       }
     }),
-    globals(),
-    builtins(),
     json(),
     typescript({ useTsconfigDeclarationDir: true }),
     sourceMaps(),

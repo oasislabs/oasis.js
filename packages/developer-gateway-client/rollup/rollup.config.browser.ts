@@ -6,8 +6,9 @@ import typescript from 'rollup-plugin-typescript2';
 import json from 'rollup-plugin-json';
 import builtins from 'rollup-plugin-node-builtins';
 import globals from 'rollup-plugin-node-globals';
+import { terser } from "rollup-plugin-terser";
 
-const pkg = require('./package.json');
+const pkg = require('../package.json');
 
 const libraryName = 'index';
 
@@ -15,8 +16,8 @@ export default {
   input: `src/${libraryName}.ts`,
   output: [
     {
-      file: pkg.main,
-      name: 'developer-gateway',
+      file: 'dist/index.browser.umd.js',
+      name: 'developer-gateway-client',
       format: 'umd',
       sourcemap: true,
       globals: {
@@ -24,7 +25,7 @@ export default {
       },
     },
     {
-      file: pkg.module,
+      file: 'dist/index.browser.es5.js',
       format: 'es',
       sourcemap: true,
     },
@@ -37,15 +38,12 @@ export default {
     resolve({
       browser: true,
     }),
-    commonjs({
-      namedExports: {
-        '../../node_modules/eventemitter3/index.js': [ 'EventEmitter' ]     
-      }
-    }),
+    commonjs(),
     globals(),
     builtins(),
     json(),
     typescript({ useTsconfigDeclarationDir: true }),
     sourceMaps(),
+    terser(),
   ],
 };

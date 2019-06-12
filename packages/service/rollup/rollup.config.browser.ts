@@ -7,15 +7,13 @@ import json from 'rollup-plugin-json';
 import builtins from 'rollup-plugin-node-builtins';
 import globals from 'rollup-plugin-node-globals';
 
-const pkg = require('./package.json');
-
 const libraryName = 'index';
 
 export default {
   input: `src/${libraryName}.ts`,
   output: [
     {
-      file: pkg.main,
+      file: './dist/index.browser.umd.js',
       name: 'index',
       format: 'umd',
       sourcemap: true,
@@ -24,7 +22,7 @@ export default {
       },
     },
     {
-      file: pkg.module,
+      file: './dist/index.browser.es5.js',
       format: 'es',
       sourcemap: true,
     },
