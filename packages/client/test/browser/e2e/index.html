@@ -1,0 +1,110 @@
+<html>
+  <head>
+    <script src="/dist/index.browser.umd.js"></script>
+    <script src="/test/browser/idls/counter-ethereum.js"></script>
+    <script>
+      window.onload = function() {
+        /**
+         * e2e tests cases against:
+         * - web3-gateway
+         * - developer-gateway
+         */
+        async function main() {
+          let tests = [
+            {
+              gateway: new oasis.gateways.Web3Gateway(
+                'wss://web3.oasiscloud.io/ws',
+                new oasis.Wallet('0xeb8b0a828988b3f64b8d954552fad4ea884c71f807e604372c19ec5fc859a713')
+              ),
+              // TODO: remove the ethereum coder once we finish the new runtime.
+              coder: new oasis.utils.EthereumCoder(),
+              completion: (test) => test.gateway.disconnect(),
+            },
+            {
+              gateway: oasis.gateways.DeveloperGateway.http('http://localhost:1234'),
+              // TODO: remove the ethereum coder once we finish the new runtime.
+              coder: new oasis.utils.EthereumCoder(),
+              completion: (_test) => { },
+            }
+          ];
+
+          for (let k = 0; k < tests.length; k += 1) {
+            await runTest(tests[k]);
+          }
+
+          // Signals to the test runner that the test exited successfully.
+          document.getElementById('test').innerHTML = "success";
+        }
+
+        /**
+         * Does three things:
+         *
+         * 1) deploys a service
+         * 2) invoke rpcs on the service
+         * 3) listens to events on the service
+         *
+         * Verifying they all have the correct behavior.
+         */
+        async function runTest(test) {
+          oasis.connect(test.gateway);
+
+          // 1) Deploy.
+          service = await oasis.deploy({
+            idl: abi,
+            bytecode,
+            arguments: [],
+            // TODO: make confidential once we have the new runtime.
+            header: { confidential: false },
+            coder: test.coder,
+            gateway: test.gateway,
+          });
+
+          // 2) Invoke RPCs.
+          let expectedOutput = 'rpc success!';
+
+          let beforeCount = await service.getCounter({
+            gasLimit: '0xf00000'
+          });
+          await service.incrementCounter();
+          let afterCount = await service.getCounter();
+
+          if (beforeCount.toNumber() !== 0) {
+            throw new Error('Incorrect beforeCount');
+          }
+          if (afterCount.toNumber() !== 1) {
+            throw new Error('Incorrect afterCount');
+          }
+
+          // 3) Listen to events.
+          let logs = await new Promise(async resolve => {
+            let logs = [];
+            service.addEventListener('Incremented', function listener(event) {
+              logs.push(event);
+              if (logs.length === 3) {
+                service.removeEventListener('Incremented', listener);
+                resolve(logs);
+              }
+            });
+            for (let k = 0; k < 3; k += 1) {
+              await service.incrementCounter();
+            }
+          });
+
+          for (let k = 0; k < logs.length; k += 1) {
+            // Offset by + 2 because we increment the counter in the previous method.
+            if (logs[k].newCounter.toNumber() !==  k + 2) {
+              throw new Error('Incorrect log counter');
+            }
+          }
+
+          test.completion(test);
+        }
+
+        main();
+      }
+    </script>
+  </head>
+  <body>
+    <h1 id="test">Running Test</h1>
+  </body>
+</html>

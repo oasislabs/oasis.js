@@ -4,10 +4,8 @@ import sourceMaps from 'rollup-plugin-sourcemaps';
 import camelCase from 'lodash.camelcase';
 import typescript from 'rollup-plugin-typescript2';
 import json from 'rollup-plugin-json';
-import builtins from 'rollup-plugin-node-builtins';
-import globals from 'rollup-plugin-node-globals';
 
-const pkg = require('./package.json');
+const pkg = require('../package.json');
 
 const libraryName = 'index';
 
@@ -16,7 +14,7 @@ export default {
   output: [
     {
       file: pkg.main,
-      name: 'developer-gateway-client',
+      name: 'ethereum',
       format: 'umd',
       sourcemap: true,
       globals: {
@@ -34,12 +32,14 @@ export default {
     include: 'src/**',
   },
   plugins: [
-    resolve({
-      browser: true,
+    resolve({ browser: true }),
+    commonjs({
+      namedExports: {
+        '../../node_modules/js-sha3/src/sha3.js': [ 'keccak256' ],
+        '../../node_modules/eventemitter3/index.js': [ 'EventEmitter' ],
+        '../../node_modules/ethers/dist/ethers.min.js': [ 'ethers' ]
+      }
     }),
-    commonjs(),
-    globals(),
-    builtins(),
     json(),
     typescript({ useTsconfigDeclarationDir: true }),
     sourceMaps(),
