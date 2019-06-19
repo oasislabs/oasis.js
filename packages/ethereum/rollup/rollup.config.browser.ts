@@ -6,6 +6,7 @@ import typescript from 'rollup-plugin-typescript2';
 import json from 'rollup-plugin-json';
 import builtins from 'rollup-plugin-node-builtins';
 import globals from 'rollup-plugin-node-globals';
+import { terser } from 'rollup-plugin-terser';
 
 const libraryName = 'index';
 
@@ -42,8 +43,9 @@ export default {
     }),
     globals(),
     builtins(),
-    json(), 
+    json(),
     typescript({ useTsconfigDeclarationDir: true }),
     sourceMaps(),
+    terser()
   ],
 };
