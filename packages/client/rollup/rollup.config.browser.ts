@@ -6,7 +6,7 @@ import typescript from 'rollup-plugin-typescript2';
 import json from 'rollup-plugin-json';
 import builtins from 'rollup-plugin-node-builtins';
 import globals from 'rollup-plugin-node-globals';
-import { terser } from "rollup-plugin-terser";
+import { terser } from 'rollup-plugin-terser';
 
 const libraryName = 'index';
 
@@ -15,7 +15,7 @@ export default {
   output: [
     {
       file: 'dist/index.browser.umd.js',
-      name: 'oasis', 
+      name: 'oasis',
       format: 'umd',
       sourcemap: true,
       globals: {
@@ -38,7 +38,7 @@ export default {
     }),
     commonjs({
       namedExports: {
-        '../../node_modules/eventemitter3/index.js': [ 'EventEmitter' ]     
+        '../../node_modules/eventemitter3/index.js': [ 'EventEmitter' ]
       }
     }),
     globals(),
@@ -46,6 +46,6 @@ export default {
     json(),
     typescript({ useTsconfigDeclarationDir: true }),
     sourceMaps(),
-    terser()    
+    terser()
   ],
 };
