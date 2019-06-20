@@ -30,13 +30,7 @@ export class JsonRpcWebSocket {
 
   constructor(private url: string, middleware: Middleware[]) {
     this.middleware = middleware;
-    this.websocket =
-      // tslint:disable-next-line
-      typeof WebSocket !== 'undefined'
-        ? // Browser.
-          new WebSocket(url)
-        : // Node.
-          new (require('ws'))(url);
+    this.websocket = makeWebsocket(url);
     this.addEventListeners();
   }
 
@@ -88,7 +82,7 @@ export class JsonRpcWebSocket {
 
   public connect() {
     // @ts-ignore
-    this.websocket = new WebSocket(this.url);
+    this.websocket = makeWebsocket(this.url);
     this.addEventListeners();
   }
 
@@ -140,4 +134,13 @@ export type JsonRpcRequest = {
 
 export interface Middleware {
   handle(message: any): any | undefined;
+}
+
+function makeWebsocket(url: string) {
+  // tslint:disable-next-line
+  return typeof WebSocket !== 'undefined'
+    ? // Browser.
+      new WebSocket(url)
+    : // Node.
+      new (require('ws'))(url);
 }
