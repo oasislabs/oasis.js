@@ -16,7 +16,6 @@ import {
 import { JsonRpcWebSocket } from './websocket';
 import { TransactionFactory, Transaction } from './transaction';
 import { Subscriptions } from './subscriptions';
-import TransactionObserver from './transaction-observer';
 
 export class Web3Gateway implements OasisGateway {
   /**
@@ -44,8 +43,6 @@ export class Web3Gateway implements OasisGateway {
     this.ws = new JsonRpcWebSocket(url, [this.subscriptions]);
     this.wallet = wallet;
     this.transactions = new TransactionFactory(this.wallet.address, this.ws);
-
-    TransactionObserver.observe(wallet.address, this);
   }
 
   async deploy(request: DeployRequest): Promise<DeployResponse> {
@@ -62,7 +59,6 @@ export class Web3Gateway implements OasisGateway {
       method: 'eth_getTransactionReceipt',
       params: [txHash]
     })).result;
-
     return {
       address: bytes.parseHex(receipt.contractAddress)
     };
@@ -76,15 +72,13 @@ export class Web3Gateway implements OasisGateway {
     });
     let tx = await this.transactions.create(txParams);
     let rawTx = await this.wallet.sign(tx);
-    let txHash = (await this.ws.request({
-      method: 'eth_sendRawTransaction',
+    let executionPayload = (await this.ws.request({
+      method: 'oasis_invoke',
       params: [rawTx]
     })).result;
 
-    let response = await TransactionObserver.outcome(txHash);
-
     return {
-      output: response
+      output: executionPayload.output
     };
   }
 
