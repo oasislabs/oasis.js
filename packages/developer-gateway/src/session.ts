@@ -16,7 +16,6 @@ export class HttpSession implements Http {
     const uri = `${this.url}/${api}`;
     let response = await axios.post(uri, body, {
       headers: {
-        'X-OASIS-INSECURE-AUTH': 'example',
         'X-OASIS-SESSION-KEY': this.sessionKey,
         'Content-type': 'application/json'
       }
