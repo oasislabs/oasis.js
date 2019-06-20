@@ -6,6 +6,7 @@
   "main": "dist/index.umd.js",
   "module": "dist/index.es5.js",
   "typings": "dist/types/index.d.ts",
+  "license": "Apache-2.0",
   "files": [
     "dist",
     "src"
