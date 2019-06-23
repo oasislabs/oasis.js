@@ -11,7 +11,7 @@ deploy
 
 .. code-block:: javascript
 
-	deploy(idl, address, options)
+	deploy(options)
 
 ----------
 options

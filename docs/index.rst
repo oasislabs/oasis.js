@@ -23,6 +23,7 @@ recommended to use one of our favorite Ethereum libraries like `ethers.js`_ or `
    :maxdepth: 1
    :caption: API Reference
 
+   connect
    deploy
    service
    gateways
