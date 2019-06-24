@@ -1,6 +1,6 @@
 import { EventEmitter } from 'eventemitter3';
 import { keccak256 } from 'js-sha3';
-import { bytes } from '@oasis/common';
+import { bytes, sleep } from '@oasis/common';
 import {
   OasisGateway,
   DeployRequest,
@@ -12,7 +12,6 @@ import {
   PublicKeyRequest,
   PublicKeyResponse
 } from '@oasis/service';
-
 import { JsonRpcWebSocket } from './websocket';
 import { TransactionFactory, Transaction } from './transaction';
 import { Subscriptions } from './subscriptions';
@@ -59,6 +58,22 @@ export class Web3Gateway implements OasisGateway {
       method: 'eth_getTransactionReceipt',
       params: [txHash]
     })).result;
+
+    // TODO: https://github.com/oasislabs/oasis-client/issues/103
+    let tries = 0;
+    while (!receipt && tries < 5) {
+      await sleep(1000);
+      receipt = (await this.ws.request({
+        method: 'eth_getTransactionReceipt',
+        params: [txHash]
+      })).result;
+      tries += 1;
+    }
+
+    if (!receipt) {
+      throw new Error('Could not fetch the transaction receipt');
+    }
+
     return {
       address: bytes.parseHex(receipt.contractAddress)
     };
