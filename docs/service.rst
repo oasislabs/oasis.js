@@ -63,6 +63,26 @@ To listen to events emitted by the service, use the ``addEventListener`` method.
 
 .. code-block:: javascript
 
-   service.addEventListener('myEvent', (event) => {
+   service.addEventListener(event, function listener(event) {
      console.log('Received the event, ' event);
    });
+
+Parameters
+----------
+1. ``event`` - ``String``: The name of the event.
+2. ``listener`` - ``Listener``: A function taking a single event as a parameter.
+
+--------------------
+removeEventListener
+--------------------
+
+To stop listening to events emitted by the service, use the ``removeEventListener`` method. It's suggested to use this method to properly cleanup gateway subscriptions that result from creating event listeners.
+
+.. code-block:: javascript
+
+   service.removeEventListener(event, listener);
+
+Parameters
+----------
+1. ``event`` - ``String``: The name of the event.
+2. ``listener`` - ``Listener``: The listener function previously given to ``addEventListener``.
