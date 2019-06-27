@@ -6,6 +6,10 @@ export class TransactionFactory {
   constructor(private address: string, private ws: JsonRpcWebSocket) {}
 
   async create(tx: UnpreparedTransaction): Promise<Transaction> {
+    // Clone the options so that we don't mutate the array given,
+    // which might be re-used by the front-end client.
+    tx = JSON.parse(JSON.stringify(tx));
+
     let promises: Promise<any>[] = [];
     if (!tx.gasLimit) {
       promises.push(this.estimateGas(tx));
@@ -69,4 +73,3 @@ export type Transaction = {
   gasPrice: string;
   chainId: number;
 };
-
