@@ -4,6 +4,7 @@ import {
   RpcRequest,
   RpcResponse,
   SubscribeRequest,
+  SubscribeFilter,
   UnsubscribeRequest,
   SubscribeTopic,
   DeployRequest,
@@ -102,7 +103,7 @@ class HttpDeveloperGateway implements OasisGateway {
     this.session
       .post(SubscribeApi, {
         events: ['logs'],
-        filter: UrlEncoder.encode(request.filter)
+        filter: urlEncodeFilter(request.filter)
       })
       .then(response => {
         if (response.id === undefined || response.id === null) {
@@ -171,4 +172,12 @@ class HttpDeveloperGateway implements OasisGateway {
     }
     return event;
   }
+}
+
+function urlEncodeFilter(filter: SubscribeFilter): string {
+  return (
+    `address=${bytes.toHex(filter.address)}` +
+    '&' +
+    filter.topics.map(t => 'topic=' + t).join('&')
+  );
 }

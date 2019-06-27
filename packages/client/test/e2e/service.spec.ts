@@ -16,11 +16,13 @@ describe('Service', () => {
         'wss://web3.oasiscloud.io/ws',
         new oasis.Wallet(process.env['DEVNET_SECRET_KEY']!)
       ),
-      completion: test => test.gateway.disconnect()
+      completion: test => test.gateway.disconnect(),
+      options: { gasLimit: '0xf00000' }
     },
     {
       gateway: oasis.gateways.DeveloperGateway.http('http://localhost:1234'),
-      completion: _test => {}
+      completion: _test => {},
+      options: undefined
     }
   ];
 
@@ -43,11 +45,9 @@ describe('Service', () => {
     it('executes an rpc', async () => {
       let expectedOutput = 'rpc success!';
 
-      let beforeCount = await service!.rpc.getCounter({
-        gasLimit: '0xf00000'
-      });
-      await service!.rpc.incrementCounter();
-      let afterCount = await service!.rpc.getCounter();
+      let beforeCount = await service!.rpc.getCounter(test.options);
+      await service!.rpc.incrementCounter(test.options);
+      let afterCount = await service!.rpc.getCounter(test.options);
 
       expect(beforeCount.toNumber()).toEqual(0);
       expect(afterCount.toNumber()).toEqual(1);
@@ -68,9 +68,10 @@ describe('Service', () => {
         }
       });
 
-      for (let k = 0; k < logs.length; k += 1) {
-        // Offset by + 2 because we increment the counter in the previous method.
-        expect(logs[k].newCounter.toNumber()).toEqual(k + 2);
+      for (let k = 1; k < logs.length; k += 1) {
+        expect(
+          logs[k].newCounter.toNumber() - logs[k - 1].newCounter.toNumber()
+        ).toEqual(1);
       }
 
       test.completion(test);
