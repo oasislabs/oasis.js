@@ -13,17 +13,21 @@ describe('Service', () => {
   const gateways = [
     {
       gateway: new oasis.gateways.Web3Gateway(
-        'wss://web3.oasiscloud.io/ws',
-        new oasis.Wallet(process.env['DEVNET_SECRET_KEY']!)
+        'http://localhost:8545',
+        new oasis.Wallet.fromMnemonic(
+          'patient oppose cotton portion chair gentle jelly dice supply salmon blast priority'
+        )
       ),
       completion: test => test.gateway.disconnect(),
       options: { gasLimit: '0xf00000' }
-    },
+    }
+    /*
     {
       gateway: oasis.gateways.DeveloperGateway.http('http://localhost:1234'),
       completion: _test => {},
       options: undefined
     }
+	*/
   ];
 
   gateways.forEach(test => {
@@ -53,6 +57,7 @@ describe('Service', () => {
       expect(afterCount.toNumber()).toEqual(1);
     });
 
+    /*
     it(`listens for service events`, async () => {
       let logs: any[] = await new Promise(async resolve => {
         let logs: any[] = [];
@@ -76,5 +81,6 @@ describe('Service', () => {
 
       test.completion(test);
     });
+	*/
   });
 });
