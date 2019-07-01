@@ -21,7 +21,7 @@
               completion: (test) => test.gateway.disconnect(),
             },
             {
-              gateway: oasis.gateways.DeveloperGateway.http('http://localhost:1234'),
+              gateway: new oasis.gateways.DeveloperGateway('http://localhost:1234'),
               // TODO: remove the ethereum coder once we finish the new runtime.
               coder: new oasis.utils.EthereumCoder(),
               completion: (_test) => { },

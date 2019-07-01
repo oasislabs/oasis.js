@@ -73,15 +73,15 @@ The following two implementations are provided.
 
 ---------------------------------------------------------------------------
 
-DeveloperGateway.http
+DeveloperGateway
 ===============================================
 
 ``oasis.gateways.DeveloperGateway`` provides an implementation of ``OasisGateway`` that communicates with a developer-gateway.
-It can be instantiated via an ``http`` factory method as follows.
+It currently only supports HTTP.
 
 .. code-block:: javascript
 
-   oasis.gateways.DeveloperGateway.http('http://localhost:8545');
+   new oasis.gateways.DeveloperGateway('http://localhost:8545');
 
 Parameters
 ----------
@@ -94,15 +94,15 @@ Parameters
 Web3Gateway
 ===============================================
 
-``oasis.gateways.Web3Gateway`` provides an implementation of ``OasisGateway`` that communicates wiith a web3 gateway.
+``oasis.gateways.Web3Gateway`` provides an implementation of ``OasisGateway`` that communicates with a web3 gateway.
 It's suggested to use this package if you want full control over web3 semantics, i.e., you want the client to sign
 transactions with its own wallet and specify transaction options like gas price and gas limit.
 
-It's gateway can be instantiated as follows:
+It currently only supports WebSockets and can be instantiated as follows:
 
 .. code-block:: javascript
 
-   let url = 'http://web3.oasiscloud.io';
+   let url = 'wss://web3.oasiscloud.io/ws';
    let wallet = new oasis.Wallet(SECRET_KEY);
 
    new oasis.gateways.Web3Gateway(url, wallet);

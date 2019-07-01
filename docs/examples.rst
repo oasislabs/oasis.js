@@ -13,7 +13,7 @@ First, one must connect to an Oasis gateway, for example, a `Developer Gateway <
    const oasis = require('oasis');
 
    // Create a gateway at the given url.
-   const gateway = oasis.gateways.DeveloperGateway.http('[TODO: URL]')
+   const gateway = new oasis.gateways.DeveloperGateway('[TODO: URL]')
 
    // Connect the library to the gateway.
    oasis.connect(gateway);

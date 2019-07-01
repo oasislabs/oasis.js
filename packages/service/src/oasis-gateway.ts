@@ -83,7 +83,6 @@ export function connect(gw: OasisGateway) {
   _defaultGateway = gw;
 }
 
-//  return DeveloperGateway.http('http://localhost:1234');
 export function defaultOasisGateway(): OasisGateway {
   if (!_defaultGateway) {
     throw new Error('the client is not connected to an OasisGateway');

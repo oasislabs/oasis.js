@@ -43,9 +43,38 @@ export {
   PollingService
 };
 
-export default class DeveloperGateway {
-  public static http(url: string): OasisGateway {
-    return new HttpDeveloperGateway(url);
+export default class DeveloperGateway implements OasisGateway {
+  private inner: OasisGateway;
+
+  constructor(url: string) {
+    // TODO: WebSocket gateway and extract protocol from url.
+    this.inner = new HttpDeveloperGateway(url);
+  }
+
+  public async deploy(request: DeployRequest): Promise<DeployResponse> {
+    return this.inner.deploy(request);
+  }
+
+  public async rpc(request: RpcRequest): Promise<RpcResponse> {
+    return this.inner.rpc(request);
+  }
+
+  public subscribe(request: SubscribeRequest): any {
+    return this.inner.subscribe(request);
+  }
+
+  public unsubscribe(request: UnsubscribeRequest) {
+    return this.inner.unsubscribe(request);
+  }
+
+  public async publicKey(
+    request: PublicKeyRequest
+  ): Promise<PublicKeyResponse> {
+    return this.inner.publicKey(request);
+  }
+
+  public async getCode(request: GetCodeRequest): Promise<GetCodeResponse> {
+    return this.inner.getCode(request);
   }
 }
 
