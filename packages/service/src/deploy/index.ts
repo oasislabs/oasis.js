@@ -2,7 +2,7 @@ import { Bytes } from '@oasis/types';
 import { Db, bytes } from '@oasis/common';
 
 import Service from '../service';
-import { Idl } from '../idl';
+import { Idl, fromWasm } from '../idl';
 import { OasisGateway, defaultOasisGateway } from '../oasis-gateway';
 import { DeployHeader, DeployHeaderOptions } from './header';
 import { OasisCoder } from '../coder/oasis';
@@ -25,7 +25,7 @@ export default async function deploy(options: DeployOptions): Promise<Service> {
   if (!response.address) {
     throw new Error(`Invalid gateway response: ${response}`);
   }
-  return new Service(options.idl, response.address, {
+  return new Service(options.idl!, response.address, {
     gateway,
     db: options.db,
     coder: options.coder
@@ -41,6 +41,11 @@ function sanitizeOptions(options: DeployOptions) {
     options.bytecode = bytes.parseHex(options.bytecode.substr(2));
   }
   options.header = deployHeader(options);
+
+  // todo: fail gracefully if evm bytecode is given without an idl.
+  if (!options.idl) {
+    options.idl = fromWasm(options.bytecode);
+  }
 }
 
 /**
@@ -68,7 +73,7 @@ async function deploycode(options: DeployOptions): Promise<Bytes> {
 async function initcode(options: DeployOptions): Promise<Bytes> {
   let encoder = options.coder ? options.coder : OasisCoder.plaintext();
   return encoder.initcode(
-    options.idl,
+    options.idl!,
     options.arguments || [],
     options.bytecode
   );
@@ -85,8 +90,8 @@ function oasisGateway(options: DeployOptions): OasisGateway {
  * DeployOptions specify the arguments for deploying a Service.
  */
 type DeployOptions = {
-  idl: Idl;
   bytecode: Bytes;
+  idl?: Idl;
   arguments?: Array<any>;
   header?: DeployHeaderOptions;
   gateway?: OasisGateway;

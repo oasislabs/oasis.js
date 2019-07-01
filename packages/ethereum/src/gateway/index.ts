@@ -10,7 +10,9 @@ import {
   SubscribeRequest,
   UnsubscribeRequest,
   PublicKeyRequest,
-  PublicKeyResponse
+  PublicKeyResponse,
+  GetCodeRequest,
+  GetCodeResponse
 } from '@oasis/service';
 import { JsonRpcWebSocket } from './websocket';
 import { TransactionFactory, Transaction } from './transaction';
@@ -58,7 +60,6 @@ export class Web3Gateway implements OasisGateway {
       method: 'eth_getTransactionReceipt',
       params: [txHash]
     })).result;
-
     // TODO: https://github.com/oasislabs/oasis-client/issues/103
     let tries = 0;
     while (!receipt && tries < 5) {
@@ -154,6 +155,16 @@ export class Web3Gateway implements OasisGateway {
 
   public disconnect() {
     this.ws.disconnect();
+  }
+
+  public async getCode(request: GetCodeRequest): Promise<GetCodeResponse> {
+    let response = await this.ws.request({
+      method: 'eth_getCode',
+      params: [bytes.toHex(request.address), 'latest']
+    });
+    return {
+      code: response.result
+    };
   }
 }
 
