@@ -10,7 +10,9 @@ import {
   PublicKeyRequest,
   PublicKeyResponse,
   DeployRequest,
-  DeployResponse
+  DeployResponse,
+  GetCodeRequest,
+  GetCodeResponse
 } from '../src/oasis-gateway';
 import { RpcFn } from '../src/idl';
 import { RpcRequest as FnRequest } from '../src/coder';
@@ -28,6 +30,9 @@ export class EmptyOasisGateway implements OasisGateway {
   }
   public async deploy(request: DeployRequest): Promise<DeployResponse> {
     throw new Error('cannot deploy from an empty gateway');
+  }
+  public async getCode(request: GetCodeRequest): Promise<GetCodeResponse> {
+    throw new Error('unsupported!');
   }
 }
 

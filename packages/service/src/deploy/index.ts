@@ -42,6 +42,7 @@ function sanitizeOptions(options: DeployOptions) {
   }
   options.header = deployHeader(options);
 
+  // todo: fail gracefully if evm bytecode is given without an idl.
   if (!options.idl) {
     options.idl = fromWasm(options.bytecode);
   }

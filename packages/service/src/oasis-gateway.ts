@@ -10,6 +10,7 @@ export interface OasisGateway {
   subscribe(request: SubscribeRequest): EventEmitter;
   unsubscribe(request: UnsubscribeRequest);
   publicKey(request: PublicKeyRequest): Promise<PublicKeyResponse>;
+  getCode(request: GetCodeRequest): Promise<GetCodeResponse>;
 }
 
 export type DeployRequest = {
@@ -22,6 +23,14 @@ export type DeployResponse = {
 
 export type PublicKeyRequest = {
   address: Address;
+};
+
+export type GetCodeRequest = {
+  address: Address;
+};
+
+export type GetCodeResponse = {
+  code: Uint8Array;
 };
 
 export type RpcRequest = {

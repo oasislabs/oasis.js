@@ -59,6 +59,11 @@ export class OasisCoder implements RpcCoder {
     bytecode: Bytes
   ): Promise<Bytes> {
     let constructorArgs = idl.constructor.inputs;
+
+    if (constructorArgs.length === 0) {
+      return bytecode;
+    }
+
     let args = await this.encode(
       { name: 'constructor', inputs: constructorArgs },
       params || []

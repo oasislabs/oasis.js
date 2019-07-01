@@ -10,7 +10,9 @@ import {
   DeployRequest,
   DeployResponse,
   PublicKeyRequest,
-  PublicKeyResponse
+  PublicKeyResponse,
+  GetCodeRequest,
+  GetCodeResponse
 } from '@oasis/service';
 import { Address, PublicKey, Bytes } from '@oasis/types';
 import { UrlEncoder, bytes } from '@oasis/common';
@@ -171,6 +173,10 @@ class HttpDeveloperGateway implements OasisGateway {
       throw new Error(`poll error: ${JSON.stringify(event)}`);
     }
     return event;
+  }
+
+  public async getCode(request: GetCodeRequest): Promise<GetCodeResponse> {
+    throw new Error('unimplemented!');
   }
 }
 

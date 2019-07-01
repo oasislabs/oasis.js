@@ -20,7 +20,7 @@ export interface Idl {
 
 export function fromWasm(bytecode: Uint8Array): Idl {
   // @ts-ignore
-  var wasmModule = new WebAssembly.Module(bytecode);
+  let wasmModule = new WebAssembly.Module(bytecode);
   // @ts-ignore
   let sections = WebAssembly.Module.customSections(
     wasmModule,

@@ -2,7 +2,7 @@ import { EventEmitter } from 'eventemitter3';
 import { keccak256 } from 'js-sha3';
 import { Address, cbor } from '@oasis/types';
 import { Db, LocalStorage, bytes } from '@oasis/common';
-import { Idl, RpcFn } from './idl';
+import { Idl, RpcFn, fromWasm } from './idl';
 import { Rpcs, RpcFactory } from './rpc';
 import { RpcCoder } from './coder';
 import {
@@ -43,7 +43,7 @@ export default class Service {
   /**
    * coder encodes all rpcs and subscriptions to the service. Wrapped in a
    * promise because it must wait to know whether the coder should be
-   * confidenteial or not, which requires a request to the gateway.
+   * confidential or not, which requires a request to the gateway.
    */
   private coder: Promise<RpcCoder>;
 
@@ -59,7 +59,7 @@ export default class Service {
    */
   public constructor(idl: Idl, address: Address, options?: ServiceOptions) {
     this.idl = idl;
-    this.options = this.setupOptions(options);
+    this.options = Service.setupOptions(options);
 
     // Attach the rpcs onto the rpc interface so that we can generate dynamic
     // rpc methods while keeping the compiler happy. Without this, we need
@@ -75,13 +75,27 @@ export default class Service {
   }
 
   /**
+   * Constructs a service object from a given `address` by fetching the on-
+   * chain wasm and extracting the idl.
+   */
+  public static async at(
+    address: Address,
+    options?: ServiceOptions
+  ): Promise<Service> {
+    options = Service.setupOptions(options);
+    let response = await options.gateway!.getCode({ address });
+    let idl = fromWasm(response.code);
+    return new Service(idl, address, options);
+  }
+
+  /**
    * setupOptions configures the options for the Service.
    *
    * @param   options is the options argument given to the constructor.
    * @returns the options to be used for this service, filling in any
    *          options left out by the given options.
    */
-  private setupOptions(options?: ServiceOptions): ServiceOptions {
+  private static setupOptions(options?: ServiceOptions): ServiceOptions {
     if (options === undefined) {
       options = defaultOptions();
     } else {
@@ -100,9 +114,7 @@ export default class Service {
    * addEventListener is the api to register for observing service events.
    *
    * @param event is the name of the event to listen to.
-   * @param optionsOrCallback is either the listener options, or, if not defined,
-   *        then the callback to call when the event is emitted.
-   * @param callback? is the callback to call when an event is emitted in the
+   * @param callback is the callback to call when an event is emitted in the
    *        case where listener options are provided as the second argument.
    */
   public addEventListener(event: string, callback: Listener) {
