@@ -47,10 +47,11 @@ export class Web3Gateway implements OasisGateway {
   }
 
   async deploy(request: DeployRequest): Promise<DeployResponse> {
-    let tx = await this.transactions.create({
+    let txParams = Object.assign(request.options || {}, {
       value: '0x00',
       data: bytes.toHex(request.data)
     });
+    let tx = await this.transactions.create(txParams);
     let rawTx = await this.wallet.sign(tx);
     let txHash = (await this.ws.request({
       method: 'eth_sendRawTransaction',

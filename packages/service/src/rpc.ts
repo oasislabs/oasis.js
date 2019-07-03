@@ -68,12 +68,11 @@ export class RpcFactory {
     let options = undefined;
 
     let inputLen = fn.inputs ? fn.inputs.length : 0;
-
     if (args.length > inputLen) {
       if (args.length !== inputLen + 1) {
         throw new Error('provided too many arguments ${args}');
       }
-      options = args.pop();
+      options = JSON.parse(JSON.stringify(args.pop()));
     }
     return [args, options];
   }

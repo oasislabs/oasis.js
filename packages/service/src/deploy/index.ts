@@ -3,7 +3,11 @@ import { Db, bytes } from '@oasis/common';
 
 import Service from '../service';
 import { Idl, fromWasm } from '../idl';
-import { OasisGateway, defaultOasisGateway } from '../oasis-gateway';
+import {
+  OasisGateway,
+  RpcOptions,
+  defaultOasisGateway
+} from '../oasis-gateway';
 import { DeployHeader, DeployHeaderOptions } from './header';
 import { OasisCoder } from '../coder/oasis';
 import { RpcCoder } from '../coder';
@@ -20,7 +24,7 @@ export default async function deploy(options: DeployOptions): Promise<Service> {
 
   let gateway = oasisGateway(options);
 
-  let response = await gateway.deploy({ data });
+  let response = await gateway.deploy({ data, options: options.options });
 
   if (!response.address) {
     throw new Error(`Invalid gateway response: ${response}`);
@@ -97,4 +101,5 @@ type DeployOptions = {
   gateway?: OasisGateway;
   db?: Db;
   coder?: RpcCoder;
+  options?: RpcOptions;
 };
