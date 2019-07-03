@@ -28,7 +28,8 @@ import {
   PublicKeyApi,
   SubscribeApi,
   ServicePollApi,
-  SubscribePollApi
+  SubscribePollApi,
+  GetCodeApi
 } from './api';
 import { Http } from './http';
 import { HttpSession } from './session';
@@ -205,7 +206,12 @@ class HttpDeveloperGateway implements OasisGateway {
   }
 
   public async getCode(request: GetCodeRequest): Promise<GetCodeResponse> {
-    throw new Error('unimplemented!');
+    let response = await this.session.post(GetCodeApi, {
+      address: request.address
+    });
+    return {
+      code: response.code
+    };
   }
 }
 
