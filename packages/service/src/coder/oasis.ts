@@ -89,20 +89,31 @@ export class OasisCoder implements RpcCoder {
 
 export class PlaintextRpcEncoder implements RpcEncoder {
   public async encode(fn: RpcFn, args: any[]): Promise<Uint8Array> {
-    if (fn.inputs.length !== args.length) {
+    let expectedLen = fn.inputs ? fn.inputs.length : 0;
+    if (expectedLen !== args.length) {
       throw new Error(`Invalid arguments ${JSON.stringify(args)}`);
     }
 
     // TODO: input validation. https://github.com/oasislabs/oasis-client/issues/14
 
-    let cborEncoded = cbor.encode(args);
-
-    if (fn.name === 'constructor') {
-      return cborEncoded;
+    let argsObject = {};
+    // TODO: change this once the mantle idl changes to use an array.
+    if (fn.inputs) {
+      let position = 0;
+      fn.inputs.forEach(i => {
+        argsObject[i.name] = args[position];
+        position += 1;
+      });
     }
 
-    let sighash = Sighash.from(fn);
-    return bytes.concat([sighash, cborEncoded]);
+    if (fn.name === 'constructor') {
+      return cbor.encode(argsObject);
+    }
+
+    return cbor.encode({
+      method: fn.name,
+      payload: argsObject
+    });
   }
 }
 
@@ -126,9 +137,11 @@ export class Sighash {
   public static format(fn: RpcFn): string {
     let name = fn.name;
 
-    let inputs = fn.inputs
-      .map(i => (i.type === 'defined' ? i.params.type : i.type))
-      .join(',');
+    let inputs = !fn.inputs
+      ? ''
+      : fn.inputs
+          .map(i => (i.type === 'defined' ? i.params.type : i.type))
+          .join(',');
 
     return `${name}(${inputs})`;
   }

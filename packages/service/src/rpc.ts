@@ -66,8 +66,11 @@ export class RpcFactory {
     args: any[]
   ): [any[], RpcOptions | undefined] {
     let options = undefined;
-    if (args.length > fn.inputs.length) {
-      if (args.length !== fn.inputs.length + 1) {
+
+    let inputLen = fn.inputs ? fn.inputs.length : 0;
+
+    if (args.length > inputLen) {
+      if (args.length !== inputLen + 1) {
         throw new Error('provided too many arguments ${args}');
       }
       options = args.pop();

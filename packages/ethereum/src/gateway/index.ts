@@ -62,7 +62,7 @@ export class Web3Gateway implements OasisGateway {
     })).result;
     // TODO: https://github.com/oasislabs/oasis-client/issues/103
     let tries = 0;
-    while (!receipt && tries < 5) {
+    while (!receipt && tries < 50) {
       await sleep(1000);
       receipt = (await this.ws.request({
         method: 'eth_getTransactionReceipt',
@@ -70,7 +70,6 @@ export class Web3Gateway implements OasisGateway {
       })).result;
       tries += 1;
     }
-
     if (!receipt) {
       throw new Error('Could not fetch the transaction receipt');
     }
@@ -92,7 +91,6 @@ export class Web3Gateway implements OasisGateway {
       method: 'oasis_invoke',
       params: [rawTx]
     })).result;
-
     return {
       output: executionPayload.output
     };
@@ -143,13 +141,15 @@ export class Web3Gateway implements OasisGateway {
   }
 
   async publicKey(request: PublicKeyRequest): Promise<PublicKeyResponse> {
-    let response = await this.ws.request({
+    let response = (await this.ws.request({
       method: 'oasis_getPublicKey',
-      params: [request.address]
-    });
+      params: [bytes.toHex(request.address)]
+    })).result;
     // TODO: signature validation. https://github.com/oasislabs/oasis-client/issues/39
     return {
-      publicKey: response.result.publicKey
+      // TODO: re-enable once done debugging.
+      //publicKey: response.public_key
+      publicKey: undefined
     };
   }
 
