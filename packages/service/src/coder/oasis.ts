@@ -119,8 +119,10 @@ export class PlaintextRpcEncoder implements RpcEncoder {
 
 export class PlaintextRpcDecoder {
   async decode(fn: RpcFn, data: Bytes, constructor?: boolean): Promise<any> {
-    // TODO: https://github.com/oasislabs/oasis-client/issues/57
-    return data;
+    if (typeof data === 'string') {
+      data = bytes.parseHex(data);
+    }
+    return cbor.decode(data);
   }
 }
 
