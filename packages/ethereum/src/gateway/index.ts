@@ -63,7 +63,7 @@ export class Web3Gateway implements OasisGateway {
     })).result;
     // TODO: https://github.com/oasislabs/oasis-client/issues/103
     let tries = 0;
-    while (!receipt && tries < 50) {
+    while (!receipt && tries < 5) {
       await sleep(1000);
       receipt = (await this.ws.request({
         method: 'eth_getTransactionReceipt',
@@ -149,7 +149,7 @@ export class Web3Gateway implements OasisGateway {
     // TODO: signature validation. https://github.com/oasislabs/oasis-client/issues/39
     return {
       // TODO: re-enable once done debugging.
-      //publicKey: response.public_key
+      // publicKey: response.public_key
       publicKey: undefined
     };
   }

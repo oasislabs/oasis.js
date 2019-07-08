@@ -96,23 +96,17 @@ export class PlaintextRpcEncoder implements RpcEncoder {
 
     // TODO: input validation. https://github.com/oasislabs/oasis-client/issues/14
 
-    let argsObject = {};
-    // TODO: change this once the mantle idl changes to use an array.
-    if (fn.inputs) {
-      let position = 0;
-      fn.inputs.forEach(i => {
-        argsObject[i.name] = args[position];
-        position += 1;
-      });
+    if (fn.name === 'constructor') {
+      return cbor.encode(args);
     }
 
-    if (fn.name === 'constructor') {
-      return cbor.encode(argsObject);
+    if (args.length === 1) {
+      args = args[0];
     }
 
     return cbor.encode({
       method: fn.name,
-      payload: argsObject
+      payload: args
     });
   }
 }
