@@ -148,9 +148,7 @@ export class Web3Gateway implements OasisGateway {
     })).result;
     // TODO: signature validation. https://github.com/oasislabs/oasis-client/issues/39
     return {
-      // TODO: re-enable once done debugging.
-      // publicKey: response.public_key
-      publicKey: undefined
+      publicKey: response.public_key
     };
   }
 

@@ -6,6 +6,7 @@ import { ServiceOptions } from './service';
 import { OasisGateway, RpcOptions } from './oasis-gateway';
 import { RpcCoder } from './coder';
 import { OasisCoder } from './coder/oasis';
+import { header } from './deploy/header';
 
 /**
  * Rpcs is a dynamically generated object with rpc methods attached.
@@ -86,16 +87,17 @@ export class RpcFactory {
     address: Address,
     options: ServiceOptions
   ): Promise<RpcCoder> {
-    let keyStore = new KeyStore(options.db, options.gateway!);
-    // Ask the key store if this service is confidential.
-    let serviceKey = await keyStore.publicKey(address);
-    // No key so the contract is not confidential. Don't encrypt.
-    if (!serviceKey) {
+    // Check the contract's deploy header to see if it's confidential.
+    let response = await options.gateway!.getCode({ address });
+    let deployHeader = header.parseHex(response.code);
+
+    if (!deployHeader || !deployHeader.body.confidential) {
       return OasisCoder.plaintext();
     }
-    // A service key exists so it's confidential. Encrypt.
-    let myKeyPair = keyStore.localKeys();
 
+    let keyStore = new KeyStore(options.db, options.gateway!);
+    let serviceKey = await keyStore.publicKey(address);
+    let myKeyPair = keyStore.localKeys();
     return OasisCoder.confidential({
       peerPublicKey: serviceKey,
       publicKey: myKeyPair.publicKey,
