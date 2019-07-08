@@ -34,11 +34,10 @@ describe('Encoders', () => {
       let encoded = await encoder.encode(rpcDefinition, rpcInput);
       // Decode the rpc.
       let result = await decoder.decode(encoded);
-
       // Check it equals the original input.
       let expectedResult = {
-        sighash: new Uint8Array([248, 152, 201, 10]),
-        input: rpcInput
+        method: 'my_method',
+        payload: rpcInput
       };
       expect(JSON.stringify(result)).toEqual(JSON.stringify(expectedResult));
     });

@@ -41,6 +41,7 @@ export {
   ServicePollApi,
   SubscribeApi,
   SubscribePollApi,
+  GetCodeApi,
   PollingService
 };
 

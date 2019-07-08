@@ -30,8 +30,8 @@ interface RpcSubscribeTopic {
 }
 
 export type RpcRequest = {
-  sighash?: Bytes4;
-  input: any[];
+  method: string;
+  payload: any[];
 };
 
 interface RpcSubscriptionEventDecoder {
