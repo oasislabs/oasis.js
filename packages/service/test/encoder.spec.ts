@@ -1,7 +1,7 @@
 import { idl } from '@oasis/test';
 import { DummyStorage } from '@oasis/common';
 import { KeyStore } from '@oasis/confidential';
-import { OasisCoder, Sighash } from '../src/coder/oasis';
+import { OasisCoder } from '../src/coder/oasis';
 import { ConfidentialGatewayRequestDecoder, EmptyOasisGateway } from './utils';
 
 describe('Encoders', () => {
@@ -40,22 +40,6 @@ describe('Encoders', () => {
         payload: rpcInput
       };
       expect(JSON.stringify(result)).toEqual(JSON.stringify(expectedResult));
-    });
-  });
-
-  describe('Sighash', () => {
-    it('formats sighash with an oasis idl', () => {
-      let expected = [
-        'the(list,bytes)',
-        'it(map,set)',
-        'void()',
-        'import(RpcType)'
-      ];
-      for (let k = 0; k < expected.length; k += 1) {
-        let fn = idl.functions[k];
-        let fnSignature = Sighash.format(fn);
-        expect(expected[k]).toEqual(fnSignature);
-      }
     });
   });
 });

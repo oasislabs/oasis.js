@@ -119,26 +119,3 @@ export class PlaintextRpcDecoder {
     return cbor.decode(data);
   }
 }
-
-export class Sighash {
-  public static from(fn: RpcFn): Bytes4 {
-    let sighash = bytes.parseHex(keccak256(Sighash.format(fn)));
-    return sighash.slice(0, 4);
-  }
-
-  /**
-   * @param   fn is an idl input field.
-   * @returns a string in the form of a sighash preimage.
-   */
-  public static format(fn: RpcFn): string {
-    let name = fn.name;
-
-    let inputs = !fn.inputs
-      ? ''
-      : fn.inputs
-          .map(i => (i.type === 'defined' ? i.params.type : i.type))
-          .join(',');
-
-    return `${name}(${inputs})`;
-  }
-}
