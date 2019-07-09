@@ -34,10 +34,7 @@ export default class GatewayBuilder {
   }
 
   public subscribe(event: Object): GatewayBuilder {
-    let encodedEvent = bytes.toHex(cbor.encode(event));
-    let log = { data: encodedEvent };
-    let data = Buffer.from(JSON.stringify(log)).toString('hex');
-
+    let data = bytes.toHex(cbor.encode(event));
     this.addSubscribeResponse({
       event: { data }
     });
