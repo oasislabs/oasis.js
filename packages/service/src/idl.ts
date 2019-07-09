@@ -1,4 +1,5 @@
 import { bytes } from '@oasis/common';
+import { inflateRaw } from 'pako';
 
 // Idl type definitions.
 //
@@ -26,10 +27,15 @@ export function fromWasm(bytecode: Uint8Array): Idl {
     wasmModule,
     'mantle-interface'
   );
+
   if (sections.length !== 1) {
     throw new Error('Wasm bytecode must have one mantle-interface section');
   }
-  return JSON.parse(bytes.decodeUtf8(sections[0]));
+
+  let deflatedIdl = new Uint8Array(sections[0]);
+  let inflatedIdl = new Uint8Array(inflateRaw(deflatedIdl));
+
+  return JSON.parse(bytes.decodeUtf8(inflatedIdl));
 }
 
 type RpcIdent = string;

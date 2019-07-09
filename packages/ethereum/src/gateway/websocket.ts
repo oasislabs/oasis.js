@@ -61,6 +61,9 @@ export class JsonRpcWebSocket {
 
   private handler(m: any) {
     let data = JSON.parse(m.data);
+    if (data.error) {
+      throw new Error(JSON.stringify(data.error));
+    }
     this.responses.emit(`${data.id}`, data);
   }
 

@@ -82,7 +82,8 @@ describe('Service', () => {
       // Given a service.
       let service = new Service(idl, address, {
         gateway: new RpcRequestMockOasisGateway(resolve),
-        db: new DummyStorage()
+        db: new DummyStorage(),
+        coder: plaintextCoder()
       });
 
       // When we make an rpc request.
@@ -94,8 +95,11 @@ describe('Service', () => {
     // Then we should have given the gateway the encoded wire format of the request.
     let decoder = new GatewayRequestDecoder();
     let req = await decoder.decode(request.data);
-    expect(bytes.toHex(req.sighash!)).toEqual('0xccc7cde3');
-    expect(JSON.stringify(req.input)).toEqual(JSON.stringify([input1, input2]));
+
+    expect(req.method).toEqual('the');
+    expect(JSON.stringify(req.payload)).toEqual(
+      JSON.stringify([input1, input2])
+    );
   });
 
   it('encodes an rpc request for a confidential service', async () => {
@@ -120,8 +124,8 @@ describe('Service', () => {
     let decoder = new ConfidentialGatewayRequestDecoder(keys.privateKey);
     let plaintext = await decoder.decode(request.data);
 
-    expect(bytes.toHex(plaintext.sighash!)).toEqual('0xccc7cde3');
-    expect(JSON.stringify(plaintext.input)).toEqual(
+    expect(plaintext.method).toEqual('the');
+    expect(JSON.stringify(plaintext.payload)).toEqual(
       JSON.stringify([input1, input2])
     );
   });
@@ -135,6 +139,15 @@ function confidentialCoder() {
     // @ts-ignore
     peerPrivateKey: keys.privateKey
   });
+  // Don't bother decoding in tests since the gateway is mocked out.
+  coder.decode = async (fn, data, constructor) => {
+    return data;
+  };
+  return coder;
+}
+
+function plaintextCoder() {
+  let coder = OasisCoder.plaintext();
   // Don't bother decoding in tests since the gateway is mocked out.
   coder.decode = async (fn, data, constructor) => {
     return data;

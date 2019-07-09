@@ -20,6 +20,7 @@ const oasis = {
   },
   utils: {
     bytes,
+    cbor,
     encrypt,
     decrypt,
     OasisCoder,

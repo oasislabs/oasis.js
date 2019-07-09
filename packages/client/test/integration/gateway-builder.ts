@@ -3,6 +3,7 @@ import {
   ServicePollApi,
   SubscribePollApi,
   SubscribeApi,
+  GetCodeApi,
   PollingService,
   HttpDeveloperGateway,
   Http
@@ -22,16 +23,12 @@ export default class GatewayBuilder {
     this.addServiceResponse({
       event: { address }
     });
-    // getPublicKey response.
-    this.addServiceResponse({
-      event: {}
-    });
     return this;
   }
 
   public rpc(output: any): GatewayBuilder {
     this.addServiceResponse({
-      event: { output: output }
+      event: { output: bytes.toHex(cbor.encode(output)) }
     });
     return this;
   }
@@ -150,6 +147,10 @@ class MockSession implements Http {
     else if (api === SubscribeApi) {
       // The mock only supports a single queue so just use 0 as the queueId.
       return { id: 0 };
+    }
+    // Dummy get code response.
+    else if (api === GetCodeApi) {
+      return { code: '0x00' };
     }
     // Service poll offset (handles the initial, non-poll request).
     else {

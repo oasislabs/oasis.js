@@ -21,6 +21,10 @@ export const RpcApi: DeveloperGatewayApi = 'v0/api/service/execute';
  */
 export const PublicKeyApi: DeveloperGatewayApi = 'v0/api/service/getPublicKey';
 /**
+ * Retrieves the code for an address.
+ */
+export const GetCodeApi: DeveloperGatewayApi = 'v0/api/service/getCode';
+/**
  * Polls for an event on a service.
  */
 export const ServicePollApi: DeveloperGatewayApi = 'v0/api/service/poll';

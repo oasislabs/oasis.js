@@ -32,7 +32,9 @@ export class EmptyOasisGateway implements OasisGateway {
     throw new Error('cannot deploy from an empty gateway');
   }
   public async getCode(request: GetCodeRequest): Promise<GetCodeResponse> {
-    throw new Error('unsupported!');
+    return {
+      code: new Uint8Array([0])
+    };
   }
 }
 
@@ -105,15 +107,7 @@ export class GatewayRequestDecoder {
       data = bytes.parseHex(data);
     }
 
-    // Constructor doesn't use a sighash.
-    if (constructor) {
-      return cbor.decode(data);
-    }
-
-    return {
-      sighash: data.slice(0, 4),
-      input: cbor.decode(data.slice(4))
-    };
+    return cbor.decode(data);
   }
 }
 

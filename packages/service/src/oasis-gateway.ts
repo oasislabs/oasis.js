@@ -15,6 +15,7 @@ export interface OasisGateway {
 
 export type DeployRequest = {
   data: Bytes;
+  options?: RpcOptions;
 };
 
 export type DeployResponse = {
