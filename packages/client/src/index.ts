@@ -25,7 +25,8 @@ const oasis = {
     decrypt,
     OasisCoder,
     EthereumCoder,
-    header
+    header,
+    keccak256
   }
 };
 

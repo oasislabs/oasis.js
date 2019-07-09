@@ -46,11 +46,7 @@ export class OasisCoder implements RpcCoder {
   }
 
   public decodeSubscriptionEvent(e: any, idl: Idl): any {
-    return cbor.decode(
-      bytes.parseHex(
-        JSON.parse(Buffer.from(e.data, 'hex').toString('utf-8')).data
-      )
-    );
+    return cbor.decode(bytes.parseHex(e.data));
   }
 
   public async initcode(
