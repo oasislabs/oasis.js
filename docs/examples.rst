@@ -4,9 +4,9 @@ Examples
 
 Here we walk through a workflow demonstrating the core apis provided by the client.
 
-Connect
-==========
-First, one must connect to an Oasis gateway, for example, a `Developer Gateway <https://todo>`_.
+Set the gateway
+===============
+First, one must select an Oasis gateway, for example, a `Developer Gateway <https://todo>`_.
 
 .. code-block:: javascript
 
@@ -16,7 +16,7 @@ First, one must connect to an Oasis gateway, for example, a `Developer Gateway <
    const gateway = new oasis.gateways.DeveloperGateway('[TODO: URL]')
 
    // Connect the library to the gateway.
-   oasis.connect(gateway);
+   oasis.setGateway(gateway);
 
 Deploy
 ==========

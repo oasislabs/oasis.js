@@ -2,7 +2,7 @@ import { bytes, DummyStorage } from '@oasis/common';
 import { idl } from '@oasis/test';
 import { Idl } from '../src/idl';
 import Service from '../src/service';
-import { RpcRequest, connect } from '../src/oasis-gateway';
+import { RpcRequest, setGateway } from '../src/oasis-gateway';
 import {
   EmptyOasisGateway,
   RpcRequestMockOasisGateway,
@@ -12,7 +12,7 @@ import {
 } from './utils';
 import { OasisCoder } from '../src/coder/oasis';
 
-connect(new EmptyOasisGateway());
+setGateway(new EmptyOasisGateway());
 
 describe('Service', () => {
   const address = '0x372FF3aeA1fc69B9C440A5fE0B4c23c38226Da68';

@@ -77,10 +77,10 @@ export const SubscribeTopic = 'subscription';
 let _defaultGateway: OasisGateway | undefined = undefined;
 
 /**
- * Connect sets the default oasis gateway so that all services use it
+ * setGateway sets the default oasis gateway so that all services use it
  * unless explicity overriden upon construction of the service.
  */
-export function connect(gw: OasisGateway) {
+export function setGateway(gw: OasisGateway) {
   _defaultGateway = gw;
 }
 

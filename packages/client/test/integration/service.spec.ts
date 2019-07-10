@@ -12,7 +12,7 @@ describe('Service', () => {
       .rpc(expectedOutput)
       .gateway();
 
-    oasis.connect(gateway);
+    oasis.setGateway(gateway);
 
     // Deploy the service.
     let service = await oasis.deploy({
@@ -37,7 +37,7 @@ describe('Service', () => {
       .subscribe({ indexed1: 3, indexed2: 3 })
       .gateway();
 
-    oasis.connect(gateway);
+    oasis.setGateway(gateway);
 
     // Deploy the service.
     let service = await oasis.deploy({

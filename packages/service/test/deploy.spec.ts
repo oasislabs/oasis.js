@@ -6,10 +6,10 @@ import {
 } from './utils';
 import { Idl } from '../src/idl';
 import { deploy, Service } from '../src/index';
-import { RpcRequest, connect } from '../src/oasis-gateway';
+import { RpcRequest, setGateway } from '../src/oasis-gateway';
 import { DeployHeaderReader } from '../src/deploy/header';
 
-connect(new EmptyOasisGateway());
+setGateway(new EmptyOasisGateway());
 
 describe('Service deploys', () => {
   let testCases = [
