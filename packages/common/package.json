@@ -1,4 +1,5 @@
 {
+  "private": true,
   "name": "@oasis/common",
   "version": "0.0.0",
   "description": "",
