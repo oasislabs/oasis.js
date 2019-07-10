@@ -10,7 +10,7 @@ First, one must select an Oasis gateway, for example, a `Developer Gateway <http
 
 .. code-block:: javascript
 
-   const oasis = require('oasis');
+   const oasis = require('@oasis/client');
 
    // Create a gateway at the given url.
    const gateway = new oasis.gateways.DeveloperGateway('[TODO: URL]')
@@ -92,7 +92,7 @@ will allow the client to sign and send raw transactions.
 
 .. code-block:: javascript
 
-	const oasis = require('oasis');
+	const oasis = require('@oasis/client');
 
 	// Wallet private key.
 	const privateKey = '...';
