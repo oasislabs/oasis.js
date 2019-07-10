@@ -61,6 +61,7 @@ export class Web3Gateway implements OasisGateway {
       method: 'eth_getTransactionReceipt',
       params: [txHash]
     })).result;
+
     // TODO: https://github.com/oasislabs/oasis-client/issues/103
     let tries = 0;
     while (!receipt && tries < 5) {
@@ -92,6 +93,15 @@ export class Web3Gateway implements OasisGateway {
       method: 'oasis_invoke',
       params: [rawTx]
     })).result;
+
+    // If the transaction reverted, throw an Error with the message given from
+    // the runtime.
+    if (executionPayload.status === '0x0') {
+      throw new Error(
+        bytes.decodeUtf8(bytes.parseHex(executionPayload.output))
+      );
+    }
+
     return {
       output: executionPayload.output
     };
