@@ -5,9 +5,9 @@ import {
   SubscribeApi,
   GetCodeApi,
   PollingService,
-  HttpDeveloperGateway,
+  HttpGateway,
   Http
-} from '@oasis/developer-gateway';
+} from '@oasis/gateway';
 import { Address } from '@oasis/types';
 import { bytes, cbor } from '@oasis/common';
 
@@ -42,9 +42,9 @@ export default class GatewayBuilder {
     return this;
   }
 
-  public gateway(): HttpDeveloperGateway {
+  public gateway(): HttpGateway {
     let url = 'test';
-    let gateway = new HttpDeveloperGateway(url);
+    let gateway = new HttpGateway(url);
     let session = new MockSession(
       this.serviceResponses,
       this.subscribeResponses
@@ -85,7 +85,7 @@ export default class GatewayBuilder {
 }
 
 /**
- * MockSession mocks out the http response from the developer gateway.
+ * MockSession mocks out the http response from the gateway.
  * Supports a single subscription at a time.
  */
 class MockSession implements Http {

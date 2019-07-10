@@ -37,7 +37,7 @@ import { HttpSession } from './session';
 // Re-export.
 export {
   Http,
-  HttpDeveloperGateway,
+  HttpGateway,
   ServicePollApi,
   SubscribeApi,
   SubscribePollApi,
@@ -45,12 +45,12 @@ export {
   PollingService
 };
 
-export default class DeveloperGateway implements OasisGateway {
+export default class Gateway implements OasisGateway {
   private inner: OasisGateway;
 
   constructor(url: string) {
     // TODO: WebSocket gateway and extract protocol from url.
-    this.inner = new HttpDeveloperGateway(url);
+    this.inner = new HttpGateway(url);
   }
 
   public async deploy(request: DeployRequest): Promise<DeployResponse> {
@@ -80,7 +80,7 @@ export default class DeveloperGateway implements OasisGateway {
   }
 }
 
-class HttpDeveloperGateway implements OasisGateway {
+class HttpGateway implements OasisGateway {
   /**
    * http makes network requests to the gateway.
    */
