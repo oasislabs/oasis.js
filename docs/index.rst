@@ -17,13 +17,12 @@ recommended to use one of our favorite Ethereum libraries like `ethers.js`_ or `
 
    getting-started
    examples
-   clients
 
 .. toctree::
    :maxdepth: 1
    :caption: API Reference
 
-   connect
+   set-gateway
    deploy
    service
    gateways
