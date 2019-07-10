@@ -13,9 +13,9 @@ import {
   PublicKeyResponse,
   GetCodeRequest,
   GetCodeResponse
-} from '@oasis/service';
-import { Address, PublicKey, Bytes } from '@oasis/types';
-import { UrlEncoder, bytes } from '@oasis/common';
+} from '@oasislabs/service';
+import { Address, PublicKey, Bytes } from '@oasislabs/types';
+import { UrlEncoder, bytes } from '@oasislabs/common';
 import PollingService from './polling';
 import {
   Event,

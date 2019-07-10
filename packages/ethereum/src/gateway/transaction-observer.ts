@@ -1,6 +1,6 @@
 import { EventEmitter } from 'eventemitter3';
-import { Address, H256 } from '@oasis/types';
-import { bytes } from '@oasis/common';
+import { Address, H256 } from '@oasislabs/types';
+import { bytes } from '@oasislabs/common';
 import { Web3Gateway } from './';
 
 export default class TransactionObserver {

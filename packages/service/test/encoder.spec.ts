@@ -1,6 +1,6 @@
-import { idl } from '@oasis/test';
-import { DummyStorage } from '@oasis/common';
-import { KeyStore } from '@oasis/confidential';
+import { idl } from '@oasislabs/test';
+import { DummyStorage } from '@oasislabs/common';
+import { KeyStore } from '@oasislabs/confidential';
 import { OasisCoder } from '../src/coder/oasis';
 import { ConfidentialGatewayRequestDecoder, EmptyOasisGateway } from './utils';
 

@@ -1,19 +1,19 @@
 import { keccak256 } from 'js-sha3';
-import Gateway from '@oasis/gateway';
-import { cbor, bytes } from '@oasis/common';
+import Gateway from '@oasislabs/gateway';
+import { cbor, bytes } from '@oasislabs/common';
 import {
   Service,
   deploy,
   OasisCoder,
   header,
   setGateway
-} from '@oasis/service';
-import { Deoxysii, encrypt, decrypt } from '@oasis/confidential';
+} from '@oasislabs/service';
+import { Deoxysii, encrypt, decrypt } from '@oasislabs/confidential';
 import {
   Web3Gateway,
   EthereumCoder,
   EthereumWallet as Wallet
-} from '@oasis/ethereum';
+} from '@oasislabs/ethereum';
 
 const oasis = {
   Service,

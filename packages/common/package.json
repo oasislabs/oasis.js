@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "@oasis/common",
+  "name": "@oasislabs/common",
   "version": "0.0.0",
   "description": "",
   "keywords": [],
@@ -35,7 +35,7 @@
     ]
   },
   "dependencies": {
-    "@oasis/types": "^0.0.0",
+    "@oasislabs/types": "^0.0.0",
     "cbor-js": "^0.1.0"
   }
 }

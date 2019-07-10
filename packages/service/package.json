@@ -1,5 +1,5 @@
 {
-  "name": "@oasis/service",
+  "name": "@oasislabs/service",
   "version": "0.0.0",
   "description": "",
   "keywords": [],
@@ -36,9 +36,9 @@
     ]
   },
   "dependencies": {
-    "@oasis/common": "^0.0.0",
-    "@oasis/confidential": "^0.0.0",
-    "@oasis/types": "^0.0.0",
+    "@oasislabs/common": "^0.0.0",
+    "@oasislabs/confidential": "^0.0.0",
+    "@oasislabs/types": "^0.0.0",
     "eventemitter3": "^3.1.2",
     "js-sha3": "^0.8.0",
     "pako": "^1.0.10"

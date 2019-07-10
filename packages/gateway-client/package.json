@@ -1,5 +1,5 @@
 {
-  "name": "@oasis/gateway-client",
+  "name": "@oasislabs/gateway-client",
   "version": "0.0.0",
   "description": "",
   "keywords": [],
@@ -32,7 +32,7 @@
     ]
   },
   "dependencies": {
-    "@oasis/service": "^0.0.0"
+    "@oasislabs/service": "^0.0.0"
   },
   "browser": {
     "./dist/index.umd.js": "./dist/index.browser.umd.js",

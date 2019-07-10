@@ -1,5 +1,5 @@
 import EventEmitter from 'eventemitter3';
-import { Address, PublicKey, Bytes } from '@oasis/types';
+import { Address, PublicKey, Bytes } from '@oasislabs/types';
 
 /**
  * OasisGateway is the client's interface used to access services running on Oasis.

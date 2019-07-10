@@ -1,7 +1,7 @@
 import oasis from '../../src/index';
-import { Service, OasisGateway } from '@oasis/service';
-import { Web3Gateway } from '@oasis/ethereum';
-import { abi, bytecode } from '@oasis/test';
+import { Service, OasisGateway } from '@oasislabs/service';
+import { Web3Gateway } from '@oasislabs/ethereum';
+import { abi, bytecode } from '@oasislabs/test';
 
 describe('Service', () => {
   // Increase the timeout because this is meant to be run against Devnet.

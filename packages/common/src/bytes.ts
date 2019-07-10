@@ -1,4 +1,4 @@
-import { Bytes } from '@oasis/types';
+import { Bytes } from '@oasislabs/types';
 
 /**
  * Return a Uint8Array of an ethereum hex-encoded key (EthHex)

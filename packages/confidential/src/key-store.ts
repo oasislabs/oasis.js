@@ -1,5 +1,5 @@
-import { Address, PublicKey, PrivateKey } from '@oasis/types';
-import { bytes, Db } from '@oasis/common';
+import { Address, PublicKey, PrivateKey } from '@oasislabs/types';
+import { bytes, Db } from '@oasislabs/common';
 import nacl from './tweetnacl';
 
 export class KeyStore {

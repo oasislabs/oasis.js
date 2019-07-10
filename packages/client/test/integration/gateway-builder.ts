@@ -7,9 +7,9 @@ import {
   PollingService,
   HttpGateway,
   Http
-} from '@oasis/gateway';
-import { Address } from '@oasis/types';
-import { bytes, cbor } from '@oasis/common';
+} from '@oasislabs/gateway';
+import { Address } from '@oasislabs/types';
+import { bytes, cbor } from '@oasislabs/common';
 
 /**
  * Builds a gateway with all HTTP requests mocked out.

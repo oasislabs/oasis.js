@@ -1,4 +1,4 @@
-import { idl } from '@oasis/test';
+import { idl } from '@oasislabs/test';
 import {
   EmptyOasisGateway,
   DeployMockOasisGateway,

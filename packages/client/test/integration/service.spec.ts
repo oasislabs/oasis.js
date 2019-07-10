@@ -1,5 +1,5 @@
-import { DummyStorage, bytes } from '@oasis/common';
-import { idl, defType } from '@oasis/test';
+import { DummyStorage, bytes } from '@oasislabs/common';
+import { idl, defType } from '@oasislabs/test';
 import oasis from '../../src/index';
 import GatewayBuilder from './gateway-builder';
 

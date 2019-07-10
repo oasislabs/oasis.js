@@ -1,4 +1,4 @@
-import { Nonce, PublicKey, PrivateKey } from '@oasis/types';
+import { Nonce, PublicKey, PrivateKey } from '@oasislabs/types';
 import { ecdhTweak } from './ecdh-tweak';
 import * as deoxysii from 'deoxysii';
 

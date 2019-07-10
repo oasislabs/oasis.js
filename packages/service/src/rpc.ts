@@ -1,5 +1,5 @@
-import { KeyStore } from '@oasis/confidential';
-import { Address } from '@oasis/types';
+import { KeyStore } from '@oasislabs/confidential';
+import { Address } from '@oasislabs/types';
 
 import { Idl, RpcFn, RpcInput } from './idl';
 import { ServiceOptions } from './service';

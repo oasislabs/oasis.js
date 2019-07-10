@@ -4,9 +4,9 @@ import {
   nonce,
   encrypt,
   decrypt
-} from '@oasis/confidential';
-import { Bytes, PublicKey, PrivateKey } from '@oasis/types';
-import { bytes } from '@oasis/common';
+} from '@oasislabs/confidential';
+import { Bytes, PublicKey, PrivateKey } from '@oasislabs/types';
+import { bytes } from '@oasislabs/common';
 
 import { Idl, RpcFn } from '../idl';
 import { RpcCoder } from './';
