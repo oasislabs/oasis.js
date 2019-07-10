@@ -8,7 +8,7 @@ import {
   OasisGateway,
   SubscribeTopic,
   SubscribeFilter,
-  connect
+  setGateway
 } from './oasis-gateway';
 
 export {
@@ -23,5 +23,5 @@ export {
   OasisGateway,
   OasisCoder,
   header,
-  connect
+  setGateway
 };

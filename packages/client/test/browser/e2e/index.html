@@ -46,7 +46,7 @@
          * Verifying they all have the correct behavior.
          */
         async function runTest(test) {
-          oasis.connect(test.gateway);
+          oasis.setGateway(test.gateway);
 
           // 1) Deploy.
           service = await oasis.deploy({

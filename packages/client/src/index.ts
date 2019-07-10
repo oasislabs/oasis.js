@@ -1,7 +1,13 @@
 import { keccak256 } from 'js-sha3';
 import DeveloperGateway from '@oasis/developer-gateway';
 import { cbor, bytes } from '@oasis/common';
-import { Service, deploy, OasisCoder, header, connect } from '@oasis/service';
+import {
+  Service,
+  deploy,
+  OasisCoder,
+  header,
+  setGateway
+} from '@oasis/service';
 import { Deoxysii, encrypt, decrypt } from '@oasis/confidential';
 import {
   Web3Gateway,
@@ -13,7 +19,7 @@ const oasis = {
   Service,
   deploy,
   Wallet,
-  connect,
+  setGateway,
   gateways: {
     DeveloperGateway,
     Web3Gateway
