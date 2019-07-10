@@ -4,7 +4,7 @@
 setGateway
 =========================
 
-The ``oasis.setGateway`` method connects the client so that all service communication is done through the given :ref:`OasisGateway <gateways>`. This method must be called before interacting with any services.
+The ``oasis.setGateway`` method configures the client so that all service communication is done through the given :ref:`OasisGateway <gateways>`. This method should be called before interacting with any services.
 
 setGateway
 =========================
