@@ -20,7 +20,7 @@ describe('Service', () => {
       options: { gasLimit: '0xf00000' }
     },
     {
-      gateway: new oasis.gateways.DeveloperGateway('http://localhost:1234'),
+      gateway: new oasis.gateways.Gateway('http://localhost:1234'),
       completion: _test => {},
       options: undefined
     }

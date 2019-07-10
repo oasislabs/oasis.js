@@ -73,15 +73,15 @@ The following two implementations are provided.
 
 ---------------------------------------------------------------------------
 
-DeveloperGateway
+Gateway
 ===============================================
 
-``oasis.gateways.DeveloperGateway`` provides an implementation of ``OasisGateway`` that communicates with a developer-gateway.
+``oasis.gateways.Gateway`` provides an implementation of ``OasisGateway`` that communicates with a developer-gateway.
 It currently only supports HTTP.
 
 .. code-block:: javascript
 
-   new oasis.gateways.DeveloperGateway('http://localhost:8545');
+   new oasis.gateways.Gateway('http://localhost:8545');
 
 Parameters
 ----------

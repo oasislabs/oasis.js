@@ -11,7 +11,7 @@
   "references": [
     { "path" : "../common" },
     { "path" : "../service" },
-    { "path" : "../developer-gateway" },
+    { "path" : "../gateway" },
     { "path" : "../ethereum" }
   ]
 }

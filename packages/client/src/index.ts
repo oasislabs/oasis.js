@@ -1,5 +1,5 @@
 import { keccak256 } from 'js-sha3';
-import DeveloperGateway from '@oasis/developer-gateway';
+import Gateway from '@oasis/gateway';
 import { cbor, bytes } from '@oasis/common';
 import {
   Service,
@@ -21,7 +21,7 @@ const oasis = {
   Wallet,
   setGateway,
   gateways: {
-    DeveloperGateway,
+    Gateway,
     Web3Gateway
   },
   utils: {

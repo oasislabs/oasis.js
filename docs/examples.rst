@@ -13,7 +13,7 @@ First, one must select an Oasis gateway, for example, a `Developer Gateway <http
    const oasis = require('@oasis/client');
 
    // Create a gateway at the given url.
-   const gateway = new oasis.gateways.DeveloperGateway('[TODO: URL]')
+   const gateway = new oasis.gateways.Gateway('[TODO: URL]')
 
    // Connect the library to the gateway.
    oasis.setGateway(gateway);
@@ -85,7 +85,7 @@ In addition to rpcs, one can register event listeners.
 Wallets and Web3 Gateways
 =============================
 
-In the examples above, we've used a Developer Gateway to pay for and sign transactions.
+In the examples above, we've used a Gateway to pay for and sign transactions.
 This is useful when you want the client to operate without a wallet, but sometimes you
 want more control. In such cases, it's suggested to use a wallet and web3 gateway which
 will allow the client to sign and send raw transactions.

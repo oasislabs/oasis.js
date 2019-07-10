@@ -4,7 +4,7 @@ Getting Started
 
 Oasis.js can be used with either of the two clients we provide.
 
-developer-gateway-client
+gateway-client
 =========================
 
 The developer-gateway-client provides the minimal set of features for interacting
@@ -33,8 +33,8 @@ We host the latest version of the library here [TODO].
 client
 ========
 
-In addition to the ``developer-gateway-client``, we provide a heavier client that, in addition
-to all the features provided by the ``developer-gateway-client`` also provides the ability
+In addition to the ``gateway-client``, we provide a heavier client that, in addition
+to all the features provided by the ``gateway-client`` also provides the ability
 to use a client-side wallet and specify web3 transaction options.
 
 It includes
