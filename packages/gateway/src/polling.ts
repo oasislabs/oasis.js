@@ -1,5 +1,5 @@
 import { EventEmitter } from 'eventemitter3';
-import { SubscribeTopic } from '@oasis/service';
+import { SubscribeTopic } from '@oasislabs/service';
 import { Http } from './http';
 import {
   DeveloperGatewayApi,

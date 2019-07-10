@@ -1,5 +1,5 @@
-import { Bytes } from '@oasis/types';
-import { bytes } from '@oasis/common';
+import { Bytes } from '@oasislabs/types';
+import { bytes } from '@oasislabs/common';
 
 import * as assert from 'assert';
 

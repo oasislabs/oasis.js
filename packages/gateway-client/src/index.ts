@@ -1,4 +1,4 @@
-import { Service, deploy } from '@oasis/service';
+import { Service, deploy } from '@oasislabs/service';
 
 const oasis = {
   Service,

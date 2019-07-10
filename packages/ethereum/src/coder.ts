@@ -1,7 +1,7 @@
 import { keccak256 } from 'js-sha3';
 import { Interface } from 'ethers/utils/interface';
-import { Bytes4, Bytes } from '@oasis/types';
-import { bytes } from '@oasis/common';
+import { Bytes4, Bytes } from '@oasislabs/types';
+import { bytes } from '@oasislabs/common';
 import {
   RpcCoder,
   RpcRequest,
@@ -9,7 +9,7 @@ import {
   RpcFn,
   AeadKeys,
   RpcOptions
-} from '@oasis/service';
+} from '@oasislabs/service';
 
 export class EthereumCoder implements RpcCoder {
   public async encode(

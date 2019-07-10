@@ -1,5 +1,10 @@
-import { bytes, DummyStorage } from '@oasis/common';
-import { KeyStore, KeyProvider, PublicKeyRequest, PublicKeyResponse } from '../src/key-store';
+import { bytes, DummyStorage } from '@oasislabs/common';
+import {
+  KeyStore,
+  KeyProvider,
+  PublicKeyRequest,
+  PublicKeyResponse
+} from '../src/key-store';
 
 describe('KeyStore', () => {
   describe('publicKey', () => {
@@ -70,7 +75,7 @@ export class PublicKeyMockProvider implements KeyProvider {
   ]);
 
   public static address = '0x5c7b817e80680fec250a6f638c504d39ad353b26';
-  
+
   async publicKey(request: PublicKeyRequest): Promise<PublicKeyResponse> {
     let givenAddress = bytes.toHex(request.address as Uint8Array);
     if (givenAddress !== PublicKeyMockProvider.address) {
@@ -82,5 +87,5 @@ export class PublicKeyMockProvider implements KeyProvider {
     }
 
     return { publicKey: PublicKeyMockProvider._publicKey };
-  }  
+  }
 }

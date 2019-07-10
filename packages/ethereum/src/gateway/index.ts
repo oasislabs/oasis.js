@@ -1,6 +1,6 @@
 import { EventEmitter } from 'eventemitter3';
 import { keccak256 } from 'js-sha3';
-import { bytes, sleep } from '@oasis/common';
+import { bytes, sleep } from '@oasislabs/common';
 import {
   OasisGateway,
   DeployRequest,
@@ -13,7 +13,7 @@ import {
   PublicKeyResponse,
   GetCodeRequest,
   GetCodeResponse
-} from '@oasis/service';
+} from '@oasislabs/service';
 import { JsonRpcWebSocket } from './websocket';
 import { TransactionFactory, Transaction } from './transaction';
 import { Subscriptions } from './subscriptions';

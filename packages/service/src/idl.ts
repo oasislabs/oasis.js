@@ -1,4 +1,4 @@
-import { bytes } from '@oasis/common';
+import { bytes } from '@oasislabs/common';
 import { inflateRaw } from 'pako';
 
 // Idl type definitions.

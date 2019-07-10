@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "@oasis/test",
+  "name": "@oasislabs/test",
   "version": "0.0.0",
   "description": "Defines common utilities for testing Oasis packages.",
   "keywords": [],
@@ -19,7 +19,7 @@
     "build": "tsc --module commonjs && rollup -c rollup.config.ts"
   },
   "dependencies": {
-    "@oasis/service": "^0.0.0",
-    "@oasis/common": "^0.0.0"
+    "@oasislabs/service": "^0.0.0",
+    "@oasislabs/common": "^0.0.0"
   }
 }

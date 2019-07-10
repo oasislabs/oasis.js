@@ -1,5 +1,5 @@
-import { Bytes } from '@oasis/types';
-import { Db, bytes } from '@oasis/common';
+import { Bytes } from '@oasislabs/types';
+import { Db, bytes } from '@oasislabs/common';
 
 import Service from '../service';
 import { Idl, fromWasm } from '../idl';

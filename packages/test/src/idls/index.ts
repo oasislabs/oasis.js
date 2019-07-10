@@ -1,4 +1,4 @@
-import { bytes } from '@oasis/common';
+import { bytes } from '@oasislabs/common';
 
 // Returns a `DefTy` object to be used for testing. See idls/test-contract.ts.
 export function defType() {

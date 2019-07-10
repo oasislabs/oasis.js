@@ -1,5 +1,5 @@
 {
-  "name": "@oasis/gateway",
+  "name": "@oasislabs/gateway",
   "version": "0.0.0",
   "description": "",
   "keywords": [],
@@ -36,9 +36,9 @@
     ]
   },
   "dependencies": {
-    "@oasis/types": "^0.0.0",
-    "@oasis/service": "^0.0.0",
-    "@oasis/common": "^0.0.0",
+    "@oasislabs/types": "^0.0.0",
+    "@oasislabs/service": "^0.0.0",
+    "@oasislabs/common": "^0.0.0",
     "axios": "^0.18.0"
   },
   "browser": {

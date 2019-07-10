@@ -1,6 +1,6 @@
 import { keccak256 } from 'js-sha3';
-import { AeadKeys } from '@oasis/confidential';
-import { bytes, cbor } from '@oasis/common';
+import { AeadKeys } from '@oasislabs/confidential';
+import { bytes, cbor } from '@oasislabs/common';
 import {
   Address,
   H256,
@@ -8,7 +8,7 @@ import {
   Bytes,
   PublicKey,
   PrivateKey
-} from '@oasis/types';
+} from '@oasislabs/types';
 import { Idl, RpcFn } from '../idl';
 import ConfidentialCoder from './confidential';
 import { RpcCoder, RpcEncoder, RpcDecoder, RpcRequest } from './';

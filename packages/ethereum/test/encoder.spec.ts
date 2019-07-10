@@ -1,4 +1,4 @@
-import { abi } from '@oasis/test';
+import { abi } from '@oasislabs/test';
 import * as coder from '../src/coder';
 
 describe('Encoder', () => {

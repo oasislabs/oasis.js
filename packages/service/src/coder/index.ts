@@ -1,4 +1,4 @@
-import { Bytes4, Bytes } from '@oasis/types';
+import { Bytes4, Bytes } from '@oasislabs/types';
 import { Idl, RpcFn } from '../idl';
 import { RpcOptions } from '../oasis-gateway';
 
