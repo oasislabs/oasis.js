@@ -4,7 +4,7 @@
 
 # oasis.js
 
-[![CircleCI](https://circleci.com/gh/oasislabs/oasis-client.svg?style=svg&circle-token=696729782cc74168d05f5fbb37d49a3e5e6065d3)](https://circleci.com/gh/oasislabs/oasis-client)
+[![CircleCI](https://circleci.com/gh/oasislabs/oasis.js.svg?style=svg)](https://circleci.com/gh/oasislabs/oasis.js)
 [![Coverage Status](https://coveralls.io/repos/github/oasislabs/oasis-client/badge.svg?branch=master&t=yu91jw)](https://coveralls.io/github/oasislabs/oasis-client?branch=master)
 [![Gitter chat](https://badges.gitter.im/Oasis-official/Lobby.svg)](https://gitter.im/Oasis-official/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![docs](https://readthedocs.com/projects/oasis-labs-oasis-client/badge/?version=latest)](https://oasis-labs-oasis-client.readthedocs-hosted.com/en/latest/)
@@ -13,16 +13,16 @@ See the [documentation](https://oasis-labs-oasis-client.readthedocs-hosted.com/e
 
 ## Packages
 
-| Package                                                           | Version                                                                                                                   | Description                                                        |
-| ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
-| [`@oasislabs/client`](/packages/client)                                      | [![npm](https://img.shields.io/npm/v/client.svg)](https://www.npmjs.com)                                                  | Client for interacting with services on the Oasis cloud            |
-| [`@oasislabs/developer-gateway-client`](/packages/developer-gateway-client)  | [![npm](https://img.shields.io/npm/v/client.svg)](https://www.npmjs.com)                                                  | Lightweight client for interacting with developer-gateway services |
-| [`@oasislabs/developer-gateway`](/packages/developer-gateway)         | [![npm](https://img.shields.io/npm/v/client.svg)](https://www.npmjs.com)                                                  | Client backend for communicating with a developer-gateway          |
-| [`@oasislabs/service`](/packages/service)                             | [![npm](https://img.shields.io/npm/v/client.svg)](https://www.npmjs.com)                                                  | Implementations for deploying and interacting with services        |
-| [`@oasislabs/confidential`](/packages/confidential)                   | [![npm](https://img.shields.io/npm/v/client.svg)](https://www.npmjs.com)                                                  | Encryption tools for confidentiality on Oasis                      |
-| [`@oasislabs/common`](/packages/common)                               | [![npm](https://img.shields.io/npm/v/client.svg)](https://www.npmjs.com)                                                  | Common utilities for Oasis packages                                |
-| [`@oasislabs/types`](/packages/types)                                 | [![npm](https://img.shields.io/npm/v/client.svg)](https://www.npmjs.com)                                                  | Types for Oasis packages                                           |
-| [`@oasislabs/test`](/packages/test)                                   | [![npm](https://img.shields.io/npm/v/client.svg)](https://www.npmjs.com)                                                  | Tools used in Oasis tests                                          |
+| Package                                                           | Version                                                                                                                        | Description                                                        |
+| ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------ |
+| [`@oasislabs/client`](/packages/client)                           | [![npm](https://img.shields.io/npm/v/@oasislabs/client.svg)](https://www.npmjs.com/package/@oasislabs/client)                  | Client for interacting with services on the Oasis cloud            |
+| [`@oasislabs/gateway-client`](/packages/developer-gateway-client) | [![npm](https://img.shields.io/npm/v/@oasislabs/gateway-client.svg)](https://www.npmjs.com/package/@oasislabs/gateway-client)  | Lightweight client for interacting with developer-gateway services |
+| [`@oasislabs/gateway`](/packages/developer-gateway)               | [![npm](https://img.shields.io/npm/v/@oasislabs/gateway.svg)](https://www.npmjs.com/package/@oasislabs/gateway)                | Client backend for communicating with a developer-gateway          |
+| [`@oasislabs/service`](/packages/service)                         | [![npm](https://img.shields.io/npm/v/@oasislabs/service.svg)](https://www.npmjs.com/package/@oasislabs/service)                | Implementations for deploying and interacting with services        |
+| [`@oasislabs/confidential`](/packages/confidential)               | [![npm](https://img.shields.io/npm/v/@oasislabs/confidential.svg)](https://www.npmjs.com/package/@oasislabs/confidential)      | Encryption tools for confidentiality on Oasis                      |
+| [`@oasislabs/common`](/packages/common)                           | [![npm](https://img.shields.io/npm/v/@oasislabs/common.svg)](https://www.npmjs.com/package/@oasislabs/common)                  | Common utilities for Oasis packages                                |
+| [`@oasislabs/types`](/packages/types)                             | [![npm](https://img.shields.io/npm/v/@oasislabs/types.svg)](https://www.npmjs.com/package/@oasislabs/types)                    | Types for Oasis packages                                           |
+| [`@oasislabs/test`](/packages/test)                               | [![npm](https://img.shields.io/npm/v/@oasislabs/test.svg)](https://www.npmjs.com/package/@oasislabs/test)                      | Tools used in Oasis tests                                          |
 
 
 ## Contributing
