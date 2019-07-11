@@ -210,8 +210,9 @@ class HttpGateway implements OasisGateway {
     let response = await this.session.post(GetCodeApi, {
       address: request.address
     });
+    // todo: throw cleaner error when code doesn't exist
     return {
-      code: response.code
+      code: bytes.parseHex(response.code)
     };
   }
 }

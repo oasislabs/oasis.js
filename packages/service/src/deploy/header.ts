@@ -8,6 +8,8 @@ export type DeployHeaderOptions = {
   confidential?: boolean;
 };
 
+// TODO: change all apis here to take Uint8Arrays as input/output instead
+//       of hex strings.
 export class DeployHeader {
   /**
    * @param {Number} version is the header version number.
