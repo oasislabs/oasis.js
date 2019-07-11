@@ -3,6 +3,9 @@
   "version": "0.0.0",
   "description": "",
   "keywords": [],
+  "publishConfig": {
+    "access": "public"
+  },
   "files": [
     "dist",
     "src",
