@@ -7,22 +7,23 @@ Oasis.js can be used with either of the two clients we provide.
 gateway-client
 =========================
 
-The developer-gateway-client provides the minimal set of features for interacting
-with services through a developer-gateway. TODO: link to a doc on the developer-gateway.
+The gateway-client provides the minimal set of features for interacting
+with services through an Oasis gateway. TODO: link to a doc on the developer-gateway.
 
 It includes
 
 * :ref:`oasis.deploy <deploy>`
+* :ref:`oasis.setGateway <setGateway>`
 * :ref:`oasis.Service <service>`
 
-To install the developer-gateway-client
+To install the gateway-client
 
 Node.js
 --------
 
 .. code-block:: javascript
 
-   npm install developer-gateway-client
+   npm install @oasislabs/gateway-client
 
 
 Browser
@@ -40,6 +41,7 @@ to use a client-side wallet and specify web3 transaction options.
 It includes
 
 * :ref:`oasis.deploy <deploy>`
+* :ref:`oasis.setGateway <setGateway>`
 * :ref:`oasis.Service <service>`
 * :ref:`oasis.gateways <gateways>`
 * :ref:`oasis.Wallet <wallet>`
@@ -52,7 +54,7 @@ Node.js
 
 .. code-block:: javascript
 
-   npm install client
+   npm install @oasislabs/client
 
 
 Browser

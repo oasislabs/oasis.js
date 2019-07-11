@@ -10,7 +10,7 @@ First, one must select an Oasis gateway, for example, a `Developer Gateway <http
 
 .. code-block:: javascript
 
-   const oasis = require('@oasis/client');
+   const oasis = require('@oasislabs/client');
 
    // Create a gateway at the given url.
    const gateway = new oasis.gateways.Gateway('[TODO: URL]')
@@ -92,7 +92,7 @@ will allow the client to sign and send raw transactions.
 
 .. code-block:: javascript
 
-	const oasis = require('@oasis/client');
+	const oasis = require('@oasislabs/client');
 
 	// Wallet private key.
 	const privateKey = '...';
@@ -103,8 +103,8 @@ will allow the client to sign and send raw transactions.
 	// Etheruem gateway responsible for signing transactions.
 	const gateway = new oasis.gateways.Web3Gateway('https://web3.oasiscloud.io', wallet);
 
-	// Connect to the gateway.
-	oasis.connect(gateway);
+	// Configure the gateway to use.
+	oasis.setGateway(gateway);
 
 Web3 Options
 ===============

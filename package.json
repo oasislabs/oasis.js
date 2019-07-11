@@ -39,7 +39,6 @@
   "devDependencies": {
     "@commitlint/cli": "^7.1.2",
     "@commitlint/config-conventional": "^7.1.2",
-    "@oasislabs/test": "^0.0.0",
     "@types/jest": "^23.3.2",
     "bl": "0.9.5",
     "coveralls": "^3.0.3",
