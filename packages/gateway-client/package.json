@@ -30,6 +30,7 @@
     ]
   },
   "dependencies": {
+    "@oasislabs/gateway": "^1.0.0-rc.0",
     "@oasislabs/service": "^1.0.0-rc.0"
   },
   "browser": {

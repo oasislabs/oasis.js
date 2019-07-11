@@ -9,7 +9,7 @@
 [![Gitter chat](https://badges.gitter.im/Oasis-official/Lobby.svg)](https://gitter.im/Oasis-official/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![docs](https://readthedocs.com/projects/oasis-labs-oasis-client/badge/?version=latest)](https://oasis-labs-oasis-client.readthedocs-hosted.com/en/latest/)
 
-See the [documentation](https://readthedocs.com/projects/oasis-labs-oasis-client/badge/?version=latest).
+See the [documentation](https://oasis-labs-oasis-client.readthedocs-hosted.com/en/latest/)
 
 ## Packages
 

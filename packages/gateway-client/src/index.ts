@@ -1,8 +1,13 @@
-import { Service, deploy } from '@oasislabs/service';
+import Gateway from '@oasislabs/gateway';
+import { Service, deploy, setGateway } from '@oasislabs/service';
 
 const oasis = {
   Service,
-  deploy
+  deploy,
+  setGateway,
+  gateways: {
+    Gateway
+  }
 };
 
 export default oasis;
