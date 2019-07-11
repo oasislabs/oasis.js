@@ -1,5 +1,6 @@
 import { KeyStore } from '@oasislabs/confidential';
 import { Address } from '@oasislabs/types';
+import { bytes } from '@oasislabs/common';
 
 import { Idl, RpcFn, RpcInput } from './idl';
 import { ServiceOptions } from './service';
@@ -89,7 +90,7 @@ export class RpcFactory {
   ): Promise<RpcCoder> {
     // Check the contract's deploy header to see if it's confidential.
     let response = await options.gateway!.getCode({ address });
-    let deployHeader = header.parseHex(response.code);
+    let deployHeader = header.parseHex(bytes.toHex(response.code));
 
     if (!deployHeader || !deployHeader.body.confidential) {
       return OasisCoder.plaintext();

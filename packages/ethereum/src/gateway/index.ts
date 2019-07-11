@@ -171,8 +171,9 @@ export class Web3Gateway implements OasisGateway {
       method: 'eth_getCode',
       params: [bytes.toHex(request.address), 'latest']
     });
+    // todo: throw cleaner error when code doesn't exist
     return {
-      code: response.result
+      code: bytes.parseHex(response.result)
     };
   }
 }

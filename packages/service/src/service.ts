@@ -5,6 +5,7 @@ import { Db, LocalStorage, bytes } from '@oasislabs/common';
 import { Idl, RpcFn, fromWasm } from './idl';
 import { Rpcs, RpcFactory } from './rpc';
 import { RpcCoder } from './coder';
+import { DeployHeaderReader } from './deploy/header';
 import {
   OasisGateway,
   defaultOasisGateway,
@@ -84,7 +85,10 @@ export default class Service {
   ): Promise<Service> {
     options = Service.setupOptions(options);
     let response = await options.gateway!.getCode({ address });
-    let idl = fromWasm(response.code);
+    let wasm = bytes.parseHex(
+      DeployHeaderReader.initcode(bytes.toHex(response.code))
+    );
+    let idl = fromWasm(wasm);
     return new Service(idl, address, options);
   }
 
