@@ -19,9 +19,9 @@ export interface Idl {
   constructor: RpcConstructor;
 }
 
-export function fromWasm(bytecode: Uint8Array): Idl {
+export async function fromWasm(bytecode: Uint8Array): Promise<Idl> {
   // @ts-ignore
-  let wasmModule = new WebAssembly.Module(bytecode);
+  let wasmModule = await WebAssembly.compile(bytecode);
   // @ts-ignore
   let sections = WebAssembly.Module.customSections(
     wasmModule,

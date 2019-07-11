@@ -1,13 +1,13 @@
 import { fromWasm } from '../src/idl';
 
 describe('Idl', () => {
-  it('Parses the idl from .wasm', () => {
+  it('Parses the idl from .wasm', async () => {
     let path = 'test/wasm/mantle-counter.wasm';
     // Given.
     const bin = new Uint8Array(require('fs').readFileSync(path));
 
     // When.
-    let idl = fromWasm(bin);
+    let idl = await fromWasm(bin);
     // Then.
     let expected = expect(idl).toEqual({
       name: 'MantleCounter',

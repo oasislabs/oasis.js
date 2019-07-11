@@ -88,7 +88,7 @@ export default class Service {
     let wasm = bytes.parseHex(
       DeployHeaderReader.initcode(bytes.toHex(response.code))
     );
-    let idl = fromWasm(wasm);
+    let idl = await fromWasm(wasm);
     return new Service(idl, address, options);
   }
 

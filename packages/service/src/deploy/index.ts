@@ -18,7 +18,7 @@ import { RpcCoder } from '../coder';
  * @returns a Service object to make rpc requests with.
  */
 export default async function deploy(options: DeployOptions): Promise<Service> {
-  sanitizeOptions(options);
+  await sanitizeOptions(options);
 
   let data = await deploycode(options);
 
@@ -40,7 +40,7 @@ export default async function deploy(options: DeployOptions): Promise<Service> {
  * Fills in any left out deploy options and converts to the required
  * types if necessary.
  */
-function sanitizeOptions(options: DeployOptions) {
+async function sanitizeOptions(options: DeployOptions) {
   if (typeof options.bytecode === 'string') {
     options.bytecode = bytes.parseHex(options.bytecode.substr(2));
   }
@@ -48,7 +48,7 @@ function sanitizeOptions(options: DeployOptions) {
 
   // todo: fail gracefully if evm bytecode is given without an idl.
   if (!options.idl) {
-    options.idl = fromWasm(options.bytecode);
+    options.idl = await fromWasm(options.bytecode);
   }
 }
 
