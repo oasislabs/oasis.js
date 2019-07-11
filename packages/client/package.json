@@ -1,6 +1,6 @@
 {
   "name": "@oasislabs/client",
-  "version": "0.0.0",
+  "version": "1.0.0-rc.0",
   "description": "",
   "keywords": [],
   "main": "dist/index.umd.js",
