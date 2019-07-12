@@ -26,10 +26,17 @@ async function encrypt(
     peerPublicKey,
     privateKey
   );
+  console.log('plain = ', plaintext);
+  console.log('nonce = ', nonce);
+  console.log('cipher = ', ciphertext);
+  console.log('aad = ', aad);
+  console.log('publicKey = ', publicKey);
+  console.log('peerPublicKey = ', peerPublicKey);
+  console.log('privateKey = ', privateKey);
   return bytes.concat([
     publicKey,
-    bytes.parseNumber(ciphertext.length, 8),
-    bytes.parseNumber(aad.length, 8),
+    bytes.parseNumber(ciphertext.length, 8, true),
+    bytes.parseNumber(aad.length, 8, true),
     ciphertext,
     aad,
     nonce

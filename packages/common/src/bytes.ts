@@ -2,10 +2,12 @@ import { Bytes } from '@oasislabs/types';
 
 /**
  * Return a Uint8Array of an ethereum hex-encoded key (EthHex)
- * @param {String} keystring The EthHex encoding of the value
- * @returns {Uint8Array} The byte incoding of the value
+ * @param   keystring is the EthHex encoding of the value
+ * @param   littleEndian is true if the keystring should be interpreted as
+ *          little endian. Otherwise, defaults to big endian.
+ * @returns the byte incoding of the value
  */
-export function parseHex(keystring: string): Uint8Array {
+export function parseHex(keystring: string, littleEndian = false): Uint8Array {
   if (keystring.indexOf('0x') === 0) {
     keystring = keystring.substr(2);
   }
@@ -13,6 +15,10 @@ export function parseHex(keystring: string): Uint8Array {
 
   if (key === null) {
     return new Uint8Array();
+  }
+
+  if (littleEndian) {
+    key = key.reverse();
   }
 
   return new Uint8Array(key.map(byte => parseInt(byte, 16)));
@@ -39,18 +45,23 @@ export function toHex(keybytes: Bytes): string {
 
 /**
  * @returns a Uint8Array representation of number with numBytes.
- * @param   {Number} number is the number of which we want a byte representation.
- * @throws  {Error} if the resultant array will be longer than
- *          numBytes.
+ * @param   number is the number of which we want a byte representation.
+ * @param   numBytes is the number of bytes to have in the resultant array.
+ * @param   littleEndian is true iff the resultant byte array is little Endian.
+ * @throws  if the resultant array will be longer than numBytes.
  */
-export function parseNumber(num: number, numBytes: number): Uint8Array {
+export function parseNumber(
+  num: number,
+  numBytes: number,
+  littleEndian = false
+): Uint8Array {
   let numberHexStr = num.toString(16);
   if (numberHexStr.length > numBytes) {
     throw Error(`cannot parse ${num} into a byte array of length ${numBytes}`);
   }
 
   numberHexStr = '0'.repeat(numBytes * 2 - numberHexStr.length) + numberHexStr;
-  return parseHex(numberHexStr);
+  return parseHex(numberHexStr, littleEndian);
 }
 
 /**
