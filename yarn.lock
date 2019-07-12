@@ -2410,10 +2410,10 @@ delegates@^1.0.0:
   resolved "https://registry.yarnpkg.com/delegates/-/delegates-1.0.0.tgz#84c6e159b81904fdca59a0ef44cd870d31250f9a"
   integrity sha1-hMbhWbgZBP3KWaDvRM2HDTElD5o=
 
-deoxysii@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/deoxysii/-/deoxysii-0.0.1.tgz#a218ba4df5e17c5ad985ed8704717718db22f605"
-  integrity sha512-DJu1lwfLVsKfs8x94swlOUQ6JZHT+DX5ncC4zs95nTS3bp2gsOXhioN1ezcXNjHgQGVrSVmXpSBnSXfGJmu9IA==
+deoxysii@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/deoxysii/-/deoxysii-0.0.2.tgz#bfdb65ed7808a03fb88622595b5a4ba682b6778b"
+  integrity sha512-mMob/2wDZBatPC48g188hFt5xxrbfYMl9L+XQGOZuHPU4ScCHpAKkbZiAU1yg/kROj6nPKZp5eItuNI3LdU7vA==
   dependencies:
     bsaes "0.0.2"
     uint32 "^0.2.1"

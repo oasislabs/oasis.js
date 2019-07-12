@@ -27,7 +27,7 @@ export async function ecdhTweak(
 }
 
 async function makeHmacKey() {
-  const boxKDFTweak = new TextEncoder().encode('MRAE_Box_Deoxys-II-256-12');
+  const boxKDFTweak = new TextEncoder().encode('MRAE_Box_Deoxys-II-256-128');
   // @ts-ignore
   return window.crypto.subtle.importKey(
     'raw',
