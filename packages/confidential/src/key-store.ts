@@ -54,7 +54,7 @@ export class KeyStore {
       return undefined;
     }
     // todo: re-enable caching: https://github.com/oasislabs/oasis.js/issues/150
-    //return bytes.parseHex(key);
+    // return bytes.parseHex(key);
     return undefined;
   }
 
