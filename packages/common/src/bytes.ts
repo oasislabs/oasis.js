@@ -109,3 +109,25 @@ export function encodeUtf8(input: string): Uint8Array {
   // @ts-ignore
   return encoder.encode(input);
 }
+
+/**
+ * Converts the given byte array to a number. Cannot parse a number
+ * larger than u64, specifically, 2**53-1 (javascripts max number).
+ */
+export function toNumber(bytes: Uint8Array, le = false): number {
+  if (bytes.length > 8) {
+    throw new Error('Cannot parse a number greater than u64');
+  }
+  let b = toHex(bytes).substr(2);
+  if (le) {
+    let match = b.match(/../g);
+    if (match !== null) {
+      b = match.reverse().join('');
+    }
+  }
+  let result = parseInt(b, 16);
+  if (result >= Number.MAX_SAFE_INTEGER) {
+    throw new Error(`Overflowed when converting to number: ${bytes}`);
+  }
+  return result;
+}
