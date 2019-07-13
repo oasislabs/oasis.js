@@ -45,7 +45,7 @@ export class OasisCoder implements RpcCoder {
     return keccak256(event);
   }
 
-  public decodeSubscriptionEvent(e: any, idl: Idl): any {
+  public async decodeSubscriptionEvent(e: any, idl: Idl): Promise<any> {
     return cbor.decode(bytes.parseHex(e.data));
   }
 
@@ -94,10 +94,6 @@ export class PlaintextRpcEncoder implements RpcEncoder {
 
     if (fn.name === 'constructor') {
       return cbor.encode(args);
-    }
-
-    if (args.length === 1) {
-      args = args[0];
     }
 
     return cbor.encode({

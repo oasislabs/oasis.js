@@ -35,5 +35,5 @@ export type RpcRequest = {
 };
 
 interface RpcSubscriptionEventDecoder {
-  decodeSubscriptionEvent(e: any, idl: Idl): any;
+  decodeSubscriptionEvent(e: any, idl: Idl): Promise<any>;
 }

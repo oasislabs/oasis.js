@@ -67,7 +67,14 @@ export default class ConfidentialCoder {
     return this.internalCoder.topic(event, idl);
   }
 
-  public decodeSubscriptionEvent(log: any, abi: Idl): any {
+  public async decodeSubscriptionEvent(log: any, abi: Idl): Promise<any> {
+    log = JSON.parse(JSON.stringify(log));
+    console.log('before log = ', log);
+    let encryption = await decrypt(log.data, this.keys.privateKey);
+    log.data = encryption.plaintext;
+
+    console.log('after log = ', log);
+
     return this.internalCoder.topic(log, abi);
   }
 }

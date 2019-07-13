@@ -145,8 +145,8 @@ export default class Service {
         this.subscriptions.set(event, subscription);
 
         // Decode the gateway's response and return it to the listener.
-        subscription.addListener(event, e => {
-          let decoded = coder.decodeSubscriptionEvent(e, this.idl);
+        subscription.addListener(event, async e => {
+          let decoded = await coder.decodeSubscriptionEvent(e, this.idl);
 
           this.listeners.emit(event, decoded);
         });
