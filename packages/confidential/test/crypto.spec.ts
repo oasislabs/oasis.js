@@ -5,36 +5,6 @@ import { encrypt, decrypt, splitEncryptedPayload } from '../src';
 import nacl from '../src/tweetnacl';
 
 describe('Crypto', () => {
-  it('Encrypts to the wire format', async () => {
-    let plaintext = new Uint8Array([1, 2, 3, 4]);
-
-    let [nonce, peer, me, aad] = aeadInput();
-
-    let encryption = await encrypt(
-      nonce,
-      plaintext,
-      peer.publicKey,
-      me.publicKey,
-      me.privateKey,
-      aad
-    );
-
-    let publicKeyResult = encryption.slice(0, 32);
-    let cipherLength = parseInt(bytes.toHex(encryption.slice(32, 40)), 16);
-    let aadLength = parseInt(bytes.toHex(encryption.slice(40, 48)), 16);
-    let cipherResult = encryption.slice(48, 48 + cipherLength);
-    let aadResult = encryption.slice(
-      48 + cipherLength,
-      48 + cipherLength + aadLength
-    );
-    let nonceResult = encryption.slice(48 + cipherLength + aadLength);
-
-    expect(nonceResult).toEqual(nonce);
-    expect(publicKeyResult).toEqual(me.publicKey);
-    expect(cipherResult.length).toEqual(20);
-    expect(aadResult.toString()).toEqual(aad.toString());
-  });
-
   it('Decrypts the encrypted data', async () => {
     let plaintext = new Uint8Array([1, 2, 3, 4]);
 
@@ -57,7 +27,7 @@ describe('Crypto', () => {
     expect(decryption.aad.toString()).toEqual(aad.toString());
   });
 
-  it('encrypts the data', async () => {
+  it('Encrypts the data to the wire format', async () => {
     let plaintext = new Uint8Array([
       162,
       102,
