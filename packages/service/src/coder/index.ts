@@ -15,6 +15,7 @@ export interface RpcEncoder {
 
 export interface RpcDecoder {
   decode(fn: RpcFn, data: Bytes, constructor?: boolean): Promise<any>;
+  decodeError(error: Uint8Array): Promise<string>;
 }
 
 interface RpcFunctions {

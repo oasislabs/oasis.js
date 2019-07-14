@@ -94,16 +94,17 @@ export class Web3Gateway implements OasisGateway {
       params: [rawTx]
     })).result;
 
+    let error = undefined;
+
     // If the transaction reverted, throw an Error with the message given from
     // the runtime.
     if (executionPayload.status === '0x0') {
-      throw new Error(
-        bytes.decodeUtf8(bytes.parseHex(executionPayload.output))
-      );
+      error = bytes.parseHex(executionPayload.output);
     }
 
     return {
-      output: executionPayload.output
+      output: executionPayload.output,
+      error
     };
   }
 

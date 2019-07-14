@@ -51,6 +51,11 @@ export default class ConfidentialCoder {
     return this.internalCoder.decode(fn, decryption.plaintext, constructor);
   }
 
+  public async decodeError(error: Uint8Array): Promise<string> {
+    let decryption = await decrypt(error, this.keys.privateKey);
+    return this.internalCoder.decodeError(decryption.plaintext);
+  }
+
   public async initcode(
     abi: Idl,
     params: any[],

@@ -37,6 +37,10 @@ export class OasisCoder implements RpcCoder {
     return this.decoder.decode(fn, data, constructor);
   }
 
+  public async decodeError(error: Uint8Array): Promise<string> {
+    return this.decoder.decodeError(error);
+  }
+
   public functions(idl: Idl): RpcFn[] {
     return idl.functions;
   }
@@ -109,5 +113,9 @@ export class PlaintextRpcDecoder {
       data = bytes.parseHex(data);
     }
     return cbor.decode(data);
+  }
+
+  public async decodeError(error: Uint8Array): Promise<string> {
+    return bytes.decodeUtf8(error);
   }
 }

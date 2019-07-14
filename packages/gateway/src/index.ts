@@ -124,6 +124,8 @@ class HttpGateway implements OasisGateway {
       data: bytes.toHex(request.data),
       address: bytes.toHex(request.address!)
     });
+    // todo: the developer gateway should have an error if the transaction
+    //       reverted.
     return {
       output: (event as ExecuteServiceEvent).output
     };
