@@ -33,6 +33,31 @@ Returns
 --------------
 ``Service``: A service object with all rpc endpoints attached.
 
+Service.at
+==================
+
+A more convenient api to attach to a previously deployed service is the
+`Service.at` method, which will fetch the on-chain code extract the idl
+automatciially.
+
+Note: this method should only be with mantle services.
+
+
+.. code-block:: javascript
+
+	await oasis.Service.at(address [, options])
+
+-------------
+Parameters
+-------------
+1. ``address`` - ``string | Unit8Array``: The address of the service to connect to.
+2. ``options`` - ``Object`` (optional): The service deploy options. See above.
+
+--------------
+Returns
+--------------
+``Promise<Service>``: A promise resolving to a service object with all rpc endpoints attached.
+
 ------------
 Rpc Methods
 ------------
@@ -42,14 +67,11 @@ For example,
 
 .. code-block:: javascript
 
-   // Interface definition.
-   const idl = ...;
-
    // Deployed service address.
    const address = ...;
 
    // Connects to the remote service.
-   const service = new Service(idl, address);
+   const service = await Service.at(address);
 
    // Makes an rpc request to `myMethod` and returns the result.
    const returnValue = await service.myMethod();
