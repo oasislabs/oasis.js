@@ -2,7 +2,10 @@
 Examples
 ===========
 
+.. include:: links.rst
+
 Here we walk through a workflow demonstrating the core apis provided by the client.
+These examples assume a `mantle`_ service is being used.
 
 Set the gateway
 ===============
@@ -25,9 +28,6 @@ After connecting, one can deploy a new service.
 
 .. code-block:: javascript
 
-   // Interface definition.
-   const idl = ...;
-
    // Service bytecode.
    const bytecode = ...;
 
@@ -35,12 +35,9 @@ After connecting, one can deploy a new service.
    const arguments = [];
 
    // Deploy it through the connected gateway.
-   oasis.deploy(
-      idl,
+   const service = await oasis.deploy({
       bytecode,
       arguments,
-   ).then((service) => {
-     // do something with the service.
    });
 
 Service
@@ -53,11 +50,8 @@ Alternatively, one can connect to a previously deployed Service.
    // On-chain address of the service
    const address = '...';
 
-   // Interface definition of the service.
-   const idl = ...;
-
    // Connect to the service.
-   const service = new oasis.Service(idl, address);
+   const service = await oasis.Service.at(address);
 
 RPC
 ==========
