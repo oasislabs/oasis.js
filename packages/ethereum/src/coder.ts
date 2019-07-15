@@ -39,6 +39,10 @@ export class EthereumCoder implements RpcCoder {
     return output;
   }
 
+  public async decodeError(error: Uint8Array): Promise<string> {
+    return bytes.decodeUtf8(error);
+  }
+
   public async initcode(
     abi: Idl,
     params: any[],

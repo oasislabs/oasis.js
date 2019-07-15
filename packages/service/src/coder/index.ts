@@ -15,6 +15,7 @@ export interface RpcEncoder {
 
 export interface RpcDecoder {
   decode(fn: RpcFn, data: Bytes, constructor?: boolean): Promise<any>;
+  decodeError(error: Uint8Array): Promise<string>;
 }
 
 interface RpcFunctions {
@@ -35,5 +36,5 @@ export type RpcRequest = {
 };
 
 interface RpcSubscriptionEventDecoder {
-  decodeSubscriptionEvent(e: any, idl: Idl): any;
+  decodeSubscriptionEvent(e: any, idl: Idl): Promise<any>;
 }

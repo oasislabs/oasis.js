@@ -51,6 +51,11 @@ export default class ConfidentialCoder {
     return this.internalCoder.decode(fn, decryption.plaintext, constructor);
   }
 
+  public async decodeError(error: Uint8Array): Promise<string> {
+    let decryption = await decrypt(error, this.keys.privateKey);
+    return this.internalCoder.decodeError(decryption.plaintext);
+  }
+
   public async initcode(
     abi: Idl,
     params: any[],
@@ -67,7 +72,15 @@ export default class ConfidentialCoder {
     return this.internalCoder.topic(event, idl);
   }
 
-  public decodeSubscriptionEvent(log: any, abi: Idl): any {
-    return this.internalCoder.topic(log, abi);
+  public async decodeSubscriptionEvent(log: any, abi: Idl): Promise<any> {
+    log = JSON.parse(JSON.stringify(log));
+
+    let encryption = await decrypt(
+      bytes.parseHex(log.data),
+      this.keys.privateKey
+    );
+    log.data = bytes.toHex(encryption.plaintext);
+
+    return this.internalCoder.decodeSubscriptionEvent(log, abi);
   }
 }

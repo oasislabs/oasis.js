@@ -48,6 +48,7 @@ export type RpcOptions = {
 
 export type RpcResponse = {
   output: any;
+  error?: Uint8Array;
 };
 
 export type SubscribeRequest = {

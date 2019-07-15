@@ -56,6 +56,12 @@ export class RpcFactory {
           address: address,
           options: rpcOptions
         });
+
+        if (response.error) {
+          let errorStr = await coder.decodeError(response.error);
+          throw new Error(errorStr);
+        }
+
         return coder.decode(fn, response.output);
       };
     });

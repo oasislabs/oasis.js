@@ -28,8 +28,8 @@ async function encrypt(
   );
   return bytes.concat([
     publicKey,
-    bytes.parseNumber(ciphertext.length, 8),
-    bytes.parseNumber(aad.length, 8),
+    bytes.parseNumber(ciphertext.length, 8, true),
+    bytes.parseNumber(aad.length, 8, true),
     ciphertext,
     aad,
     nonce
@@ -74,7 +74,7 @@ function nonce(): Nonce {
  * PUBLIC_KEY || CIPHER_LENGTH || AAD_LENGTH || CIPHER || AAD || NONCE
  * where CIPHER_LENGTH and AAD_LENGTH are encoded big endian uint64
  */
-function splitEncryptedPayload(
+export function splitEncryptedPayload(
   encryption: Uint8Array
 ): [Uint8Array, Uint8Array, Uint8Array, Uint8Array] {
   if (encryption.length < 64) {
@@ -87,15 +87,14 @@ function splitEncryptedPayload(
   let cipherOffset = aadLengthOffset + 8;
 
   publicKey.set(encryption.slice(0, publicKey.length));
-  let cipherLength = parseInt(
-    bytes.toHex(encryption.slice(cipherLengthOffset, cipherLengthOffset + 8)),
-    16
+  let cipherLength = bytes.toNumber(
+    encryption.slice(cipherLengthOffset, cipherLengthOffset + 8),
+    true
   );
-  let aadLength = parseInt(
-    bytes.toHex(encryption.slice(aadLengthOffset, aadLengthOffset + 8)),
-    16
+  let aadLength = bytes.toNumber(
+    encryption.slice(aadLengthOffset, aadLengthOffset + 8),
+    true
   );
-
   let ciphertext = new Uint8Array(cipherLength);
 
   ciphertext.set(encryption.slice(cipherOffset, cipherOffset + cipherLength));

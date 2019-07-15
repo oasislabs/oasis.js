@@ -1,40 +1,10 @@
 import { Nonce, PublicKey, PrivateKey } from '@oasislabs/types';
 import { bytes } from '@oasislabs/common';
 
-import { encrypt, decrypt } from '../src';
+import { encrypt, decrypt, splitEncryptedPayload } from '../src';
 import nacl from '../src/tweetnacl';
 
 describe('Crypto', () => {
-  it('Encrypts to the wire format', async () => {
-    let plaintext = new Uint8Array([1, 2, 3, 4]);
-
-    let [nonce, peer, me, aad] = aeadInput();
-
-    let encryption = await encrypt(
-      nonce,
-      plaintext,
-      peer.publicKey,
-      me.publicKey,
-      me.privateKey,
-      aad
-    );
-
-    let publicKeyResult = encryption.slice(0, 32);
-    let cipherLength = parseInt(bytes.toHex(encryption.slice(32, 40)), 16);
-    let aadLength = parseInt(bytes.toHex(encryption.slice(40, 48)), 16);
-    let cipherResult = encryption.slice(48, 48 + cipherLength);
-    let aadResult = encryption.slice(
-      48 + cipherLength,
-      48 + cipherLength + aadLength
-    );
-    let nonceResult = encryption.slice(48 + cipherLength + aadLength);
-
-    expect(nonceResult).toEqual(nonce);
-    expect(publicKeyResult).toEqual(me.publicKey);
-    expect(cipherResult.length).toEqual(20);
-    expect(aadResult.toString()).toEqual(aad.toString());
-  });
-
   it('Decrypts the encrypted data', async () => {
     let plaintext = new Uint8Array([1, 2, 3, 4]);
 
@@ -55,6 +25,174 @@ describe('Crypto', () => {
     expect(decryption.peerPublicKey).toEqual(peer.publicKey);
     expect(decryption.plaintext).toEqual(plaintext);
     expect(decryption.aad.toString()).toEqual(aad.toString());
+  });
+
+  it('Encrypts the data to the wire format', async () => {
+    let plaintext = new Uint8Array([
+      162,
+      102,
+      109,
+      101,
+      116,
+      104,
+      111,
+      100,
+      105,
+      103,
+      101,
+      116,
+      95,
+      99,
+      111,
+      117,
+      110,
+      116,
+      103,
+      112,
+      97,
+      121,
+      108,
+      111,
+      97,
+      100,
+      128
+    ]);
+    let nonce = new Uint8Array([
+      14,
+      165,
+      160,
+      215,
+      103,
+      91,
+      206,
+      119,
+      15,
+      74,
+      214,
+      123,
+      232,
+      84,
+      170
+    ]);
+    let peerPublicKey = new Uint8Array([
+      116,
+      62,
+      180,
+      232,
+      196,
+      202,
+      38,
+      123,
+      204,
+      182,
+      183,
+      208,
+      42,
+      238,
+      138,
+      235,
+      97,
+      158,
+      6,
+      56,
+      67,
+      218,
+      180,
+      81,
+      211,
+      152,
+      176,
+      51,
+      238,
+      30,
+      55,
+      109
+    ]);
+    let publicKey = new Uint8Array([
+      83,
+      125,
+      217,
+      210,
+      225,
+      137,
+      127,
+      56,
+      153,
+      220,
+      253,
+      125,
+      188,
+      172,
+      163,
+      73,
+      246,
+      57,
+      29,
+      39,
+      182,
+      74,
+      231,
+      116,
+      254,
+      171,
+      193,
+      96,
+      110,
+      163,
+      207,
+      27
+    ]);
+    let secretKey = new Uint8Array([
+      157,
+      82,
+      192,
+      70,
+      250,
+      242,
+      226,
+      96,
+      56,
+      82,
+      254,
+      189,
+      233,
+      199,
+      2,
+      51,
+      128,
+      199,
+      118,
+      173,
+      31,
+      99,
+      163,
+      187,
+      13,
+      167,
+      46,
+      191,
+      153,
+      141,
+      237,
+      54
+    ]);
+    let aad = new Uint8Array([]);
+
+    let encryption = await encrypt(
+      nonce,
+      plaintext,
+      peerPublicKey,
+      publicKey,
+      secretKey,
+      aad
+    );
+    let [splitPublicKey, cipher, splitAad, splitNonce] = splitEncryptedPayload(
+      encryption
+    );
+
+    expect(splitPublicKey).toEqual(publicKey);
+    expect(splitAad).toEqual(aad);
+    expect(splitNonce).toEqual(nonce);
   });
 });
 
