@@ -1,6 +1,6 @@
 {
   "name": "@oasislabs/client",
-  "version": "1.0.0-rc.2",
+  "version": "1.0.0-rc.3",
   "description": "",
   "keywords": [],
   "main": "dist/index.umd.js",
@@ -37,10 +37,10 @@
     ]
   },
   "dependencies": {
-    "@oasislabs/common": "^1.0.0-rc.0",
-    "@oasislabs/ethereum": "^1.0.0-rc.1",
-    "@oasislabs/gateway": "^1.0.0-rc.1",
-    "@oasislabs/service": "^1.0.0-rc.1",
+    "@oasislabs/common": "^1.0.0-rc.1",
+    "@oasislabs/ethereum": "^1.0.0-rc.2",
+    "@oasislabs/gateway": "^1.0.0-rc.2",
+    "@oasislabs/service": "^1.0.0-rc.2",
     "js-sha3": "^0.8.0"
   },
   "browser": {
