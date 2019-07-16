@@ -4,4 +4,4 @@
 .. _web3.js: https://web3js.readthedocs.io/en/1.0/
 .. _web3-rpc: https://github.com/ethereum/wiki/wiki/JSON-RPC
 .. _Deoxysii.js: https://github.com/oasislabs/deoxysii.js
-.. _mantle: https://github.com/oasislabs/mantle
+.. _oasis-rs: https://github.com/oasislabs/oasis-rs
