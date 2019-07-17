@@ -31,7 +31,7 @@ import {
   SubscribePollApi,
   GetCodeApi
 } from './api';
-import { Http } from './http';
+import { HttpHeaders, Http } from './http';
 import { HttpSession } from './session';
 
 // Re-export.
@@ -48,9 +48,9 @@ export {
 export default class Gateway implements OasisGateway {
   private inner: OasisGateway;
 
-  constructor(url: string) {
+  constructor(url: string, headers: HttpHeaders) {
     // TODO: WebSocket gateway and extract protocol from url.
-    this.inner = new HttpGateway(url);
+    this.inner = new HttpGateway(url, headers);
   }
 
   public async deploy(request: DeployRequest): Promise<DeployResponse> {
@@ -96,8 +96,8 @@ class HttpGateway implements OasisGateway {
    */
   private subscriptions: Map<string, number>;
 
-  public constructor(private url: string) {
-    this.session = new HttpSession(url);
+  public constructor(private url: string, private headers: HttpHeaders) {
+    this.session = new HttpSession(url, headers);
     this.polling = PollingService.instance({
       url: url,
       session: this.session
