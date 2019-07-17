@@ -1,6 +1,6 @@
 {
   "name": "@oasislabs/ethereum",
-  "version": "1.0.0-rc.2",
+  "version": "1.0.0-rc.3",
   "description": "",
   "keywords": [],
   "main": "dist/index.umd.js",
@@ -35,8 +35,8 @@
   },
   "dependencies": {
     "@oasislabs/common": "^1.0.0-rc.1",
-    "@oasislabs/service": "^1.0.0-rc.2",
-    "@oasislabs/test": "^1.0.0-rc.2",
+    "@oasislabs/service": "^1.0.0-rc.3",
+    "@oasislabs/test": "^1.0.0-rc.3",
     "axios": "^0.18.0",
     "ethers": "^4.0.27",
     "eventemitter3": "^3.1.2",
