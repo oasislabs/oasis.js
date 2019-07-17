@@ -78,7 +78,7 @@ jobs:
           at: oasis-client
       - run:
           name: Deploy to S3
-          command: aws s3 sync --profile staging oasis-client/output/ s3://web3cjs-staging/oasis-client/${CIRCLE_TAG}/ --delete
+          command: aws s3 sync --profile staging oasis-client/output/ s3://web3cjs-staging/oasis-client/ --delete
 
 workflows:
   version: 2
