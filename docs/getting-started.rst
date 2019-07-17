@@ -8,7 +8,7 @@ gateway-client
 =========================
 
 The gateway-client provides the minimal set of features for interacting
-with services through an Oasis gateway. TODO: link to a doc on the developer-gateway.
+with services through an Oasis gateway.
 
 It includes
 
@@ -28,8 +28,14 @@ Node.js
 
 Browser
 --------
-We host the latest version of the library here [TODO].
+The Oasis CDN hosts the latest version of the library. It can be included in your HTML as follows:
 
+.. code-block:: html
+
+   <script src="https://cdn.oasiscloud.io/oasis-client-latest/gateway-client/index.browser.umd.js"
+           charset="utf-8"
+           type="text/javascript">
+   </script>
 
 client
 ========
@@ -59,4 +65,10 @@ Node.js
 
 Browser
 -------
-We host the latest version of the library here [TODO].
+
+.. code-block:: html
+
+   <script src="https://cdn.oasiscloud.io/oasis-client-latest/client/index.browser.umd.js"
+           charset="utf-8"
+           type="text/javascript">
+   </script>
