@@ -15,6 +15,7 @@ It includes
 * :ref:`oasis.deploy <deploy>`
 * :ref:`oasis.setGateway <setGateway>`
 * :ref:`oasis.Service <service>`
+* :ref:`oasis.gateways.Gateway <gateways>`
 
 To install the gateway-client
 
