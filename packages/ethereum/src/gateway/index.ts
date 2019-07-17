@@ -17,6 +17,7 @@ import {
 import { JsonRpcWebSocket } from './websocket';
 import { TransactionFactory, Transaction } from './transaction';
 import { Subscriptions } from './subscriptions';
+import { TransactionReverted, RpcFailure } from './error';
 
 export class Web3Gateway implements OasisGateway {
   /**
@@ -73,7 +74,14 @@ export class Web3Gateway implements OasisGateway {
       tries += 1;
     }
     if (!receipt) {
-      throw new Error('Could not fetch the transaction receipt');
+      throw new RpcFailure('could not fetch the transaction receipt');
+    }
+
+    if (receipt.status !== '0x1') {
+      throw new TransactionReverted(
+        receipt,
+        `transaction reverted: ${receipt}`
+      );
     }
 
     return {
@@ -146,7 +154,7 @@ export class Web3Gateway implements OasisGateway {
     });
 
     if (!response.result) {
-      throw new Error(
+      throw new RpcFailure(
         `failed to unsubscribe with request ${request} and response ${response}`
       );
     }
