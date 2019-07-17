@@ -11,63 +11,7 @@ The ``oasis.gateways`` namespace provides objects implementing the ``OasisGatewa
 interface OasisGateway
 =======================
 
-The interface is defined with the following TypeScript:
-
-.. code-block:: typescript
-
-   interface OasisGateway {
-     deploy(request: DeployRequest): Promise<DeployResponse>;
-     rpc(request: RpcRequest): Promise<RpcResponse>;
-     subscribe(request: SubscribeRequest): EventEmitter;
-     unsubscribe(request: UnsubscribeRequest);
-     publicKey(request: PublicKeyRequest): Promise<PublicKeyResponse>;
-   }
-
-   type DeployRequest = {
-     data: Bytes;
-   };
-
-   type DeployResponse = {
-     address: Address;
-   };
-
-   type PublicKeyRequest = {
-     address: Address;
-   };
-
-   type RpcRequest = {
-     data: Bytes;
-     address?: Address;
-     options?: RpcOptions;
-   };
-
-   type RpcOptions = {
-     gasLimit?: string;
-     gasPrice?: string;
-     aad?: string;
-   };
-
-   type RpcResponse = {
-     output: any;
-   };
-
-   type SubscribeRequest = {
-     event: string;
-     filter?: SubscribeFilter;
-   };
-
-   type SubscribeFilter = {
-     address: Address;
-     topics: Bytes[];
-   };
-
-   type UnsubscribeRequest = {
-     event: string;
-   };
-
-   type PublicKeyResponse = {
-     publicKey?: PublicKey;
-   };
+The interface is defined with the following TypeScript `source <https://github.com/oasislabs/oasis.js/blob/master/packages/service/src/oasis-gateway.ts>`_.
 
 The following two implementations are provided.
 
