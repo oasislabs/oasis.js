@@ -6,7 +6,7 @@ oasis.js - Oasis JavaScript SDK
 
 oasis.js provides a collection of tools to interact with Secure Services running
 on the Oasis cloud. For more information on Oasis, see the `oasis`_ docs. For
-developing services, check out the `mantle`_ docs.
+developing services, check out the `oasis-rs`_ docs.
 
 If you're developing or interacting with traditional Ethereum contracts, it's
 recommended to use one of our favorite Ethereum libraries like `ethers.js`_ or `web3.js`_.

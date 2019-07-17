@@ -25,7 +25,7 @@ export async function fromWasm(bytecode: Uint8Array): Promise<Idl> {
   // @ts-ignore
   let sections = WebAssembly.Module.customSections(
     wasmModule,
-    'mantle-interface'
+    'oasis-interface'
   );
 
   if (sections.length !== 1) {

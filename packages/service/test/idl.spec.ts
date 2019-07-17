@@ -9,14 +9,21 @@ describe('Idl', () => {
     // When.
     let idl = await fromWasm(bin);
     // Then.
-    let expected = expect(idl).toEqual({
+    expect(idl).toEqual({
       name: 'MantleCounter',
       namespace: 'mantle_counter',
       version: '0.1.0',
+      type_defs: [
+        {
+          type: 'event',
+          name: 'Incremented',
+          fields: [{ name: 'newCounter', type: { type: 'u64' } }]
+        }
+      ],
       constructor: { inputs: [], error: null },
       functions: [
         {
-          name: 'get_count',
+          name: 'getCounter',
           mutability: 'mutable',
           output: {
             type: 'result',
@@ -24,7 +31,7 @@ describe('Idl', () => {
           }
         },
         {
-          name: 'set_count',
+          name: 'setCounter',
           mutability: 'mutable',
           inputs: [{ name: 'c', type: { type: 'u64' } }],
           output: {
@@ -33,10 +40,10 @@ describe('Idl', () => {
           }
         },
         {
-          name: 'set_count2',
+          name: 'setCounter2',
           mutability: 'mutable',
           inputs: [
-            { name: 'c', type: { type: 'u64' } },
+            { name: '_c', type: { type: 'u64' } },
             { name: 'c2', type: { type: 'u64' } }
           ],
           output: {
@@ -45,7 +52,7 @@ describe('Idl', () => {
           }
         },
         {
-          name: 'increment_count',
+          name: 'incrementCounter',
           mutability: 'mutable',
           output: {
             type: 'result',
@@ -53,7 +60,7 @@ describe('Idl', () => {
           }
         }
       ],
-      mantle_build_version: '0.2.2'
+      oasis_build_version: '0.2.0'
     });
   });
 });
