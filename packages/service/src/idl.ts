@@ -19,6 +19,8 @@ export interface Idl {
   constructor: RpcConstructor;
 }
 
+export class IdlError extends Error {}
+
 export async function fromWasm(bytecode: Uint8Array): Promise<Idl> {
   // @ts-ignore
   let wasmModule = await WebAssembly.compile(bytecode);
@@ -29,7 +31,7 @@ export async function fromWasm(bytecode: Uint8Array): Promise<Idl> {
   );
 
   if (sections.length !== 1) {
-    throw new Error('Wasm bytecode must have one mantle-interface section');
+    throw new IdlError('wasm bytecode must have one oasis-interface section');
   }
 
   let deflatedIdl = new Uint8Array(sections[0]);
