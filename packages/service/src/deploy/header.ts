@@ -1,12 +1,12 @@
 import { Bytes } from '@oasislabs/types';
 import { bytes } from '@oasislabs/common';
 
-import * as assert from 'assert';
-
 export type DeployHeaderOptions = {
   expiry?: number;
   confidential?: boolean;
 };
+
+export class DeployHeaderError extends Error {}
 
 // TODO: change all apis here to take Uint8Arrays as input/output instead
 //       of hex strings.
@@ -22,12 +22,14 @@ export class DeployHeader {
     let version = DeployHeaderWriter.version(this.version);
     let body = DeployHeaderWriter.body(this.body);
 
-    assert.strictEqual(body.length % 2, 0);
+    if (body.length % 2 !== 0) {
+      throw new DeployHeaderError('Invalid body length');
+    }
 
     let length = DeployHeaderWriter.size(body);
 
     if (length.substr(2).length > 4) {
-      throw new Error(
+      throw new DeployHeaderError(
         'Length of the contract deploy header must be no greater than two bytes'
       );
     }
@@ -165,10 +167,9 @@ export class DeployHeaderReader {
       deploycode = bytes.toHex(deploycode);
     }
 
-    assert.strictEqual(
-      true,
-      deploycode.startsWith('0x' + DeployHeader.prefix())
-    );
+    if (!deploycode.startsWith('0x' + DeployHeader.prefix())) {
+      throw new DeployHeaderError('code must have the header prefiix');
+    }
 
     let length = DeployHeaderReader.size(deploycode);
     let serializedBody = deploycode.substr(
@@ -187,10 +188,9 @@ export class DeployHeaderReader {
       deploycode = bytes.toHex(deploycode);
     }
 
-    assert.strictEqual(
-      true,
-      deploycode.startsWith('0x' + DeployHeader.prefix())
-    );
+    if (!deploycode.startsWith('0x' + DeployHeader.prefix())) {
+      throw new DeployHeaderError('code must have the header prefix');
+    }
 
     let length = deploycode.substr(
       DeployHeaderReader.sizeStart(),
@@ -208,10 +208,9 @@ export class DeployHeaderReader {
       deploycode = bytes.toHex(deploycode);
     }
 
-    assert.strictEqual(
-      true,
-      deploycode.startsWith('0x' + DeployHeader.prefix())
-    );
+    if (!deploycode.startsWith('0x' + DeployHeader.prefix())) {
+      throw new DeployHeaderError('code must have the header prefix');
+    }
 
     let version = deploycode.substr(
       DeployHeaderReader.versionStart(),
@@ -229,10 +228,9 @@ export class DeployHeaderReader {
       deploycode = bytes.toHex(deploycode);
     }
 
-    assert.strictEqual(
-      true,
-      deploycode.startsWith('0x' + DeployHeader.prefix())
-    );
+    if (!deploycode.startsWith('0x' + DeployHeader.prefix())) {
+      throw new DeployHeaderError('code must have the header prefix');
+    }
 
     return (
       '0x' + deploycode.substr(DeployHeaderReader.initcodeStart(deploycode))
@@ -244,11 +242,9 @@ export class DeployHeaderReader {
       deploycode = bytes.toHex(deploycode);
     }
 
-    assert.strictEqual(
-      true,
-      deploycode.startsWith('0x' + DeployHeader.prefix())
-    );
-
+    if (!deploycode.startsWith('0x' + DeployHeader.prefix())) {
+      throw new DeployHeaderError('code must have the header prefix');
+    }
     // Make sure to convert the "length" to nibbles, since it's in units of bytes.
     return (
       DeployHeaderReader.bodyStart() + DeployHeaderReader.size(deploycode) * 2
