@@ -17,8 +17,7 @@
     "prebuild": "rimraf dist",
     "test": "lerna run test --concurrency 1 --stream",
     "precommit": "lint-staged",
-    "coverage": "lerna run coverage --concurrency 1 -- stream && yarn istanbul",
-    "istanbul": "istanbul-combine -d coverage -r lcov -r html ./packages/**/coverage-final.json",
+    "coverage": "lerna run coverage --concurrency 1 -- stream",
     "coveralls": "cat ./coverage/lcov.info | coveralls"
   },
   "lint-staged": {
@@ -43,7 +42,6 @@
     "bl": "0.9.5",
     "coveralls": "^3.0.3",
     "husky": "^1.0.1",
-    "istanbul-combine": "^0.3.0",
     "jest": "^23.6.0",
     "jest-config": "^23.6.0",
     "lerna": "3.14.1",
