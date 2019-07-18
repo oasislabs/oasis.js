@@ -16,7 +16,7 @@ export class KeyStore {
   /**
    * LOCAL_KEYS is the db key where the local keypair is stored.
    */
-  private static LOCAL_KEYPAIR_KEY: string = 'me';
+  private static LOCAL_KEYPAIR_KEY: string = '@oasislabs/client/me';
 
   public constructor(db: Db, keyProvider: KeyProvider) {
     this.db = db;
