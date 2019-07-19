@@ -36,6 +36,9 @@ export class EmptyOasisGateway implements OasisGateway {
       code: new Uint8Array([0])
     };
   }
+  public disconnect() {
+    // no-op
+  }
 }
 
 /**
