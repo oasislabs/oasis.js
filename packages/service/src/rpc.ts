@@ -2,7 +2,7 @@ import { KeyStore } from '@oasislabs/confidential';
 import { Address } from '@oasislabs/types';
 import { bytes } from '@oasislabs/common';
 
-import { Idl, RpcFn, RpcInput } from './idl';
+import { Idl, IdlError, RpcFn, RpcInput } from './idl';
 import { ServiceOptions } from './service';
 import { OasisGateway, RpcOptions } from './oasis-gateway';
 import { RpcCoder } from './coder';
@@ -47,6 +47,9 @@ export class RpcFactory {
     let rpcs: Rpcs = {};
 
     functions.forEach((fn: RpcFn) => {
+      if (fn.name === '_inner') {
+        throw new IdlError('the _inner name is reserved by the oasis-client');
+      }
       rpcs[fn.name] = async (...args: any[]) => {
         let coder = await rpcCoder;
         let [rpcArgs, rpcOptions] = RpcFactory.parseOptions(fn, args);

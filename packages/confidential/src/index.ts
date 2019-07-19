@@ -3,8 +3,19 @@ import { bytes } from '@oasislabs/common';
 import { Deoxysii } from './aead';
 import { KeyStore } from './key-store';
 import nacl from './tweetnacl';
+import { EncryptError } from './error';
 
 const aead = new Deoxysii();
+
+/**
+ * Expected number of bytes of the CIPHER_LENGTH field of the ciphertext layout.
+ */
+const CIPHER_LEN_SIZE = 8;
+
+/**
+ * Expected number of bytes of the AAD_LENGTH field of the ciphertext layout.
+ */
+const AAD_LEN_SIZE = 8;
 
 /**
  * encrypt takes the given input and returns the encrypted wire format:
@@ -26,10 +37,25 @@ async function encrypt(
     peerPublicKey,
     privateKey
   );
+  if (
+    ciphertext.length > Number.MAX_SAFE_INTEGER ||
+    aad.length > Number.MAX_SAFE_INTEGER
+  ) {
+    throw new EncryptError(
+      {
+        nonce,
+        ciphertext,
+        peerPublicKey,
+        publicKey,
+        aad
+      },
+      'ciphertext or aad may not exceed 2^53-1'
+    );
+  }
   return bytes.concat([
     publicKey,
-    bytes.parseNumber(ciphertext.length, 8, true),
-    bytes.parseNumber(aad.length, 8, true),
+    bytes.parseNumber(ciphertext.length, CIPHER_LEN_SIZE, true),
+    bytes.parseNumber(aad.length, AAD_LEN_SIZE, true),
     ciphertext,
     aad,
     nonce
@@ -48,6 +74,22 @@ async function decrypt(
   let [peerPublicKey, ciphertext, aad, nonce] = splitEncryptedPayload(
     encryption
   );
+
+  if (
+    ciphertext.length > Number.MAX_SAFE_INTEGER ||
+    aad.length > Number.MAX_SAFE_INTEGER
+  ) {
+    throw new EncryptError(
+      {
+        nonce,
+        ciphertext,
+        peerPublicKey,
+        aad
+      },
+      'ciphertext or aad may not exceed 2^53-1'
+    );
+  }
+
   let plaintext = await aead.open(
     nonce,
     ciphertext,
@@ -64,7 +106,7 @@ async function decrypt(
 }
 
 function nonce(): Nonce {
-  return nacl.randomBytes(15);
+  return nacl.randomBytes(aead.nonceSize());
 }
 
 /**
@@ -80,19 +122,19 @@ export function splitEncryptedPayload(
   if (encryption.length < 64) {
     throw new Error(`Invalid encryption: ${encryption}`);
   }
-  let nonce = new Uint8Array(15);
-  let publicKey = new Uint8Array(32);
-  let cipherLengthOffset = 32;
-  let aadLengthOffset = cipherLengthOffset + 8;
-  let cipherOffset = aadLengthOffset + 8;
+  let nonce = new Uint8Array(aead.nonceSize());
+  let publicKey = new Uint8Array(aead.keySize());
+  let cipherLengthOffset = aead.keySize();
+  let aadLengthOffset = cipherLengthOffset + CIPHER_LEN_SIZE;
+  let cipherOffset = aadLengthOffset + AAD_LEN_SIZE;
 
   publicKey.set(encryption.slice(0, publicKey.length));
   let cipherLength = bytes.toNumber(
-    encryption.slice(cipherLengthOffset, cipherLengthOffset + 8),
+    encryption.slice(cipherLengthOffset, cipherLengthOffset + CIPHER_LEN_SIZE),
     true
   );
   let aadLength = bytes.toNumber(
-    encryption.slice(aadLengthOffset, aadLengthOffset + 8),
+    encryption.slice(aadLengthOffset, aadLengthOffset + AAD_LEN_SIZE),
     true
   );
   let ciphertext = new Uint8Array(cipherLength);
