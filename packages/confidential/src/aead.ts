@@ -18,6 +18,10 @@ export interface Aead {
     peerPublicKey: PublicKey,
     privateKey: PrivateKey
   ): Promise<Uint8Array>;
+
+  nonceSize(): number;
+
+  keySize(): number;
 }
 
 export class Deoxysii implements Aead {
@@ -43,5 +47,13 @@ export class Deoxysii implements Aead {
     let aesKey = await ecdhTweak(peerPublicKey, privateKey);
     let aead = new deoxysii.AEAD(aesKey);
     return aead.decrypt(nonce, ciphertext, additionalData);
+  }
+
+  public nonceSize(): number {
+    return deoxysii.NonceSize;
+  }
+
+  public keySize(): number {
+    return deoxysii.KeySize;
   }
 }
