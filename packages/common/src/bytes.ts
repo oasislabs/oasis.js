@@ -11,7 +11,11 @@ export function parseHex(keystring: string, littleEndian = false): Uint8Array {
   if (keystring.indexOf('0x') === 0) {
     keystring = keystring.substr(2);
   }
-  let key = keystring.match(/.{1,2}/g);
+  if (keystring.length % 2 === 1) {
+    keystring = '0' + keystring;
+  }
+
+  let key = keystring.match(/.{2}/g);
 
   if (key === null) {
     return new Uint8Array();
