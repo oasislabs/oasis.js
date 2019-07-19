@@ -78,6 +78,10 @@ export default class Gateway implements OasisGateway {
   public async getCode(request: GetCodeRequest): Promise<GetCodeResponse> {
     return this.inner.getCode(request);
   }
+
+  public disconnect() {
+    this.inner.disconnect();
+  }
 }
 
 class HttpGateway implements OasisGateway {
@@ -216,6 +220,10 @@ class HttpGateway implements OasisGateway {
     return {
       code: bytes.parseHex(response.code)
     };
+  }
+
+  public disconnect() {
+    // no-op
   }
 }
 

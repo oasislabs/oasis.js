@@ -11,6 +11,7 @@ export interface OasisGateway {
   unsubscribe(request: UnsubscribeRequest);
   publicKey(request: PublicKeyRequest): Promise<PublicKeyResponse>;
   getCode(request: GetCodeRequest): Promise<GetCodeResponse>;
+  disconnect();
 }
 
 export type DeployRequest = {
