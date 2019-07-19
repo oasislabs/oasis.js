@@ -20,7 +20,8 @@ describe('Service', () => {
     let service = new Service(idl, address, {
       gateway: new EmptyOasisGateway()
     });
-    expect(service.address).toEqual(address);
+    // @ts-ignore
+    expect(service._inner.address).toEqual(address);
   });
 
   it('constructs a service with a buffer address', () => {
@@ -29,7 +30,8 @@ describe('Service', () => {
       gateway: new EmptyOasisGateway()
     });
 
-    expect(service.address).toEqual(address);
+    // @ts-ignore
+    expect(service._inner.address).toEqual(address);
   });
 
   it('dynamically generates rpcs for a given IDL on the service object', () => {
