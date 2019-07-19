@@ -17,36 +17,19 @@ import {
  * Service is the object representation of an Oasis rpc service.
  */
 export default class Service {
+  /**
+   * The generated rpcs for this service, defined by a given IDL.
+   */
   public rpc: Rpcs;
-  public address: Address;
-  private options: ServiceOptions;
 
   /**
-   * Internal event emitter to track registration for the both the
-   * add/removeEventListener apis.
+   * The inner variables required to implement the Service object. We reserve
+   * the `_inner`` namespace so that service methods defined by an IDL don't
+   * override/clash with the internal variables. This is required so that we
+   * can support the convenient `service.myMethod()` syntax in JavaScript.
+   * It's expected no IDL used will have an _inner rpc method.
    */
-  // @ts-ignore
-  private listeners: EventEmitter;
-
-  /**
-   * Maps event names to subscriptions to the OasisGateway. For each
-   * event, we can have no more than a single subscription (though many
-   * listeners can register for each event/subscription).
-   */
-  // @ts-ignore
-  private subscriptions: Map<string, EventEmitter>;
-
-  /**
-   * idl defines the service's interface.
-   */
-  private idl: Idl;
-
-  /**
-   * coder encodes all rpcs and subscriptions to the service. Wrapped in a
-   * promise because it must wait to know whether the coder should be
-   * confidential or not, which requires a request to the gateway.
-   */
-  private coder: Promise<RpcCoder>;
+  private _inner: ServiceInner;
 
   /**
    * The Service constructor to dynamically generate service objects from a
@@ -59,20 +42,27 @@ export default class Service {
    * @param options? are the optinos configuring the Service client.
    */
   public constructor(idl: Idl, address: Address, options?: ServiceOptions) {
-    this.idl = idl;
-    this.options = Service.setupOptions(options);
+    // Fill in any options not provided by the arguments.
+    options = Service.setupOptions(options);
 
     // Attach the rpcs onto the rpc interface so that we can generate dynamic
     // rpc methods while keeping the compiler happy. Without this, we need
     // to use a types file when using a service within TypeScript.
-    [this.rpc, this.coder] = RpcFactory.build(idl, address, this.options);
+    let [rpc, coder] = RpcFactory.build(idl, address, options);
+    this.rpc = rpc;
+
     // Attach the rpcs directly onto the Service object so that we can have
     // the nice service.myMethod() syntax in JavaScript.
-    Object.assign(this, this.rpc);
+    Object.assign(this, rpc);
 
-    this.address = address;
-    this.listeners = new EventEmitter();
-    this.subscriptions = new Map();
+    this._inner = {
+      idl,
+      options,
+      coder,
+      address,
+      listeners: new EventEmitter(),
+      subscriptions: new Map()
+    };
   }
 
   /**
@@ -123,32 +113,32 @@ export default class Service {
    */
   public addEventListener(event: string, callback: Listener) {
     // Register the listener. We allow many for a single event subscription.
-    this.listeners.addListener(event, callback);
+    this._inner.listeners.addListener(event, callback);
 
-    let subscription = this.subscriptions.get(event);
+    let subscription = this._inner.subscriptions.get(event);
     if (subscription !== undefined) {
       // The subscription is already setup so exit.
       return;
     }
 
-    this.coder
+    this._inner.coder
       .then(coder => {
         // Create the subscription.
-        subscription = this.options.gateway!.subscribe({
+        subscription = this._inner.options.gateway!.subscribe({
           event,
           filter: {
-            address: this.address,
-            topics: [coder.topic(event, this.idl)]
+            address: this._inner.address,
+            topics: [coder.topic(event, this._inner.idl)]
           }
         });
         // Save the subscription so that we can remove it on demand.
-        this.subscriptions.set(event, subscription);
+        this._inner.subscriptions.set(event, subscription);
 
         // Decode the gateway's response and return it to the listener.
         subscription.addListener(event, async e => {
-          let decoded = await coder.decodeSubscriptionEvent(e, this.idl);
+          let decoded = await coder.decodeSubscriptionEvent(e, this._inner.idl);
 
-          this.listeners.emit(event, decoded);
+          this._inner.listeners.emit(event, decoded);
         });
       })
       .catch(err => {
@@ -157,20 +147,62 @@ export default class Service {
   }
 
   public removeEventListener(event: string, listener: Listener) {
-    let subscription = this.subscriptions.get(event);
+    let subscription = this._inner.subscriptions.get(event);
     if (subscription === undefined) {
       throw new Error(`no subscriptions found for ${event}`);
     }
 
-    this.listeners.removeListener(event, listener);
+    this._inner.listeners.removeListener(event, listener);
 
     // Remove the subscription if no listeners remain.
-    if (this.listeners.listeners(event).length === 0) {
-      this.options.gateway!.unsubscribe({ event });
-      this.subscriptions.delete(event);
+    if (this._inner.listeners.listeners(event).length === 0) {
+      this._inner.options.gateway!.unsubscribe({ event });
+      this._inner.subscriptions.delete(event);
     }
   }
 }
+
+/**
+ * The private state variables used by the `Service` object.
+ */
+type ServiceInner = {
+  /**
+   * Address of the service.
+   */
+  address: Address;
+
+  /**
+   * Configureable options for the Service.
+   */
+  options: ServiceOptions;
+
+  /**
+   * Internal event emitter to track registration for the both the
+   * add/removeEventListener apis.
+   */
+  // @ts-ignore
+  listeners: EventEmitter;
+
+  /**
+   * Maps event names to subscriptions to the OasisGateway. For each
+   * event, we can have no more than a single subscription (though many
+   * listeners can register for each event/subscription).
+   */
+  // @ts-ignore
+  subscriptions: Map<string, EventEmitter>;
+
+  /**
+   * idl defines the service's interface.
+   */
+  idl: Idl;
+
+  /**
+   * coder encodes all rpcs and subscriptions to the service. Wrapped in a
+   * promise because it must wait to know whether the coder should be
+   * confidential or not, which requires a request to the gateway.
+   */
+  coder: Promise<RpcCoder>;
+};
 
 /**
  * Options for adding a a service event listener.

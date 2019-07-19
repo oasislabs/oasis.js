@@ -50,7 +50,10 @@ describe('Service deploys', () => {
             header: test.header,
             gateway: new DeployMockOasisGateway(resolve)
           });
-          expect(service!.address).toEqual(DeployMockOasisGateway.address);
+          // @ts-ignore
+          expect(service!._inner.address).toEqual(
+            DeployMockOasisGateway.address
+          );
         }
       );
 
