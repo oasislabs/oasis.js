@@ -10,6 +10,10 @@ export class TransactionFactory {
     // which might be re-used by the front-end client.
     tx = JSON.parse(JSON.stringify(tx));
 
+    if (!tx.value) {
+      tx.value = '0x00';
+    }
+
     let promises: Promise<any>[] = [];
     if (!tx.gasLimit) {
       promises.push(this.estimateGas(tx));

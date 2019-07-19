@@ -49,7 +49,6 @@ export class Web3Gateway implements OasisGateway {
 
   async deploy(request: DeployRequest): Promise<DeployResponse> {
     let txParams = Object.assign(request.options || {}, {
-      value: '0x00',
       data: bytes.toHex(request.data)
     });
     let tx = await this.transactions.create(txParams);
@@ -91,7 +90,6 @@ export class Web3Gateway implements OasisGateway {
 
   async rpc(request: RpcRequest): Promise<RpcResponse> {
     let txParams = Object.assign(request.options || {}, {
-      value: '0x00',
       data: bytes.toHex(request.data),
       to: bytes.toHex(request.address!)
     });

@@ -44,6 +44,7 @@ export type RpcRequest = {
 export type RpcOptions = {
   gasLimit?: string;
   gasPrice?: string;
+  value?: string;
   aad?: string;
 };
 
