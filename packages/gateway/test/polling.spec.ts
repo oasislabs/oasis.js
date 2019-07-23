@@ -123,7 +123,11 @@ class MockSession implements Http {
     this.responseCounter = 0;
   }
 
-  public async post(api: string, body: Object): Promise<any> {
+  public async request(
+    method: string,
+    api: string,
+    body: Object
+  ): Promise<any> {
     if (this.isBlocked) {
       return emptyPollResponse();
     }
