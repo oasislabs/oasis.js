@@ -6,36 +6,66 @@
 /**
  * DeveloperGatewayApi represents the path for a URI for the developer gateway.
  */
-export type DeveloperGatewayApi = string;
+export type DeveloperGatewayApi = {
+  url: string;
+  method: string;
+};
 
 /**
  * Deploys a services.
  */
-export const DeployApi: DeveloperGatewayApi = 'v0/api/service/deploy';
+export const DeployApi: DeveloperGatewayApi = {
+  url: 'v0/api/service/deploy',
+  method: 'POST'
+};
+
 /**
  * Invokes an rpc on a service.
  */
-export const RpcApi: DeveloperGatewayApi = 'v0/api/service/execute';
+export const RpcApi: DeveloperGatewayApi = {
+  url: 'v0/api/service/execute',
+  method: 'POST'
+};
+
 /**
  * Retrieives the public key for a service.
  */
-export const PublicKeyApi: DeveloperGatewayApi = 'v0/api/service/getPublicKey';
+export const PublicKeyApi: DeveloperGatewayApi = {
+  url: 'v0/api/service/getPublicKey',
+  method: 'GET'
+};
+
 /**
  * Retrieves the code for an address.
  */
-export const GetCodeApi: DeveloperGatewayApi = 'v0/api/service/getCode';
+export const GetCodeApi: DeveloperGatewayApi = {
+  url: 'v0/api/service/getCode',
+  method: 'GET'
+};
+
 /**
  * Polls for an event on a service.
  */
-export const ServicePollApi: DeveloperGatewayApi = 'v0/api/service/poll';
+export const ServicePollApi: DeveloperGatewayApi = {
+  url: 'v0/api/service/poll',
+  method: 'POST'
+};
+
 /**
  * Subscribes to a gateway topic.
  */
-export const SubscribeApi: DeveloperGatewayApi = 'v0/api/event/subscribe';
+export const SubscribeApi: DeveloperGatewayApi = {
+  url: 'v0/api/event/subscribe',
+  method: 'POST'
+};
+
 /**
  * Polls for an event on a subcription.
  */
-export const SubscribePollApi: DeveloperGatewayApi = 'v0/api/event/poll';
+export const SubscribePollApi: DeveloperGatewayApi = {
+  url: 'v0/api/event/poll',
+  method: 'POST'
+};
 
 /**
  *  Event is an interface for types that can be fetched by polling on a service.

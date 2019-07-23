@@ -11,14 +11,19 @@ export type HttpHeaders = {
  * Http interface for making http requests to the developer gateway.
  */
 export interface Http {
-  post(api: string, body: Object): Promise<any>;
+  request(method: string, api: string, body: Object): Promise<any>;
 }
 
 /**
  * HttpClient for underlying http client implementations
  */
 export interface HttpClient {
-  post(uri: string, body: Object, opts: Object): Promise<any>;
+  request(
+    method: string,
+    url: string,
+    data: Object,
+    headers: HttpHeaders
+  ): Promise<any>;
 }
 
 /**
@@ -26,7 +31,14 @@ export interface HttpClient {
  * axios library as the underlying implementation
  */
 export class AxiosClient implements HttpClient {
-  public post(uri: string, body: Object, opts: Object): Promise<any> {
-    return axios.post(uri, body, opts);
+  public request(
+    method: string,
+    url: string,
+    data: Object,
+    httpHeaders: HttpHeaders
+  ): Promise<any> {
+    const headers: Object = {};
+    httpHeaders.headers.forEach((value, key) => (headers[key] = value));
+    return axios.request({ method, url, data, headers });
   }
 }

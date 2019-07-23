@@ -42,16 +42,21 @@ export class HttpSession implements Http {
     this.client = client ? client : new AxiosClient();
   }
 
-  public async post(api: string, body: Object): Promise<any> {
+  public async request(
+    method: string,
+    api: string,
+    body: Object
+  ): Promise<any> {
     const uri = `${this.url}/${api}`;
-    const headers = {
-      'X-OASIS-SESSION-KEY': this.sessionKey,
-      'Content-type': 'application/json'
-    };
+    const headers: HttpHeaders = { headers: new Map() };
+    headers.headers.set('X-OASIS-SESSION-KEY', this.sessionKey);
+    headers.headers.set('Content-type', 'application/json');
 
-    this.headers.headers.forEach((value, key) => (headers[key] = value));
+    this.headers.headers.forEach((value, key) =>
+      headers.headers.set(key, value)
+    );
 
-    let response = await this.client.post(uri, body, { headers });
+    let response = await this.client.request(method, uri, body, headers);
     return response.data;
   }
 }

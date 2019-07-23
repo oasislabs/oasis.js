@@ -1,15 +1,22 @@
 import { HttpSession } from '../src/session';
-import { HttpClient } from '../src/http';
+import { HttpClient, HttpHeaders } from '../src/http';
 
 class HttpMockClient implements HttpClient {
+  public method: string = '';
   public uri: string = '';
   public body: Object = {};
-  public opts: Object = {};
+  public headers: HttpHeaders = { headers: new Map() };
 
-  public post(uri: string, body: Object, opts: Object): Promise<any> {
+  public request(
+    method: string,
+    uri: string,
+    body: Object,
+    headers: HttpHeaders
+  ): Promise<any> {
+    this.method = method;
     this.uri = uri;
     this.body = body;
-    this.opts = opts;
+    this.headers = headers;
     return new Promise((resolve, _) => resolve({ data: 'response' }));
   }
 }
@@ -22,13 +29,22 @@ describe('SessionService', () => {
     const client = new HttpMockClient();
 
     const session = new HttpSession('http://myurl', headers, client);
-    let res = await session.post('myapi', { data: 'data' });
+    let res = await session.request('method', 'myapi', { data: 'data' });
 
     expect(res).toEqual('response');
+    expect(client.method).toEqual('method');
     expect(client.uri).toEqual('http://myurl/myapi');
     expect(client.body).toEqual({ data: 'data' });
-    expect(client.opts['headers']['Content-type']).toEqual('application/json');
-    expect(client.opts['headers']['X-OASIS-INSECURE-AUTH']).toEqual('VALUE');
-    expect(client.opts['headers']['X-OASIS-SESSION-KEY'].length).toEqual(36);
+    expect(client.headers.headers.get('Content-type')).toEqual(
+      'application/json'
+    );
+    expect(client.headers.headers.get('X-OASIS-INSECURE-AUTH')).toEqual(
+      'VALUE'
+    );
+    const sessionKey = client.headers.headers.get('X-OASIS-SESSION-KEY');
+    expect(sessionKey).not.toBe(undefined);
+    if (sessionKey) {
+      expect(sessionKey.length).toEqual(36);
+    }
   });
 });

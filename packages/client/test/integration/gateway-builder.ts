@@ -103,14 +103,14 @@ class MockSession implements Http {
     private subscribeResponses: any[]
   ) {}
 
-  public async post(api: string, body: any): Promise<any> {
+  public async request(method: string, api: string, body: any): Promise<any> {
     if (this.logging) {
       console.debug(
         `request:  ${api}\n${this.loggingLine}\n${JSON.stringify(body)}}`
       );
     }
 
-    let response = await this._post(api, body);
+    let response = await this._request(method, api, body);
 
     if (this.logging) {
       console.debug(
@@ -121,9 +121,9 @@ class MockSession implements Http {
     return response;
   }
 
-  private async _post(api: string, body: any): Promise<any> {
+  private async _request(method: string, api: string, body: any): Promise<any> {
     // Service execution.
-    if (api === ServicePollApi) {
+    if (api === ServicePollApi.url && method == ServicePollApi.method) {
       this.count += 1;
       return {
         offset: body.offset,
@@ -131,7 +131,10 @@ class MockSession implements Http {
       };
     }
     // Subscription log.
-    else if (api === SubscribePollApi) {
+    else if (
+      api === SubscribePollApi.url &&
+      method == SubscribePollApi.method
+    ) {
       if (body.offset >= this.subscribeResponses.length) {
         return { offset: body.offset, events: null };
       }
@@ -141,12 +144,12 @@ class MockSession implements Http {
       };
     }
     // Subscribe queue id (handles the initial, non-poll request).
-    else if (api === SubscribeApi) {
+    else if (api === SubscribeApi.url && method == SubscribeApi.method) {
       // The mock only supports a single queue so just use 0 as the queueId.
       return { id: 0 };
     }
     // Dummy get code response.
-    else if (api === GetCodeApi) {
+    else if (api === GetCodeApi.url && method == GetCodeApi.method) {
       return { code: '0x00' };
     }
     // Service poll offset (handles the initial, non-poll request).

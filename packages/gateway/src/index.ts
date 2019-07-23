@@ -24,6 +24,7 @@ import {
   PublicKeyEvent,
   DeployEvent,
   DeployApi,
+  DeveloperGatewayApi,
   RpcApi,
   PublicKeyApi,
   SubscribeApi,
@@ -140,7 +141,7 @@ class HttpGateway implements OasisGateway {
   public subscribe(request: SubscribeRequest): any {
     let events = new EventEmitter();
     this.session
-      .post(SubscribeApi, {
+      .request(SubscribeApi.method, SubscribeApi.url, {
         events: ['logs'],
         filter: urlEncodeFilter(request.filter)
       })
@@ -203,8 +204,11 @@ class HttpGateway implements OasisGateway {
    * Performs the asynchronous developer gateway request by posting a request
    * and then polling for the response.
    */
-  private async postAndPoll(url: string, body: Object): Promise<Event> {
-    const response = await this.session.post(url, body);
+  private async postAndPoll(
+    api: DeveloperGatewayApi,
+    body: Object
+  ): Promise<Event> {
+    const response = await this.session.request(api.method, api.url, body);
     let event = await this.polling.response(response.id);
     if ((event as ErrorEvent).cause) {
       throw new Error(`poll error: ${JSON.stringify(event)}`);
@@ -213,9 +217,13 @@ class HttpGateway implements OasisGateway {
   }
 
   public async getCode(request: GetCodeRequest): Promise<GetCodeResponse> {
-    let response = await this.session.post(GetCodeApi, {
-      address: request.address
-    });
+    let response = await this.session.request(
+      GetCodeApi.method,
+      GetCodeApi.url,
+      {
+        address: bytes.toHex(request.address!)
+      }
+    );
     // todo: throw cleaner error when code doesn't exist
     return {
       code: bytes.parseHex(response.code)

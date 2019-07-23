@@ -140,7 +140,8 @@ export default class PollingService {
   }
 
   private async pollOnce() {
-    let responses = await this.session.post(this.api(), {
+    const api = this.api();
+    const responses = await this.session.request(api.method, api.url, {
       offset: this.responseWindow.start,
       discardPrevious: true
     });
