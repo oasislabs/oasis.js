@@ -61,9 +61,6 @@ export class JsonRpcWebSocket {
 
   private handler(m: any) {
     let data = JSON.parse(m.data);
-    if (data.error) {
-      throw new Error(JSON.stringify(data.error));
-    }
     this.responses.emit(`${data.id}`, data);
   }
 
@@ -94,7 +91,7 @@ export class JsonRpcWebSocket {
   }
 
   public request(request: JsonRpcRequest): Promise<any> {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       // WebSocket is not open, so wait until it's open and try again.
       if (this.websocket.readyState !== this.websocket.OPEN) {
         this.lifecycle.once('open', () => {
@@ -107,7 +104,13 @@ export class JsonRpcWebSocket {
 
       // Websocket is open so proceed.
       let id = this.nextId();
-      this.responses.once(`${id}`, resolve);
+      this.responses.once(`${id}`, jsonResponse => {
+        if (jsonResponse.error) {
+          reject(jsonResponse.error);
+        } else {
+          resolve(jsonResponse);
+        }
+      });
 
       this.websocket.send(
         JSON.stringify({
