@@ -41,6 +41,7 @@
     "@oasislabs/ethereum": "^1.0.0-rc.5",
     "@oasislabs/gateway": "^1.0.0-rc.5",
     "@oasislabs/service": "^1.0.0-rc.5",
+    "find": "^0.3.0",
     "js-sha3": "^0.8.0"
   },
   "browser": {

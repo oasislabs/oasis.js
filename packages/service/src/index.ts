@@ -3,7 +3,7 @@ import deploy from './deploy';
 import { header } from './deploy/header';
 import { OasisCoder } from './coder/oasis';
 import { RpcCoder, RpcRequest } from './coder';
-import { Idl, RpcFn } from './idl';
+import { Idl, RpcFn, fromWasmSync, fromWasm } from './idl';
 import {
   OasisGateway,
   SubscribeTopic,
@@ -22,6 +22,8 @@ export {
   SubscribeFilter,
   OasisGateway,
   OasisCoder,
+  fromWasm,
+  fromWasmSync,
   header,
   setGateway
 };
