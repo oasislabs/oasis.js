@@ -186,10 +186,14 @@ class HttpGateway implements OasisGateway {
   public async publicKey(
     request: PublicKeyRequest
   ): Promise<PublicKeyResponse> {
-    let e = await this.postAndPoll(PublicKeyApi, {
-      address: bytes.toHex(request.address)
-    });
-    let event: PublicKeyEvent = e as PublicKeyEvent;
+    const response = await this.session.request(
+      PublicKeyApi.method,
+      PublicKeyApi.url,
+      {
+        address: bytes.toHex(request.address!)
+      });
+
+    let event: PublicKeyEvent = response as PublicKeyEvent;
 
     // TODO: validate signature
     //       https://github.com/oasislabs/oasis-client/issues/39
