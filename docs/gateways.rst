@@ -25,11 +25,12 @@ It currently only supports HTTP.
 
 .. code-block:: javascript
 
-   new oasis.gateways.Gateway('http://localhost:8545');
+   new oasis.gateways.Gateway(url, httpHeaders);
 
 Parameters
 ----------
 1. ``url`` - ``String``: The url of the gateway.
+2. ``httpHeaders`` - ``Object``: The http headers to use for authentiication with the gateway. For example, :code:`{ headers: new Map([['X-OASIS-INSECURE-AUTH', 'VALUE']]) }`.
 
 ---------------------------------------------------------------------------
 

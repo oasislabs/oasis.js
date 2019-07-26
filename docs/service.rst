@@ -76,6 +76,18 @@ For example,
    // Makes an rpc request to `myMethod` and returns the result.
    const returnValue = await service.myMethod();
 
+The positional arguments for a given rpc should be passed directly into the method.
+In addition, one can specify the ``RpcOptions`` if desired. Note that these options
+must be the last argument given to a method.
+
+.. _rpc-options:
+
+RpcOptions
+----------
+* ``gasLimit`` - ``string`` | ``number`` (optional): Gas limit to use for the transaction.
+* ``gasPrice`` - ``string`` | ``number`` (optional): Gas price to use for the transaction.
+* ``value`` - ``string`` | ``number`` (optional): Value to send in the transaction.
+* ``aad`` - ``string`` (optional): Additional authenticated data exposed to the confidential runtime. Should only be used for rpc execution (i.e. not deploys).
 
 -----------------
 addEventListener
