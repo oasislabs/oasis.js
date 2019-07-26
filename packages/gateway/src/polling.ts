@@ -143,7 +143,8 @@ export default class PollingService {
     const api = this.api();
     const responses = await this.session.request(api.method, api.url, {
       offset: this.responseWindow.start,
-      discardPrevious: true
+      discardPrevious: true,
+      id: this.queueId
     });
     // No responses so exit. Can remove once this is resolved:
     // https://github.com/oasislabs/developer-gateway/issues/23
