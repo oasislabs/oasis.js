@@ -10,7 +10,8 @@ import {
   deploy,
   fromWasmSync,
   header,
-  setGateway
+  setGateway,
+  defaultOasisGateway
 } from '@oasislabs/service';
 import { Deoxysii, encrypt, decrypt } from '@oasislabs/confidential';
 import {
@@ -18,28 +19,6 @@ import {
   EthereumCoder,
   EthereumWallet as Wallet
 } from '@oasislabs/ethereum';
-
-let config = {};
-if (typeof process !== 'undefined') {
-  const fs = require('fs');
-  let nextIsConfig = false;
-  let configArgv = '{}';
-  for (let i = 0; i < process.argv.length; i++) {
-    let arg = process.argv[i];
-    if (nextIsConfig) {
-      configArgv = arg;
-      break;
-    }
-    if (arg === '-c' || arg === '--config') {
-      nextIsConfig = true;
-    }
-  }
-  let configOrPath = JSON.parse(configArgv);
-  config =
-    typeof configOrPath === 'object'
-      ? configOrPath
-      : JSON.parse(fs.readFileSync(configOrPath));
-}
 
 const oasis = {
   Service,
@@ -60,7 +39,6 @@ const oasis = {
     header,
     keccak256
   },
-  config,
   service: new Proxy({} as any, {
     get(svcCache, serviceName) {
       const find = require('find');
@@ -86,7 +64,7 @@ const oasis = {
         }
 
         if (projectRoot === undefined) {
-          throw 'Could not determine project root. Please manually set `oasis.project.dir`';
+          throw 'Could not determine project root. Please manually set `oasis.service.dir`';
         }
 
         find
@@ -103,7 +81,12 @@ const oasis = {
 
       return svcCache[serviceName];
     }
-  })
+  }),
+  disconnect() {
+    try {
+      defaultOasisGateway().disconnect();
+    } catch (_e) {}
+  }
 };
 
 export class ServiceDefinition {
@@ -118,21 +101,49 @@ export class ServiceDefinition {
   public async deploy(...args: any[]): Promise<any> {
     let numCtorArgs = this.idl.constructor.inputs.length;
     let options = args[numCtorArgs];
-    let deployOpts = Object.assign({}, oasis.config, options, {
+    let deployOpts = Object.assign({}, options, {
       arguments: args.slice(0, numCtorArgs),
       bytecode: this.bytecode,
-      idl: this.idl
+      idl: this.idl,
+      gateway: await this._getGateway()
     });
     return deploy(deployOpts);
   }
-}
 
-export type AbbrevDeployOptions = {
-  header?: DeployHeaderOptions;
-  gateway?: OasisGateway;
-  db?: Db;
-  coder?: RpcCoder;
-  options?: RpcOptions;
-};
+  async _getGateway(): Promise<OasisGateway> {
+    let gateway;
+    try {
+      return defaultOasisGateway();
+    } catch (e) {
+      if (typeof window !== 'undefined') {
+        throw e;
+      }
+      const configPath =
+        process.env.OASIS_CONFIG_FILE ||
+        require('path').join(
+          require('env-paths')('oasis', { suffix: '' }).config,
+          'config.toml'
+        );
+      const config = require('toml').parse(
+        await require('util').promisify(require('fs').readFile)(configPath)
+      );
+      const profile = process.env.OASIS_PROFILE || 'default';
+      if (!(profile in config.profiles)) {
+        throw `No profile named \`${profile}\` in ${configPath}`;
+      }
+      const gatewayConfig = config.profiles[profile];
+      setGateway(
+        gatewayConfig.mnemonic
+          ? new Web3Gateway(
+              gatewayConfig.endpoint,
+              Wallet.fromMnemonic(gatewayConfig.mnemonic)
+            )
+          : (new Gateway(gatewayConfig.endpoint) as OasisGateway)
+      );
+
+      return defaultOasisGateway();
+    }
+  }
+}
 
 export default oasis;
