@@ -97,7 +97,7 @@ const oasis = {
   }
 };
 
-export class ServiceDefinition {
+class ServiceDefinition {
   public idl: Idl;
   public bytecode: Uint8Array;
 
