@@ -43,7 +43,7 @@ export default new Proxy({} as any, {
 
       if (projectRoot === undefined) {
         throw new Error(
-          'Could not find workspace root. Maybe try setting the `OASIS_WORKSPACE` env var?'
+          'Could not find workspace root. Perhaps set the `OASIS_WORKSPACE` env var?'
         );
       }
 
@@ -79,7 +79,6 @@ class ServiceDefinition {
   }
 
   private async _getGateway(): Promise<OasisGateway> {
-    let gateway;
     try {
       return defaultOasisGateway();
     } catch (e) {
