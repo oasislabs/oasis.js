@@ -44,9 +44,13 @@ const oasis = {
       const find = require('find');
       const fs = require('fs');
 
+      /* tslint:disable */
       if (typeof window !== 'undefined') {
-        throw '`oasis.project` is not (yet) available in the browser';
+        throw new Error(
+          '`oasis.project` is not (yet) available in the browser'
+        );
       }
+      /* tslint:enable */
 
       if (svcCache._populated !== true) {
         let projectRoot = svcCache.dir;
@@ -56,7 +60,7 @@ const oasis = {
           projectRoot = require('process').cwd();
           while (!fs.existsSync(path.join(projectRoot, '.git'))) {
             let parent = path.dirname(projectRoot);
-            if (parent == projectRoot) {
+            if (parent === projectRoot) {
               projectRoot = undefined;
             }
             projectRoot = parent;
@@ -64,7 +68,9 @@ const oasis = {
         }
 
         if (projectRoot === undefined) {
-          throw 'Could not determine project root. Please manually set `oasis.service.dir`';
+          throw new Error(
+            'Could not determine project root. Please manually set `oasis.service.dir`'
+          );
         }
 
         find
@@ -85,7 +91,9 @@ const oasis = {
   disconnect() {
     try {
       defaultOasisGateway().disconnect();
-    } catch (_e) {}
+    } catch (_e) {
+      // tslint:disable-line no-empty
+    }
   }
 };
 
@@ -115,9 +123,11 @@ export class ServiceDefinition {
     try {
       return defaultOasisGateway();
     } catch (e) {
+      /* tslint:disable */
       if (typeof window !== 'undefined') {
         throw e;
       }
+      /* tslint:enable */
       const configPath =
         process.env.OASIS_CONFIG_FILE ||
         require('path').join(
@@ -129,7 +139,7 @@ export class ServiceDefinition {
       );
       const profile = process.env.OASIS_PROFILE || 'default';
       if (!(profile in config.profiles)) {
-        throw `No profile named \`${profile}\` in ${configPath}`;
+        throw new Error(`No profile named \`${profile}\` in ${configPath}`);
       }
       const gatewayConfig = config.profiles[profile];
       setGateway(
@@ -138,7 +148,7 @@ export class ServiceDefinition {
               gatewayConfig.endpoint,
               Wallet.fromMnemonic(gatewayConfig.mnemonic)
             )
-          : (new Gateway(gatewayConfig.endpoint) as OasisGateway)
+          : new Gateway(gatewayConfig.endpoint)
       );
 
       return defaultOasisGateway();
