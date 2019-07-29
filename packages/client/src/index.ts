@@ -7,7 +7,9 @@ import {
   deploy,
   header,
   setGateway,
-  defaultOasisGateway
+  defaultOasisGateway,
+  fromWasm,
+  fromWasmSync
 } from '@oasislabs/service';
 import { Deoxysii, encrypt, decrypt } from '@oasislabs/confidential';
 import {
@@ -34,7 +36,11 @@ const oasis = {
     OasisCoder,
     EthereumCoder,
     header,
-    keccak256
+    keccak256,
+    idl: {
+      fromWasm,
+      fromWasmSync
+    }
   },
   workspace,
   disconnect() {
