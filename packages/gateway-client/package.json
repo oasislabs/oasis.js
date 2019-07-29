@@ -1,6 +1,6 @@
 {
   "name": "@oasislabs/gateway-client",
-  "version": "1.0.0-rc.6",
+  "version": "1.0.0-rc.7",
   "description": "",
   "keywords": [],
   "main": "dist/index.umd.js",
@@ -30,8 +30,8 @@
     ]
   },
   "dependencies": {
-    "@oasislabs/gateway": "^1.0.0-rc.6",
-    "@oasislabs/service": "^1.0.0-rc.6"
+    "@oasislabs/gateway": "^1.0.0-rc.7",
+    "@oasislabs/service": "^1.0.0-rc.7"
   },
   "browser": {
     "./dist/index.umd.js": "./dist/index.browser.umd.js",
