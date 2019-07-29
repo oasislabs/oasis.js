@@ -141,3 +141,29 @@ export function toNumber(bytes: Uint8Array, le = false): number {
   }
   return result;
 }
+
+/**
+ * @returns the given bytes as a Uint8Array.
+ * @throws  if the given bytes is not of the given `length`.
+ */
+export function assertLength(
+  bytes: string | Uint8Array,
+  length: number
+): Uint8Array {
+  if (typeof bytes === 'string') {
+    bytes = parseHex(bytes);
+  }
+  if (bytes.length !== length) {
+    throw new InvalidBytesError(
+      bytes,
+      `invalid bytes length: received ${bytes.length} but expected ${length}`
+    );
+  }
+  return bytes;
+}
+
+export class InvalidBytesError extends Error {
+  constructor(readonly bytes: Uint8Array, ...params) {
+    super(...params);
+  }
+}

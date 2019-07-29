@@ -1,4 +1,3 @@
-import { Nonce, PublicKey, PrivateKey } from '@oasislabs/types';
 import { bytes } from '@oasislabs/common';
 import { Deoxysii } from './aead';
 import { KeyStore } from './key-store';
@@ -31,11 +30,11 @@ async function encrypt(
   aad: Uint8Array
 ): Promise<Uint8Array> {
   let ciphertext = await aead.seal(
-    nonce,
+    nonce.bytes(),
     plaintext,
     aad,
-    peerPublicKey,
-    privateKey
+    peerPublicKey.bytes(),
+    privateKey.bytes()
   );
   if (
     ciphertext.length > Number.MAX_SAFE_INTEGER ||
@@ -53,12 +52,12 @@ async function encrypt(
     );
   }
   return bytes.concat([
-    publicKey,
+    publicKey.bytes(),
     bytes.parseNumber(ciphertext.length, CIPHER_LEN_SIZE, true),
     bytes.parseNumber(aad.length, AAD_LEN_SIZE, true),
     ciphertext,
     aad,
-    nonce
+    nonce.bytes()
   ]);
 }
 
@@ -91,11 +90,11 @@ async function decrypt(
   }
 
   let plaintext = await aead.open(
-    nonce,
+    nonce.bytes(),
     ciphertext,
     aad,
-    peerPublicKey,
-    secretKey
+    peerPublicKey.bytes(),
+    secretKey.bytes()
   );
   return {
     nonce,
@@ -106,7 +105,7 @@ async function decrypt(
 }
 
 function nonce(): Nonce {
-  return nacl.randomBytes(aead.nonceSize());
+  return new Nonce(nacl.randomBytes(aead.nonceSize()));
 }
 
 /**
@@ -118,7 +117,7 @@ function nonce(): Nonce {
  */
 export function splitEncryptedPayload(
   encryption: Uint8Array
-): [Uint8Array, Uint8Array, Uint8Array, Uint8Array] {
+): [PublicKey, Uint8Array, Uint8Array, Nonce] {
   if (encryption.length < 64) {
     throw new Error(`Invalid encryption: ${encryption}`);
   }
@@ -146,7 +145,7 @@ export function splitEncryptedPayload(
   );
   nonce.set(encryption.slice(cipherOffset + cipherLength + aadLength));
 
-  return [publicKey, ciphertext, aad, nonce];
+  return [new PublicKey(publicKey), ciphertext, aad, new Nonce(nonce)];
 }
 
 type Decryption = {
@@ -161,5 +160,41 @@ export type AeadKeys = {
   publicKey: PublicKey;
   privateKey: PrivateKey;
 };
+
+export class PublicKey {
+  private inner: Uint8Array;
+
+  constructor(inner: string | Uint8Array) {
+    this.inner = bytes.assertLength(inner, aead.keySize());
+  }
+
+  public bytes(): Uint8Array {
+    return this.inner;
+  }
+}
+
+export class PrivateKey {
+  private inner: Uint8Array;
+
+  constructor(inner: string | Uint8Array) {
+    this.inner = bytes.assertLength(inner, aead.keySize());
+  }
+
+  public bytes(): Uint8Array {
+    return this.inner;
+  }
+}
+
+export class Nonce {
+  private inner: Uint8Array;
+
+  constructor(inner: string | Uint8Array) {
+    this.inner = bytes.assertLength(inner, aead.nonceSize());
+  }
+
+  public bytes(): Uint8Array {
+    return this.inner;
+  }
+}
 
 export { encrypt, decrypt, nonce, Deoxysii, KeyStore };

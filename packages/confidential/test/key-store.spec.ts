@@ -1,4 +1,5 @@
 import { bytes, DummyStorage } from '@oasislabs/common';
+import { PublicKey } from '../src/';
 import {
   KeyStore,
   KeyProvider,
@@ -16,7 +17,7 @@ describe('KeyStore', () => {
 
       let service = PublicKeyMockProvider.address;
       let key = await keyStore.publicKey(service);
-      expect(key).toEqual(PublicKeyMockProvider._publicKey);
+      expect(key!.bytes()).toEqual(PublicKeyMockProvider._publicKey);
       // @ts-ignore
       expect(keyStore.db.get(PublicKeyMockProvider.address)).toEqual(
         bytes.toHex(PublicKeyMockProvider._publicKey)
@@ -29,7 +30,7 @@ describe('KeyStore', () => {
         new PublicKeyMockProvider()
       );
       let local = keyStore.localKeys();
-      expect(local.publicKey.length).toEqual(32);
+      expect(local.publicKey.bytes().length).toEqual(32);
       // @ts-ignore
       let cachedLocal = keyStore.db.get(KeyStore.LOCAL_KEYPAIR_KEY);
       // @ts-ignore
@@ -80,12 +81,10 @@ export class PublicKeyMockProvider implements KeyProvider {
     let givenAddress = bytes.toHex(request.address as Uint8Array);
     if (givenAddress !== PublicKeyMockProvider.address) {
       throw new Error(
-        `Unexpected data. Expected ${
-          PublicKeyMockProvider.address
-        } got ${givenAddress}`
+        `Unexpected data. Expected ${PublicKeyMockProvider.address} got ${givenAddress}`
       );
     }
 
-    return { publicKey: PublicKeyMockProvider._publicKey };
+    return { publicKey: new PublicKey(PublicKeyMockProvider._publicKey) };
   }
 }

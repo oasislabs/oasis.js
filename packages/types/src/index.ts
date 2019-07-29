@@ -5,6 +5,3 @@ export type Address = string | Uint8Array;
 export type H256 = string | Uint8Array;
 export type Bytes4 = Uint8Array;
 export type Bytes = string | Uint8Array;
-export type PublicKey = Uint8Array;
-export type PrivateKey = Uint8Array;
-export type Nonce = Uint8Array;
