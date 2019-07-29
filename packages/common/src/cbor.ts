@@ -23,12 +23,25 @@ export function encode(input: any): Uint8Array {
 }
 
 export function decode(input: Uint8Array): any {
-  return cborJs.decode(input.buffer);
+  try {
+    return cborJs.decode(input.buffer);
+  } catch (e) {
+    throw new CborDecodeError(
+      input,
+      `Failed to cbor decode ${input} with error: ${e.message}`
+    );
+  }
 }
 
 const cbor = {
   encode,
   decode
 };
+
+export class CborDecodeError extends Error {
+  constructor(private data: Uint8Array, ...params) {
+    super(...params);
+  }
+}
 
 export default cbor;
