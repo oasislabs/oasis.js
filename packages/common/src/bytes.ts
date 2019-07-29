@@ -49,19 +49,25 @@ export function toHex(keybytes: Bytes): string {
 
 /**
  * @returns a Uint8Array representation of number with numBytes.
- * @param   number is the number of which we want a byte representation.
+ * @param   num is the number of which we want a byte representation.
  * @param   numBytes is the number of bytes to have in the resultant array.
  * @param   littleEndian is true iff the resultant byte array is little Endian.
- * @throws  if the resultant array will be longer than numBytes.
+ * @throws  if the resultant array will be longer than numBytes or the given
+ *          `num` is less than 0.
  */
 export function parseNumber(
   num: number,
   numBytes: number,
   littleEndian = false
 ): Uint8Array {
+  if (num < 0) {
+    throw new Error(`${num} must be greater than or equal to 0`);
+  }
   let numberHexStr = num.toString(16);
   if (numberHexStr.length > numBytes) {
-    throw Error(`cannot parse ${num} into a byte array of length ${numBytes}`);
+    throw new Error(
+      `cannot parse ${num} into a byte array of length ${numBytes}`
+    );
   }
 
   numberHexStr = '0'.repeat(numBytes * 2 - numberHexStr.length) + numberHexStr;
