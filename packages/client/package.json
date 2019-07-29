@@ -41,7 +41,10 @@
     "@oasislabs/ethereum": "^1.0.0-rc.5",
     "@oasislabs/gateway": "^1.0.0-rc.5",
     "@oasislabs/service": "^1.0.0-rc.5",
-    "js-sha3": "^0.8.0"
+    "env-paths": "^2.2.0",
+    "find": "^0.3.0",
+    "js-sha3": "^0.8.0",
+    "toml": "^3.0.0"
   },
   "browser": {
     "./dist/index.umd.js": "./dist/index.browser.umd.js",

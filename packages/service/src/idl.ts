@@ -22,8 +22,14 @@ export interface Idl {
 export class IdlError extends Error {}
 
 export async function fromWasm(bytecode: Uint8Array): Promise<Idl> {
-  // @ts-ignore
-  let wasmModule = await WebAssembly.compile(bytecode);
+  return extractIdl(await WebAssembly.compile(bytecode));
+}
+
+export function fromWasmSync(bytecode: Uint8Array): Idl {
+  return extractIdl(new WebAssembly.Module(bytecode));
+}
+
+function extractIdl(wasmModule: WebAssembly.Module): Idl {
   // @ts-ignore
   let sections = WebAssembly.Module.customSections(
     wasmModule,
