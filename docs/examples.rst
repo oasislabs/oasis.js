@@ -9,14 +9,14 @@ These examples assume an `oasis-rs`_ service is being used.
 
 Set the gateway
 ===============
-First, one must select an Oasis gateway, for example, a `Developer Gateway <https://todo>`_.
+First, one must select a gateway, for example, the `Oasis Gateway <https://github.com/oasislabs/developer-gateway>`_.
 
 .. code-block:: javascript
 
    const oasis = require('@oasislabs/client');
 
    // Create a gateway at the given url.
-   const gateway = new oasis.gateways.Gateway('[TODO: URL]')
+   const gateway = new oasis.gateways.Gateway('https://gateway.devnet.oasiscloud.io')
 
    // Connect the library to the gateway.
    oasis.setGateway(gateway);
@@ -72,7 +72,7 @@ In addition to rpcs, one can register event listeners.
 
 .. code-block:: javascript
 
-   service.addEventListener('myEvent', (event) => {
+   service.addEventListener('MyEvent', (event) => {
      // do something...
    });
 
@@ -95,7 +95,7 @@ will allow the client to sign and send raw transactions.
 	const wallet = new oasis.Wallet(privateKey);
 
 	// Etheruem gateway responsible for signing transactions.
-	const gateway = new oasis.gateways.Web3Gateway('https://web3.oasiscloud.io', wallet);
+	const gateway = new oasis.gateways.Web3Gateway('wss://web3.devnet.oasiscloud.io/ws', wallet);
 
 	// Configure the gateway to use.
 	oasis.setGateway(gateway);

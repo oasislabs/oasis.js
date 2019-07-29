@@ -16,12 +16,11 @@ deploy
 ----------
 options
 ----------
-* ``idl`` - ``Idl``: The json idl defining the service interface
-* ``bytecode`` - ``string | Uint8Array``: The bytecode for the service
-* ``arguments`` - ``Array``: Constructor arguments to pass to the service
+* ``bytecode`` - ``string | Uint8Array``: The bytecode for the service.
+* ``arguments`` - ``Array``: Constructor arguments to pass to the service.
 * ``header`` - ``Object`` (optional): The deploy header. See the default values below.
-* ``gateway`` - :ref:`OasisGateway <gateways>` (optional): The client backend to communicate with an oasis gateway
-* ``db`` - ``Db`` (optional): The persistent storage interface for the client's key manager.
+* ``gateway`` - :ref:`OasisGateway <gateways>` (optional): The client backend to communicate with an oasis gateway.
+* ``options`` - :ref:`RpcOptions <rpc-options>` (optional): The transaction options to use for deploy.
 
 ----------
 header

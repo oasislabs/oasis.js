@@ -42,9 +42,9 @@ export type RpcRequest = {
 };
 
 export type RpcOptions = {
-  gasLimit?: string;
-  gasPrice?: string;
-  value?: string;
+  gasLimit?: string | number;
+  gasPrice?: string | number;
+  value?: string | number;
   aad?: string;
 };
 
