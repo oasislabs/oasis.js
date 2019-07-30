@@ -85,6 +85,6 @@ export class PublicKeyMockProvider implements KeyProvider {
       );
     }
 
-    return { publicKey: new PublicKey(PublicKeyMockProvider._publicKey) };
+    return { publicKey: PublicKeyMockProvider._publicKey };
   }
 }

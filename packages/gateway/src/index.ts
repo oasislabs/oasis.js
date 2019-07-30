@@ -14,7 +14,7 @@ import {
   GetCodeRequest,
   GetCodeResponse
 } from '@oasislabs/service';
-import { Address, PublicKey, Bytes } from '@oasislabs/types';
+import { Address, Bytes } from '@oasislabs/types';
 import { UrlEncoder, bytes } from '@oasislabs/common';
 import PollingService from './polling';
 import {
@@ -191,7 +191,8 @@ class HttpGateway implements OasisGateway {
       PublicKeyApi.url,
       {
         address: bytes.toHex(request.address!)
-      });
+      }
+    );
 
     let event: PublicKeyEvent = response as PublicKeyEvent;
 

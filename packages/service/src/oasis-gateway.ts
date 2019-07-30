@@ -68,7 +68,7 @@ export type UnsubscribeRequest = {
 };
 
 export type PublicKeyResponse = {
-  publicKey?: PublicKey;
+  publicKey?: Uint8Array;
 };
 
 export const SubscribeTopic = 'subscription';
