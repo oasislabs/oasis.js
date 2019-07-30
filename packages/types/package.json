@@ -15,6 +15,8 @@
     "prebuild": "rimraf dist",
     "lint": "tslint --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
     "lint:fix": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts' --fix",
-    "build": "tsc -b && rollup -c rollup.config.ts"
+    "build": "tsc -b && rollup -c rollup.config.ts",
+    "build:browser": "npm run-script build",
+    "build:node": "npm run-script build"
   }
 }
