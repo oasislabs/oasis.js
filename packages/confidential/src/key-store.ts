@@ -78,7 +78,7 @@ export class KeyStore {
         `KeyProvider did not return a public key: ${response}`
       );
     }
-    return response.publicKey;
+    return new PublicKey(response.publicKey);
   }
 
   /**
@@ -133,5 +133,5 @@ export type PublicKeyRequest = {
 };
 
 export type PublicKeyResponse = {
-  publicKey?: PublicKey;
+  publicKey?: Uint8Array;
 };
