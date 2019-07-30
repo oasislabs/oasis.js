@@ -40,7 +40,10 @@ export class Web3Gateway implements OasisGateway {
    */
   private wallet: Wallet;
 
-  constructor(url: string, wallet: Wallet) {
+  constructor(url: string, wallet: Wallet, insecure = false) {
+    if (!insecure && !url.startsWith('wss://')) {
+      throw new Error(`Invalid url ${url}. Please use wss.`);
+    }
     this.subscriptions = new Subscriptions();
     this.ws = new JsonRpcWebSocket(url, [this.subscriptions]);
     this.wallet = wallet;

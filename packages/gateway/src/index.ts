@@ -49,8 +49,11 @@ export {
 export default class Gateway implements OasisGateway {
   private inner: OasisGateway;
 
-  constructor(url: string, headers: HttpHeaders) {
+  constructor(url: string, headers: HttpHeaders, insecure = false) {
     // TODO: WebSocket gateway and extract protocol from url.
+    if (!insecure && !url.startsWith('https://')) {
+      throw new Error(`Invalid url ${url}. Please use https.`);
+    }
     this.inner = new HttpGateway(url, headers);
   }
 
