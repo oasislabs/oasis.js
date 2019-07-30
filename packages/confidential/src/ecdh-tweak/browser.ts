@@ -20,10 +20,16 @@ export async function ecdhTweak(
     hmacKey,
     preMasterKey
   );
+
+  let owndAesKey = new Uint8Array(aesKey);
+
+  // Attempt to force references to be dropped since tweetnacl retains ownership
+  // of the underlying array.
   // @ts-ignore
   preMasterKey = undefined;
+  aesKey = undefined;
 
-  return new Uint8Array(aesKey);
+  return owndAesKey;
 }
 
 async function makeHmacKey() {
