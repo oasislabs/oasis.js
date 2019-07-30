@@ -45,6 +45,34 @@ export class Web3Gateway implements OasisGateway {
     this.ws = new JsonRpcWebSocket(url, [this.subscriptions]);
     this.wallet = wallet;
     this.transactions = new TransactionFactory(this.wallet.address, this.ws);
+
+    this.assertGatewayIsResponsive(url).catch(e => {
+      console.error(`${e}`);
+    });
+  }
+
+  /**
+   * Sanity check that the gateway is constructed with the correct url.
+   */
+  private assertGatewayIsResponsive(url: string): Promise<undefined> {
+    return new Promise(async (resolve, reject) => {
+      let timeout = setTimeout(() => {
+        reject(new Error(`Couldn't connect to gateway ${url}`));
+      }, 3000);
+
+      let response = await this.ws.request({
+        method: 'net_version',
+        params: []
+      });
+
+      if (!response.result || parseInt(response.result, 10) <= 0) {
+        reject(new Error(`Invalid gateway response ${response}`));
+      }
+
+      clearTimeout(timeout);
+
+      resolve();
+    });
   }
 
   async deploy(request: DeployRequest): Promise<DeployResponse> {

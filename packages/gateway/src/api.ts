@@ -68,6 +68,14 @@ export const SubscribePollApi: DeveloperGatewayApi = {
 };
 
 /**
+ * Retrieves the health status of the gateway.
+ */
+export const HealthApi: DeveloperGatewayApi = {
+  url: 'v0/api/health',
+  method: 'GET'
+};
+
+/**
  *  Event is an interface for types that can be fetched by polling on a service.
  */
 export type Event =
