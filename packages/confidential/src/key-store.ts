@@ -1,6 +1,8 @@
-import { Address, PublicKey, PrivateKey } from '@oasislabs/types';
+import { Address } from '@oasislabs/types';
 import { bytes, Db } from '@oasislabs/common';
 import nacl from './tweetnacl';
+import { PublicKey, PrivateKey } from './';
+import { KeyStoreError } from './error';
 
 export class KeyStore {
   /**
@@ -26,7 +28,7 @@ export class KeyStore {
   /**
    * @returns the public key for the given service.
    */
-  public async publicKey(service: Address): Promise<PublicKey | undefined> {
+  public async publicKey(service: Address): Promise<PublicKey> {
     // First check the cache.
     let key = this.getCachedPublicKey(service);
     if (key) {
@@ -34,9 +36,6 @@ export class KeyStore {
     }
     // Make a request to the keyProvider for the key.
     key = await this.getRequestPublicKey(service);
-    if (!key) {
-      return undefined;
-    }
 
     // Cache the key.
     this.setCachedPublicKey(service, key);
@@ -54,7 +53,7 @@ export class KeyStore {
       return undefined;
     }
     // todo: re-enable caching: https://github.com/oasislabs/oasis.js/issues/150
-    // return bytes.parseHex(key);
+    // return new PublicKey(bytes.parseHex(key));
     return undefined;
   }
 
@@ -63,21 +62,21 @@ export class KeyStore {
    */
   private setCachedPublicKey(service: Address, publicKey: PublicKey) {
     service = typeof service === 'string' ? service : bytes.toHex(service);
-    let value = bytes.toHex(publicKey);
+    let value = bytes.toHex(publicKey.bytes());
     this.db.set(service, value);
   }
 
   /**
    * Makes a request to the keyProvider for the public key for the given service.
    */
-  private async getRequestPublicKey(
-    service: Address
-  ): Promise<PublicKey | undefined> {
+  private async getRequestPublicKey(service: Address): Promise<PublicKey> {
     // Ensure we are using Uint8Array.
     service = typeof service !== 'string' ? service : bytes.parseHex(service);
     let response = await this.keyProvider.publicKey({ address: service });
     if (!response.publicKey) {
-      return undefined;
+      throw new KeyStoreError(
+        `KeyProvider did not return a public key: ${response}`
+      );
     }
     return response.publicKey;
   }
@@ -99,23 +98,23 @@ export class KeyStore {
   public newKeyPair(): KeyPair {
     let kp = nacl.box.keyPair();
     return {
-      publicKey: kp.publicKey,
-      privateKey: kp.secretKey
+      publicKey: new PublicKey(kp.publicKey),
+      privateKey: new PrivateKey(kp.secretKey)
     };
   }
 
   private static serializeKeyPair(keyPair: KeyPair): string {
     return JSON.stringify({
-      publicKey: bytes.toHex(keyPair.publicKey),
-      privateKey: bytes.toHex(keyPair.privateKey)
+      publicKey: bytes.toHex(keyPair.publicKey.bytes()),
+      privateKey: bytes.toHex(keyPair.privateKey.bytes())
     });
   }
 
   private static deserializeKeyPair(keyPair: string): KeyPair {
     let kp = JSON.parse(keyPair);
     return {
-      publicKey: bytes.parseHex(kp.publicKey),
-      privateKey: bytes.parseHex(kp.privateKey)
+      publicKey: new PublicKey(bytes.parseHex(kp.publicKey)),
+      privateKey: new PrivateKey(bytes.parseHex(kp.privateKey))
     };
   }
 }

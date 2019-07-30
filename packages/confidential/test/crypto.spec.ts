@@ -1,4 +1,4 @@
-import { Nonce, PublicKey, PrivateKey } from '@oasislabs/types';
+import { Nonce, PublicKey, PrivateKey } from '@oasislabs/confidential';
 import { bytes } from '@oasislabs/common';
 
 import { encrypt, decrypt, splitEncryptedPayload } from '../src';
@@ -11,18 +11,18 @@ describe('Crypto', () => {
     let [nonce, peer, me, aad] = aeadInput();
 
     let encryption = await encrypt(
-      nonce,
+      new Nonce(nonce),
       plaintext,
-      me.publicKey,
-      peer.publicKey,
-      peer.privateKey,
+      new PublicKey(me.publicKey),
+      new PublicKey(peer.publicKey),
+      new PrivateKey(peer.privateKey),
       aad
     );
 
-    let decryption = await decrypt(encryption, me.privateKey);
+    let decryption = await decrypt(encryption, new PrivateKey(me.privateKey));
 
-    expect(decryption.nonce).toEqual(nonce);
-    expect(decryption.peerPublicKey).toEqual(peer.publicKey);
+    expect(decryption.nonce.bytes()).toEqual(nonce);
+    expect(decryption.peerPublicKey.bytes()).toEqual(peer.publicKey);
     expect(decryption.plaintext).toEqual(plaintext);
     expect(decryption.aad.toString()).toEqual(aad.toString());
   });
@@ -179,20 +179,20 @@ describe('Crypto', () => {
     let aad = new Uint8Array([]);
 
     let encryption = await encrypt(
-      nonce,
+      new Nonce(nonce),
       plaintext,
-      peerPublicKey,
-      publicKey,
-      secretKey,
+      new PublicKey(peerPublicKey),
+      new PublicKey(publicKey),
+      new PrivateKey(secretKey),
       aad
     );
     let [splitPublicKey, cipher, splitAad, splitNonce] = splitEncryptedPayload(
       encryption
     );
 
-    expect(splitPublicKey).toEqual(publicKey);
+    expect(splitPublicKey.bytes()).toEqual(publicKey);
     expect(splitAad).toEqual(aad);
-    expect(splitNonce).toEqual(nonce);
+    expect(splitNonce.bytes()).toEqual(nonce);
   });
 });
 
