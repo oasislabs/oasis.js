@@ -28,7 +28,7 @@ After connecting, one can deploy a new service.
 
 .. code-block:: javascript
 
-   // Service bytecode.
+   // Service bytecode read directly from a .wasm file.
    const bytecode = ...;
 
    // Service constructor args.
