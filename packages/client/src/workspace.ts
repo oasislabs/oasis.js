@@ -1,9 +1,11 @@
-import Gateway, { RpcOptions, OasisGateway } from '@oasislabs/gateway';
+import Gateway from '@oasislabs/gateway';
 import {
   Idl,
   deploy,
   fromWasmSync,
   setGateway,
+  RpcOptions,
+  OasisGateway,
   defaultOasisGateway
 } from '@oasislabs/service';
 import { Web3Gateway, EthereumWallet as Wallet } from '@oasislabs/ethereum';
@@ -86,30 +88,58 @@ class ServiceDefinition {
       if (typeof window !== 'undefined') {
         throw e;
       }
-      const configPath =
-        process.env.OASIS_CONFIG_FILE ||
-        require('path').join(
-          require('env-paths')('oasis', { suffix: '' }).config,
-          'config.toml'
-        );
-      const config = require('toml').parse(
-        await require('util').promisify(require('fs').readFile)(configPath)
-      );
-      const profile = process.env.OASIS_PROFILE || 'default';
-      if (!(profile in config.profiles)) {
-        throw new Error(`No profile named \`${profile}\` in ${configPath}`);
-      }
-      const gatewayConfig = config.profiles[profile];
-      setGateway(
-        gatewayConfig.mnemonic
-          ? new Web3Gateway(
-              gatewayConfig.endpoint,
-              Wallet.fromMnemonic(gatewayConfig.mnemonic)
-            )
-          : new Gateway(gatewayConfig.endpoint)
-      );
+
+      let config = await Config.read();
+      setGateway(config.gateway());
 
       return defaultOasisGateway();
+    }
+  }
+}
+
+class Config {
+  constructor(private inner) {}
+
+  public static async read(): Promise<Config> {
+    const configPath =
+      process.env.OASIS_CONFIG_FILE ||
+      require('path').join(
+        require('env-paths')('oasis', { suffix: '' }).config,
+        'config.toml'
+      );
+
+    const config = require('toml').parse(
+      await require('util').promisify(require('fs').readFile)(configPath)
+    );
+    const profile = process.env.OASIS_PROFILE || 'default';
+    if (!(profile in config.profiles)) {
+      throw new Error(`No profile named \`${profile}\` in ${configPath}`);
+    }
+
+    const gatewayConfig = config.profiles[profile];
+
+    return new Config(gatewayConfig);
+  }
+
+  public gateway(): OasisGateway {
+    if (this.inner.mnemonic && this.inner.private_key) {
+      throw new Error(
+        `Configuration file cannot have both a mnemonic and private key`
+      );
+    }
+
+    if (this.inner.mnemonic) {
+      return new Web3Gateway(
+        this.inner.endpoint,
+        Wallet.fromMnemonic(this.inner.mnemonic)
+      );
+    } else if (this.inner.private_key) {
+      return new Web3Gateway(
+        this.inner.endpoint,
+        new Wallet(this.inner.private_key)
+      );
+    } else {
+      return new Gateway(this.inner.endpoint);
     }
   }
 }
