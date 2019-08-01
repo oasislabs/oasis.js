@@ -30,7 +30,8 @@ import {
   SubscribeApi,
   ServicePollApi,
   SubscribePollApi,
-  GetCodeApi
+  GetCodeApi,
+  HealthApi
 } from './api';
 import { HttpHeaders, Http } from './http';
 import { HttpSession } from './session';
@@ -108,6 +109,32 @@ class HttpGateway implements OasisGateway {
       session: this.session
     });
     this.subscriptions = new Map();
+
+    this.assertGatewayIsResponsive(url).catch(e => {
+      console.error(`${e}`);
+    });
+  }
+
+  /**
+   * Sanity check that the gateway is constructed with the correct url.
+   */
+  private assertGatewayIsResponsive(url: string): Promise<undefined> {
+    return new Promise(async (resolve, reject) => {
+      let timeout = setTimeout(() => {
+        reject(new Error(`Couldn't connect to gateway ${url}`));
+      }, 3000);
+
+      try {
+        await this.session.request(HealthApi.method, HealthApi.url, {});
+      } catch (e) {
+        if (e.message !== 'Request failed with status code 404') {
+          reject(e);
+        } else {
+          clearTimeout(timeout);
+          resolve();
+        }
+      }
+    });
   }
 
   public async deploy(request: DeployRequest): Promise<DeployResponse> {
