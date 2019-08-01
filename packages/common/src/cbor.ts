@@ -18,11 +18,11 @@ else {
   cborJs = require('cbor-js');
 }
 
-export function encode(input: any): Uint8Array {
+export function encode(input: Object): Uint8Array {
   return new Uint8Array(cborJs.encode(input));
 }
 
-export function decode(input: Uint8Array): any {
+export function decode(input: Uint8Array): Object {
   try {
     return cborJs.decode(input.buffer);
   } catch (e) {

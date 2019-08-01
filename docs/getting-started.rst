@@ -14,6 +14,7 @@ It includes
 * :ref:`oasis.Service <service>`
 * :ref:`oasis.gateways <gateways>`
 * :ref:`oasis.Wallet <wallet>`
+* :ref:`oasis.workspace <workspace>`
 * :ref:`oasis.utils <utils>`
 
 To install the client

@@ -61,7 +61,7 @@ utils.header.parseHex
 
 .. code-block:: javascript
 
-	utils.header.parseHex(deploycode);
+	oasis.utils.header.parseHex(deploycode);
 
 Parameters
 ----------
@@ -83,7 +83,7 @@ utils.bytes.parseHex
 
 .. code-block:: javascript
 
-   utils.bytes.parseHex(hexStr);
+   oasis.utils.bytes.parseHex(hexStr);
 
 Parameters
 -----------
@@ -97,7 +97,7 @@ utils.bytes.toHex
 ==================
 .. code-block:: javascript
 
-   utils.bytes.toHex(byteArray);
+   oasis.utils.bytes.toHex(byteArray);
 
 Parameters
 ----------
@@ -106,3 +106,96 @@ Parameters
 Returns
 --------
 ``String``: Transformed representation of the given byte array.
+
+
+utils.bytes.encodeUtf8
+======================
+
+.. code-block:: javascript
+
+	oasis.utils.header.encodeUtf8(input);
+
+
+Parameters
+----------
+1. ``input`` - ``string``: String to encode into a utf8 encoded byte array
+
+Returns
+-------
+``Uint8Array``: Utf8 encoded byte earray
+
+utils.bytes.decodeUtf8
+======================
+
+.. code-block:: javascript
+
+	oasis.utils.header.decodeUtf8(input);
+
+Parameters
+----------
+1. ``input`` - ``Uint8Array``: Byte array previously encoded with ``utils.bytes.encodeUtf8``
+
+Returns
+-------
+``String``: Utf8 encoded string
+
+utils.cbor.encode
+=================
+
+.. code-block:: javascript
+
+	oasis.utils.cbor.encode(input);
+
+Parameters
+----------
+1. ``input`` - ``Object``: JSON object to cbor encode
+
+Returns
+-------
+``Uint8Array``: Cbor encoded byte array
+
+
+utils.cbor.decode
+=================
+
+
+.. code-block:: javascript
+
+	oasis.utils.cbor.decode(input);
+
+Parameters
+----------
+1. ``input`` - ``Uint8Array``: Cbor encoded byte array
+
+Returns
+-------
+``Object``: Decoded JSON object
+
+utils.keccak256
+===============
+
+Keccak256 implementation from `js-sha3 <https://github.com/emn178/js-sha3>`_.
+
+utils.idl.fromWasm
+===================
+
+.. code-block:: javascript
+
+	oasis.utils.idl.fromWasm(bytecode);
+
+Parameters
+----------
+1. ``bytecode`` - ``Uint8Array``: Raw wasi bytecode compiled with ``oasis build``. See the `oasis-cli <https://github.com/oasislabs/oasis-cli>`_.
+
+Returns
+-------
+``Promise<Object>``: Promise resolving to the Idl extracted from the `oasis-interface` section of the given bytecode.
+
+utils.idl.fromWasmSync
+=======================
+
+.. code-block:: javascript
+
+	oasis.utils.idl.fromWasmSync(input);
+
+A synchronous version of ``utils.idl.fromWasm``.
