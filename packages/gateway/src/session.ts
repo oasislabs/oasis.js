@@ -39,6 +39,10 @@ export class HttpSession implements Http {
   ) {
     this.sessionKey = uuid.v4();
     this.headers = headers;
+    this.headers =
+      this.headers && this.headers.headers
+        ? this.headers
+        : { headers: new Map() };
     this.client = client ? client : new AxiosClient();
   }
 
