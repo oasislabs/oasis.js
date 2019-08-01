@@ -27,4 +27,6 @@ recommended to use one of our favorite Ethereum libraries like `ethers.js`_ or `
    service
    gateways
    wallet
+   workspace
+   disconnect
    utils

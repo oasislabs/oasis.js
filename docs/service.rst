@@ -37,7 +37,7 @@ Service.at
 ==================
 
 A more convenient api to attach to a previously deployed service is the
-`Service.at` method, which will fetch the on-chain code extract the idl
+`Service.at` method, which will fetch the on-chain code and extract the idl
 automatciially.
 
 Note: this method should only be with oasis-rs services.
