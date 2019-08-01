@@ -1,6 +1,6 @@
 {
   "name": "@oasislabs/common",
-  "version": "1.0.0-rc.5",
+  "version": "1.0.0-rc.6",
   "description": "",
   "keywords": [],
   "main": "dist/index.umd.js",
@@ -34,7 +34,7 @@
     ]
   },
   "dependencies": {
-    "@oasislabs/types": "^1.0.0-rc.0",
+    "@oasislabs/types": "^1.0.0-rc.1",
     "cbor-js": "^0.1.0"
   }
 }
