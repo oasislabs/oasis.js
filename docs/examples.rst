@@ -5,7 +5,8 @@ Examples
 .. include:: links.rst
 
 Here we walk through a workflow demonstrating the core apis provided by the client.
-These examples assume an `oasis-rs`_ service is being used.
+These examples assume an `oasis-rs docs <https://github.com/oasislabs/oasis-rs>`_
+service is being used.
 
 Set the gateway
 ===============
@@ -28,8 +29,8 @@ After connecting, one can deploy a new service.
 
 .. code-block:: javascript
 
-   // Service bytecode read directly from a .wasm file.
-   const bytecode = ...;
+   // Service bytecode read directly from a .wasm file compiled with `oasis build`.
+   const bytecode = require('fs').readFileSync('/path/to/target/service/my-service.wasm');
 
    // Service constructor args.
    const arguments = [];
@@ -47,8 +48,8 @@ Alternatively, one can connect to a previously deployed Service.
 
 .. code-block:: javascript
 
-   // On-chain address of the service
-   const address = '...';
+   // On-chain address of the service (dummy address used here);.
+   const address = '0x288e7e1cc60962f40d4d782950470e3705c5acf4';
 
    // Connect to the service.
    const service = await oasis.Service.at(address);
@@ -89,7 +90,7 @@ will allow the client to sign and send raw transactions.
 	const oasis = require('@oasislabs/client');
 
 	// Wallet private key.
-	const privateKey = '...';
+	const privateKey = '0x1ad288d73cd2fff6ecf0a5bf167f59e9944559cd70f66cb70170702a0b4f3bd5';
 
 	// Wallet for signing and paying for transactions.
 	const wallet = new oasis.Wallet(privateKey);
