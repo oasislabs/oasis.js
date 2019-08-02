@@ -55,4 +55,4 @@ It currently only supports WebSockets and can be instantiated as follows:
 Parameters
 ----------
 1. ``url`` - ``String``: The url of the gateway.
-2. ``wallet`` - ``EthereumWallet``: The wallet to sign transactions. For convenience, we package and suggest using the ethers.js `wallet`_.
+2. ``wallet`` - ``Wallet``: The wallet to sign transactions. For convenience, we package and suggest using the ethers.js `wallet`_.

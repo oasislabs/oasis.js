@@ -62,7 +62,7 @@ Environment Variables
 Although not recommended (because they are meant to be configured with `oasis-cli <https://github.com/oasislabs/oasis-cli>`_),
 one can also override the following environment variables.
 
-* ``OASIS_WORKSPACE`` - Path to the workspace root directory. Defaults to the local git repositories root directory.
+* ``OASIS_WORKSPACE`` - Path to the workspace root directory. Defaults to the root directory of the local git repository.
 * ``OASIS_PROFILE`` - The config profile to use. Defaults to ``default``.
 * ``OASIS_CONFIG`` - Path to the config file to use. Defaults to a system specific path, e.g.
     * macOS - ``~/Library/Preferences/oasis/config.toml``
