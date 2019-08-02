@@ -45,10 +45,6 @@ export class Web3Gateway implements OasisGateway {
     this.ws = new JsonRpcWebSocket(url, [this.subscriptions]);
     this.wallet = wallet;
     this.transactions = new TransactionFactory(this.wallet.address, this.ws);
-
-    this.assertGatewayIsResponsive(url).catch(e => {
-      console.error(`${e}`);
-    });
   }
 
   /**

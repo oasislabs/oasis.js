@@ -109,10 +109,6 @@ class HttpGateway implements OasisGateway {
       session: this.session
     });
     this.subscriptions = new Map();
-
-    this.assertGatewayIsResponsive(url).catch(e => {
-      console.error(`${e}`);
-    });
   }
 
   /**
