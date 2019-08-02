@@ -40,6 +40,15 @@ export class Web3Gateway implements OasisGateway {
    */
   private wallet: Wallet;
 
+  /**
+   * Method to call when we want to disconnect from the gateway and
+   * don't care if it has ever responded.
+   *
+   * This is used so that we can cleanup all unresolved promises
+   * upon `disconnect()`.
+   */
+  private shortCircuitGatewayResponse;
+
   constructor(url: string, wallet: Wallet) {
     this.subscriptions = new Subscriptions();
     this.ws = new JsonRpcWebSocket(url, [this.subscriptions]);
@@ -59,6 +68,11 @@ export class Web3Gateway implements OasisGateway {
       let timeout = setTimeout(() => {
         reject(new Error(`Couldn't connect to gateway ${url}`));
       }, 3000);
+
+      this.shortCircuitGatewayResponse = () => {
+        clearTimeout(timeout);
+        resolve();
+      };
 
       let response = await this.ws.request({
         method: 'net_version',
@@ -198,6 +212,7 @@ export class Web3Gateway implements OasisGateway {
   }
 
   public disconnect() {
+    this.shortCircuitGatewayResponse();
     this.ws.disconnect();
   }
 

@@ -102,6 +102,15 @@ class HttpGateway implements OasisGateway {
    */
   private subscriptions: Map<string, number>;
 
+  /**
+   * Method to call when we want to disconnect from the gateway and
+   * don't care if it has ever responded.
+   *
+   * This is used so that we can cleanup all unresolved promises
+   * upon `disconnect()`.
+   */
+  private shortCircuitGatewayResponse;
+
   public constructor(private url: string, private headers: HttpHeaders) {
     this.session = new HttpSession(url, headers);
     this.polling = PollingService.instance({
@@ -123,6 +132,11 @@ class HttpGateway implements OasisGateway {
       let timeout = setTimeout(() => {
         reject(new Error(`Couldn't connect to gateway ${url}`));
       }, 3000);
+
+      this.shortCircuitGatewayResponse = () => {
+        clearTimeout(timeout);
+        resolve();
+      };
 
       try {
         await this.session.request(HealthApi.method, HealthApi.url, {});
@@ -263,7 +277,7 @@ class HttpGateway implements OasisGateway {
   }
 
   public disconnect() {
-    // no-op
+    this.shortCircuitGatewayResponse();
   }
 }
 
