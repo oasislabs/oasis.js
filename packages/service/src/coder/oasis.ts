@@ -96,6 +96,51 @@ export class PlaintextRpcEncoder implements RpcEncoder {
 
     // TODO: input validation. https://github.com/oasislabs/oasis-client/issues/14
 
+    for (let k = 0; k < args.length; k += 1) {
+      let input = fn.inputs[k];
+
+      // If we hit the inner most if statements, here, the type to encode must
+      // be a fixed length byte array, e.g., Address.
+      //
+      // In such cases, we allow three input types, to represent the fixed
+      // length byte array:
+      //
+      // 1) Array.
+      // 2) Uint8Array, which we convert to an Array.
+      // 3) Hex String, which we convert to an Array.
+      //
+      // Note that this is just a convenience so that the service APIs are
+      // easier to use in the JavaScript wild, e.g., where one might copy and
+      // paste a hex string. A more sane API would be to provide and enforce
+      // explicit types mirroring the Rust's runtime types, e.g., Address,
+      // transforming the apis to something like
+      //
+      // `service.myMethod(oasis.types.Address.from('0x...'))`.
+      //
+      // But we don't live in a sane world.
+      //
+      // Note: I've commented out the check on `input.type.type !== 'bytes` because
+      //       oasis-rs rejects cbor encoding a Uint8Array to represent a Vec<u8>.
+      //       If it ever changes, we should uncomment this.
+      //       See https://github.com/oasislabs/oasis-rs/issues/184.
+      if (/*input.type.type !== 'bytes' && */ input.type.type !== 'string') {
+        let givenArg = args[k];
+
+        // Hex string representation.
+        if (givenArg.constructor === String) {
+          args[k] = Array.from(bytes.parseHex(givenArg));
+        }
+        // Uint8Array representation.
+        else if (givenArg.constructor === Uint8Array) {
+          args[k] = Array.from(givenArg);
+        }
+
+        // Else
+        // * the user gave a fixed length array--all good.
+        // * the type is not a fixed length array type--all good.
+      }
+    }
+
     if (fn.name === 'constructor') {
       return cbor.encode(args);
     }
