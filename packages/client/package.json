@@ -1,6 +1,6 @@
 {
   "name": "@oasislabs/client",
-  "version": "1.0.0-rc.9",
+  "version": "1.0.0-rc.10",
   "description": "",
   "keywords": [],
   "main": "dist/index.umd.js",
@@ -38,8 +38,8 @@
   },
   "dependencies": {
     "@oasislabs/common": "^1.0.0-rc.6",
-    "@oasislabs/ethereum": "^1.0.0-rc.8",
-    "@oasislabs/gateway": "^1.0.0-rc.8",
+    "@oasislabs/ethereum": "^1.0.0-rc.9",
+    "@oasislabs/gateway": "^1.0.0-rc.9",
     "@oasislabs/service": "^1.0.0-rc.8",
     "env-paths": "^2.2.0",
     "find": "^0.3.0",
