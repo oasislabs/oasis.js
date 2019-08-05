@@ -49,11 +49,11 @@ an optional mnemonic or private key. For example,
 
 .. code-block:: toml
 
-   [profiles.default]
+   [profile.default]
    endpoint = 'wss://web3.oasiscloud.io/ws'
    mnemonic = 'dust dice engine wealth muscle abstract match safe giant always emotion strike'
 
-   [profiles.local]
+   [profile.local]
    endpoint = 'http://localhost:8546'
 
 Environment Variables
