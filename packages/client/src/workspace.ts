@@ -111,12 +111,15 @@ class Config {
     const config = require('toml').parse(
       await require('util').promisify(require('fs').readFile)(configPath)
     );
+    if (!('profile' in config)) {
+      throw new Error(`No profile in ${configPath}`);
+    }
     const profile = process.env.OASIS_PROFILE || 'default';
-    if (!(profile in config.profiles)) {
+    if (!(profile in config.profile)) {
       throw new Error(`No profile named \`${profile}\` in ${configPath}`);
     }
 
-    const gatewayConfig = config.profiles[profile];
+    const gatewayConfig = config.profile[profile];
 
     return new Config(gatewayConfig);
   }
