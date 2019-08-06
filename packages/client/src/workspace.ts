@@ -101,10 +101,12 @@ class Config {
   constructor(private inner) {}
 
   public static async read(): Promise<Config> {
+    const path = require('path');
     const configPath =
       process.env.OASIS_CONFIG_FILE ||
-      require('path').join(
-        require('env-paths')('oasis', { suffix: '' }).config,
+      path.join(
+        process.env.XDG_CONFIG_HOME || path.join(process.env.HOME, '.config'),
+        'oasis',
         'config.toml'
       );
 
