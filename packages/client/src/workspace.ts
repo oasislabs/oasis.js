@@ -35,11 +35,11 @@ export default new Proxy({} as any, {
 
         projectRoot = process.cwd();
         while (!fs.existsSync(path.join(projectRoot, '.git'))) {
-          let parent = path.dirname(projectRoot);
-          if (parent === projectRoot) {
+          let parentDir = path.dirname(projectRoot);
+          if (parentDir === projectRoot) {
             projectRoot = undefined;
           }
-          projectRoot = parent;
+          projectRoot = parentDir;
         }
       }
 
