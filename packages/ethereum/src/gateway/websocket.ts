@@ -44,7 +44,9 @@ export class JsonRpcWebSocket {
   /**
    * connectionState emits `trouble` and `ok` events.
    */
-  public connectionState = new EventEmitter();
+  // TODO: this should be typed to be an event emitter once we address
+  //       https://github.com/oasislabs/oasis-client/issues/25
+  public connectionState: any = new EventEmitter();
 
   constructor(private url: string, middleware: Middleware[]) {
     this.middleware = middleware;
