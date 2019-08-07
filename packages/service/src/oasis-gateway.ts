@@ -12,6 +12,13 @@ export interface OasisGateway {
   publicKey(request: PublicKeyRequest): Promise<PublicKeyResponse>;
   getCode(request: GetCodeRequest): Promise<GetCodeResponse>;
   disconnect();
+  /**
+   * For implementations that manage reconnection internally, this emits advisory
+   * events about its internal connection status:
+   * - `trouble` when it experiences repeated problems connecting
+   * - `ok` when it reconnects after having emitted a `trouble` event
+   */
+  connectionState(): EventEmitter;
 }
 
 export type DeployRequest = {

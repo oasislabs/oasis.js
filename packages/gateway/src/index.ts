@@ -1,4 +1,4 @@
-import { EventEmitter } from 'eventemitter3';
+import EventEmitter from 'eventemitter3';
 import {
   OasisGateway,
   RpcRequest,
@@ -101,6 +101,8 @@ class HttpGateway implements OasisGateway {
    * Maps event name to the polling service queueId. One for each subscription.
    */
   private subscriptions: Map<string, number>;
+
+  private connectionStateDummy = new EventEmitter();
 
   public constructor(private url: string, private headers: HttpHeaders) {
     this.session = new HttpSession(url, headers);
@@ -260,6 +262,11 @@ class HttpGateway implements OasisGateway {
 
   public disconnect() {
     // no-op
+  }
+
+  public connectionState(): EventEmitter {
+    // `deploy` et al. don't hide connection problems, so no need to emit these events.
+    return this.connectionStateDummy;
   }
 }
 

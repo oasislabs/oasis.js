@@ -18,6 +18,7 @@ import { RpcFn } from '../src/idl';
 import { RpcRequest as FnRequest } from '../src/coder';
 
 export class EmptyOasisGateway implements OasisGateway {
+  private connectionStateDummy = new EventEmitter();
   public async rpc(request: RpcRequest): Promise<any> {}
   public subscribe(request: SubscribeRequest): EventEmitter {
     return new EventEmitter();
@@ -38,6 +39,9 @@ export class EmptyOasisGateway implements OasisGateway {
   }
   public disconnect() {
     // no-op
+  }
+  public connectionState(): EventEmitter {
+    return this.connectionStateDummy;
   }
 }
 
