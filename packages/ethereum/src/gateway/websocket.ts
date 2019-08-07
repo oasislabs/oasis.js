@@ -1,5 +1,13 @@
 import { EventEmitter } from 'eventemitter3';
 
+/**
+ * We internally try to handle reconnection when the websocket closes abnormally,
+ * but if we encounter a bunch of errors without ever successfully opening a
+ * connection, we'll forward a trouble condition to our consumer. This is the
+ * number of consecutive errors after which we inform our consumer.
+ */
+const ERROR_FORWARD_THRESHOLD = 2;
+
 export class JsonRpcWebSocket {
   /**
    * responses implements a request-response pattern for `send` requests.
@@ -27,6 +35,18 @@ export class JsonRpcWebSocket {
    * WebSocket through which all requests are sent.
    */
   private websocket;
+
+  /**
+   * This counts how many websocket errors we've encountered without an `open` event.
+   */
+  private consecutiveErrors = 0;
+
+  /**
+   * connectionState emits `trouble` and `ok` events.
+   */
+  // TODO: this should be typed to be an event emitter once we address
+  //       https://github.com/oasislabs/oasis-client/issues/25
+  public connectionState: any = new EventEmitter();
 
   constructor(private url: string, middleware: Middleware[]) {
     this.middleware = middleware;
@@ -66,10 +86,25 @@ export class JsonRpcWebSocket {
 
   private open(event) {
     this.lifecycle.emit('open');
+
+    if (this.consecutiveErrors >= ERROR_FORWARD_THRESHOLD) {
+      // We have notified our consumer of connection trouble, so now notify
+      // them that we've reconnected.
+      this.connectionState.emit('ok');
+    }
+    this.consecutiveErrors = 0;
   }
 
   private error(event) {
     this.lifecycle.emit('error');
+
+    this.consecutiveErrors++;
+    if (this.consecutiveErrors === ERROR_FORWARD_THRESHOLD) {
+      // This is when we've crossed the threshold for forwarding the connection
+      // trouble condition. Additionally, don't repeatedly notify after we've
+      // already notified, until after we successfully reconnect.
+      this.connectionState.emit('trouble');
+    }
   }
 
   private close(event) {
