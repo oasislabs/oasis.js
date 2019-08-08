@@ -1,4 +1,4 @@
-import { EventEmitter } from 'eventemitter3';
+import EventEmitter from 'eventemitter3';
 import { keccak256 } from 'js-sha3';
 import { bytes, sleep } from '@oasislabs/common';
 import {
@@ -206,6 +206,10 @@ export class Web3Gateway implements OasisGateway {
     return {
       code: bytes.parseHex(response.result)
     };
+  }
+
+  public connectionState(): EventEmitter {
+    return this.ws.connectionState;
   }
 }
 
