@@ -24,6 +24,7 @@ const oasis = {
   deploy,
   Wallet,
   setGateway,
+  defaultOasisGateway,
   gateways: {
     Gateway,
     Web3Gateway
