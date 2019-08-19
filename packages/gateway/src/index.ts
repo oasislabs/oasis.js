@@ -1,4 +1,4 @@
-import EventEmitter from 'eventemitter3';
+import { EventEmitter } from 'eventemitter3';
 import {
   OasisGateway,
   RpcRequest,
@@ -31,7 +31,8 @@ import {
   ServicePollApi,
   SubscribePollApi,
   GetCodeApi,
-  HealthApi
+  HealthApi,
+  UnsubscribeApi
 } from './api';
 import { HttpHeaders, Http } from './http';
 import { HttpSession } from './session';
@@ -174,10 +175,8 @@ class HttpGateway implements OasisGateway {
         if (response.id === undefined || response.id === null) {
           throw new Error(`subscription failed: ${response}`);
         }
-
         // Store the event -> queueId mapping so that we can unsubscribe later.
         this.subscriptions.set(request.event, response.id);
-
         PollingService.instance({
           url: this.url,
           session: this.session,
@@ -196,16 +195,25 @@ class HttpGateway implements OasisGateway {
   public unsubscribe(request: UnsubscribeRequest) {
     let queueId = this.subscriptions.get(request.event);
     if (queueId === undefined) {
-      throw new Error(`no subscriptions exist for ${request}`);
+      throw new Error(`no subscriptions exist for ${JSON.stringify(request)}`);
     }
 
+    // Cleanup the client's subscription.
     PollingService.instance({
       url: this.url,
       session: this.session,
       queueId
     }).stop();
-
     this.subscriptions.delete(request.event);
+
+    // Cleanup the gateway's subscription.
+    this.session
+      .request(UnsubscribeApi.method, UnsubscribeApi.url, {
+        id: queueId
+      })
+      .catch(err => {
+        console.error(`Error unsubscribing from gateway: ${err}`);
+      });
   }
 
   public async publicKey(
@@ -264,7 +272,9 @@ class HttpGateway implements OasisGateway {
     // no-op
   }
 
-  public connectionState(): EventEmitter {
+  // todo: change any to EventEmitter.
+  //       https://github.com/oasislabs/oasis-client/issues/25
+  public connectionState(): any {
     // `deploy` et al. don't hide connection problems, so no need to emit these events.
     return this.connectionStateDummy;
   }
