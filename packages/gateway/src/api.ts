@@ -76,6 +76,14 @@ export const HealthApi: DeveloperGatewayApi = {
 };
 
 /**
+ * Unsubscribes from a `SubscribeApi` subscription.
+ */
+export const UnsubscribeApi: DeveloperGatewayApi = {
+  url: 'v0/api/event/unsubscribe',
+  method: 'POST'
+};
+
+/**
  *  Event is an interface for types that can be fetched by polling on a service.
  */
 export type Event =
