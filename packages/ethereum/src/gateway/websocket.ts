@@ -1,4 +1,5 @@
 import { EventEmitter } from 'eventemitter3';
+import { JsonRpcWebSocketError } from './error';
 
 /**
  * We internally try to handle reconnection when the websocket closes abnormally,
@@ -7,6 +8,12 @@ import { EventEmitter } from 'eventemitter3';
  * number of consecutive errors after which we inform our consumer.
  */
 const ERROR_FORWARD_THRESHOLD = 2;
+
+/**
+ * Time (in milliseconds) before a request sent through a JsonRpcWebSocket
+ * expires.
+ */
+const REQUEST_TIMEOUT_DURATION = 5000;
 
 export class JsonRpcWebSocket {
   /**
@@ -48,10 +55,32 @@ export class JsonRpcWebSocket {
   //       https://github.com/oasislabs/oasis-client/issues/25
   public connectionState: any = new EventEmitter();
 
-  constructor(private url: string, middleware: Middleware[]) {
+  /**
+   * Queue tracking the requests that have been sent but not completed.
+   */
+  private pendingRequestQueue: PendingRequestQueue;
+
+  /**
+   * Creates websocket connections.
+   */
+  private websocketFactory: WebSocketFactory;
+
+  /**
+   * @param url is the websocket url to connect to.
+   * @param middleware is the middleware to use to process websocket messages.
+   * @param wsFactory? is given as an optional WebSocketFactory implementation
+   *        (for testing).
+   */
+  constructor(
+    private url: string,
+    middleware: Middleware[],
+    wsFactory?: WebSocketFactory
+  ) {
     this.middleware = middleware;
-    this.websocket = makeWebsocket(url);
+    this.websocketFactory = wsFactory ? wsFactory : new EnvWebSocketFactory();
+    this.websocket = this.websocketFactory.make(url);
     this.addEventListeners();
+    this.pendingRequestQueue = new PendingRequestQueue(this);
   }
 
   private addEventListeners() {
@@ -109,15 +138,19 @@ export class JsonRpcWebSocket {
 
   private close(event) {
     if (event.code !== CloseEvent.NORMAL) {
-      this.connect();
+      this.reconnect();
       return;
     }
     this.lifecycle.emit('close');
   }
 
+  private reconnect() {
+    this.connect();
+    this.pendingRequestQueue.resend();
+  }
+
   public connect() {
-    // @ts-ignore
-    this.websocket = makeWebsocket(this.url);
+    this.websocket = this.websocketFactory.make(this.url);
     this.addEventListeners();
   }
 
@@ -139,7 +172,22 @@ export class JsonRpcWebSocket {
 
       // Websocket is open so proceed.
       let id = this.nextId();
+
+      // Add to the pending request queue in case the websocket fails.
+      this.pendingRequestQueue.add({
+        request,
+        resolve,
+        reject,
+        id
+      });
+
+      // Setup response listener. This is triggered when we receive a WebSocket
+      // `message` (i.e. response) with the associated `id`.
       this.responses.once(`${id}`, jsonResponse => {
+        // Stop tracking this request (we have the response!).
+        this.pendingRequestQueue.remove(id);
+
+        // Send the response back to the caller through the promise.
         if (jsonResponse.error) {
           reject(jsonResponse.error);
         } else {
@@ -147,6 +195,7 @@ export class JsonRpcWebSocket {
         }
       });
 
+      // Send this request out the websocket.
       this.websocket.send(
         JSON.stringify({
           id,
@@ -177,11 +226,89 @@ export interface Middleware {
   handle(message: any): any | undefined;
 }
 
-function makeWebsocket(url: string) {
-  // tslint:disable-next-line
-  return typeof WebSocket !== 'undefined'
-    ? // Browser.
-      new WebSocket(url)
-    : // Node.
-      new (require('ws'))(url);
+class PendingRequestQueue {
+  /**
+   * Maps request id to a pending-request/timeout pair.
+   */
+  private tracker = {};
+
+  constructor(private ws: JsonRpcWebSocket) {}
+
+  public add(pendingReq: PendingRequest) {
+    // Set timeout for this request.
+    let timeout = (() => {
+      const message = `request timeout: ${REQUEST_TIMEOUT_DURATION} ms have passed`;
+      return setTimeout(() => {
+        pendingReq.reject(
+          new JsonRpcWebSocketError(pendingReq.request, message)
+        );
+      }, REQUEST_TIMEOUT_DURATION);
+    })();
+
+    // Track request and timeout.
+    this.tracker[pendingReq.id] = { pendingReq, timeout };
+  }
+
+  public remove(id: number) {
+    clearTimeout(this.tracker[id].timeout);
+    delete this.tracker[id];
+  }
+
+  public resend() {
+    Object.keys(this.tracker).forEach(k => {
+      let pendingReq = this.tracker[k].pendingReq;
+      // Reissue request.
+      this.ws
+        .request(pendingReq.request)
+        // Send the response back out through the original promise resolver.
+        .then(response => {
+          pendingReq.resolve(response);
+        })
+        .catch(e => {
+          console.error(e);
+        });
+    });
+  }
+}
+
+/**
+ * Datastructure representing a request that has been sent through the
+ * JsonRpcWebSocket, but not necessarily completed.
+ */
+type PendingRequest = {
+  /**
+   * The JSON RPC request id.
+   */
+  id: number;
+  /**
+   * The original request.
+   */
+  request: JsonRpcRequest;
+  /**
+   * The promise resolution function resolving to the request's response.
+   */
+  resolve: Function;
+  /**
+   * The promise rejection function resolving to the request's error response.
+   */
+  reject: Function;
+};
+
+export interface WebSocketFactory {
+  make(url: string);
+}
+
+/**
+ * Creates a WebSocket based upon whether we're in a node or browser
+ * environment.
+ */
+class EnvWebSocketFactory implements WebSocketFactory {
+  make(url: string): WebSocket {
+    // tslint:disable-next-line
+    return typeof WebSocket !== 'undefined'
+      ? // Browser.
+        new WebSocket(url)
+      : // Node.
+        new (require('ws'))(url);
+  }
 }

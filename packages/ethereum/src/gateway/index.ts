@@ -103,7 +103,7 @@ export class Web3Gateway implements OasisGateway {
     if (receipt.status !== '0x1') {
       throw new TransactionReverted(
         receipt,
-        `transaction reverted: ${receipt}`
+        `transaction reverted: ${JSON.stringify(receipt)}`
       );
     }
 
