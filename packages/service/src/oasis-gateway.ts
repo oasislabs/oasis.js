@@ -19,6 +19,12 @@ export interface OasisGateway {
    * - `ok` when it reconnects after having emitted a `trouble` event
    */
   connectionState(): EventEmitter;
+
+  /**
+   * @returns true iff the gateway has a wallet to sign and construct raw
+   *          transactions.
+   */
+  hasSigner(): boolean;
 }
 
 export type DeployRequest = {

@@ -1,6 +1,11 @@
 import * as EventEmitter from 'eventemitter3';
-import { Address, PublicKey, Bytes, PrivateKey } from '@oasislabs/types';
-import { encrypt, decrypt } from '@oasislabs/confidential';
+import { Address, Bytes } from '@oasislabs/types';
+import {
+  PublicKey,
+  PrivateKey,
+  encrypt,
+  decrypt
+} from '@oasislabs/confidential';
 import { bytes, cbor } from '@oasislabs/common';
 import {
   OasisGateway,
@@ -42,6 +47,16 @@ export class EmptyOasisGateway implements OasisGateway {
   }
   public connectionState(): EventEmitter {
     return this.connectionStateDummy;
+  }
+
+  public hasSigner(): boolean {
+    return false;
+  }
+}
+
+export class EmptySignerGateway extends EmptyOasisGateway {
+  public hasSigner(): boolean {
+    return true;
   }
 }
 
@@ -134,4 +149,156 @@ export class ConfidentialGatewayRequestDecoder extends GatewayRequestDecoder {
     let decryption = await decrypt(encrypted, this.privateKey);
     return super.decode(decryption.plaintext, constructor);
   }
+}
+
+/**
+ * @returns dummy aead keys to use for testing.
+ */
+export function aeadKeys() {
+  return {
+    publicKey: new PublicKey(
+      new Uint8Array([
+        76,
+        194,
+        101,
+        195,
+        41,
+        86,
+        188,
+        68,
+        20,
+        196,
+        45,
+        88,
+        50,
+        28,
+        101,
+        65,
+        169,
+        62,
+        20,
+        86,
+        188,
+        169,
+        250,
+        131,
+        121,
+        184,
+        83,
+        198,
+        108,
+        127,
+        191,
+        59
+      ])
+    ),
+    privateKey: new PrivateKey(
+      new Uint8Array([
+        77,
+        65,
+        100,
+        57,
+        158,
+        249,
+        115,
+        170,
+        228,
+        223,
+        8,
+        122,
+        34,
+        16,
+        7,
+        109,
+        121,
+        80,
+        221,
+        98,
+        147,
+        57,
+        33,
+        10,
+        117,
+        181,
+        183,
+        181,
+        119,
+        248,
+        6,
+        97
+      ])
+    ),
+    peerPublicKey: new PublicKey(
+      new Uint8Array([
+        11,
+        22,
+        95,
+        106,
+        208,
+        178,
+        217,
+        236,
+        126,
+        30,
+        21,
+        232,
+        31,
+        89,
+        61,
+        20,
+        62,
+        53,
+        45,
+        10,
+        43,
+        25,
+        109,
+        77,
+        213,
+        84,
+        134,
+        55,
+        254,
+        242,
+        21,
+        87
+      ])
+    ),
+    peerPrivateKey: new PrivateKey(
+      new Uint8Array([
+        102,
+        213,
+        202,
+        145,
+        129,
+        99,
+        154,
+        30,
+        39,
+        120,
+        107,
+        223,
+        154,
+        170,
+        91,
+        51,
+        180,
+        126,
+        147,
+        208,
+        28,
+        232,
+        221,
+        65,
+        142,
+        189,
+        187,
+        37,
+        158,
+        134,
+        218,
+        171
+      ])
+    )
+  };
 }

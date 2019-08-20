@@ -212,6 +212,10 @@ export class Web3Gateway implements OasisGateway {
   public connectionState(): any {
     return this.ws.connectionState;
   }
+
+  public hasSigner(): boolean {
+    return true;
+  }
 }
 
 export default interface Wallet {
