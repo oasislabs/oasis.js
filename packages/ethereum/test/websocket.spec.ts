@@ -114,8 +114,9 @@ class DisruptedWebSocket {
   // @implements WebSocket.
   public close(code) {
     // Emit a close event with an abnormal exit code.
-    // This *should* motivate the user of this websocket to reconnect.
     this.listeners.get('close')({ code });
+    // This *should* motivate the user of this websocket to reconnect.
+    this.listeners.get('open')({});
   }
 
   // @implements WebSocket.

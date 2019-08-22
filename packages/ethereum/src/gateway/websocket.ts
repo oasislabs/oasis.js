@@ -41,7 +41,7 @@ export class JsonRpcWebSocket {
   /**
    * WebSocket through which all requests are sent.
    */
-  public websocket;
+  private websocket: WebSocket;
 
   /**
    * This counts how many websocket errors we've encountered without an `open` event.
@@ -80,7 +80,7 @@ export class JsonRpcWebSocket {
     this.websocketFactory = wsFactory ? wsFactory : new EnvWebSocketFactory();
     this.websocket = this.websocketFactory.make(url);
     this.addEventListeners();
-    this.pendingRequestQueue = new PendingRequestQueue(this);
+    this.pendingRequestQueue = new PendingRequestQueue();
   }
 
   private addEventListeners() {
@@ -122,6 +122,10 @@ export class JsonRpcWebSocket {
       this.connectionState.emit('ok');
     }
     this.consecutiveErrors = 0;
+
+    this.pendingRequestQueue.all().forEach(pendingReq => {
+      this.send(pendingReq);
+    });
   }
 
   private error(event) {
@@ -138,15 +142,10 @@ export class JsonRpcWebSocket {
 
   private close(event) {
     if (event.code !== CloseEvent.NORMAL) {
-      this.reconnect();
+      this.connect();
       return;
     }
     this.lifecycle.emit('close');
-  }
-
-  private reconnect() {
-    this.connect();
-    this.pendingRequestQueue.resend();
   }
 
   public connect() {
@@ -160,24 +159,34 @@ export class JsonRpcWebSocket {
 
   public request(request: JsonRpcRequest): Promise<any> {
     return new Promise((resolve, reject) => {
-      // WebSocket is not open, so wait until it's open and try again.
-      if (this.websocket.readyState !== this.websocket.OPEN) {
-        this.lifecycle.once('open', () => {
-          this.request(request)
-            .then(resolve)
-            .catch(console.error);
-        });
-        return;
-      }
-
       // Websocket is open so proceed.
       let id = this.nextId();
 
-      // Setup response listener. This is triggered when we receive a WebSocket
-      // `message` (i.e. response) with the associated `id`.
+      // Set timeout for this request.
+      let timeout = (() => {
+        const message = `request timeout: ${REQUEST_TIMEOUT_DURATION} ms have passed`;
+        return setTimeout(() => {
+          this.pendingRequestQueue.remove(id);
+          reject(new JsonRpcWebSocketError(request, message));
+        }, REQUEST_TIMEOUT_DURATION);
+      })();
+
+      const pendingRequest = {
+        timeout,
+        request,
+        resolve,
+        reject,
+        id
+      };
+
+      // Add to the pending request queue.
+      this.pendingRequestQueue.add(pendingRequest);
+
+      // Setup response listener.
       this.responses.once(`${id}`, jsonResponse => {
         // Stop tracking this request (we have the response!).
-        this.pendingRequestQueue.remove(id);
+        this.pendingRequestQueue.remove(pendingRequest.id);
+        clearTimeout(timeout);
 
         // Send the response back to the caller through the promise.
         if (jsonResponse.error) {
@@ -187,14 +196,22 @@ export class JsonRpcWebSocket {
         }
       });
 
-      // Add to the pending request queue to send the request.
-      this.pendingRequestQueue.add({
-        request,
-        resolve,
-        reject,
-        id
-      });
+      // WebSocket is not open, so wait until it's open and try again.
+      if (this.websocket.readyState === this.websocket.OPEN) {
+        this.send(pendingRequest);
+      }
     });
+  }
+
+  private send(request: PendingRequest) {
+    this.websocket.send(
+      JSON.stringify({
+        id: request.id,
+        jsonrpc: '2.0',
+        method: request.request.method,
+        params: request.request.params
+      })
+    );
   }
 
   private nextId(): number {
@@ -218,51 +235,20 @@ export interface Middleware {
 
 class PendingRequestQueue {
   /**
-   * Maps request id to a pending-request/timeout pair.
+   * Maps request id to pendingRequest.
    */
-  private tracker = {};
-
-  constructor(private jsonRpcWs: JsonRpcWebSocket) {}
+  private requests = {};
 
   public add(pendingReq: PendingRequest) {
-    // Set timeout for this request.
-    let timeout = (() => {
-      const message = `request timeout: ${REQUEST_TIMEOUT_DURATION} ms have passed`;
-      return setTimeout(() => {
-        pendingReq.reject(
-          new JsonRpcWebSocketError(pendingReq.request, message)
-        );
-      }, REQUEST_TIMEOUT_DURATION);
-    })();
-
-    // Track request and timeout.
-    this.tracker[pendingReq.id] = { pendingReq, timeout };
-
-    this.websocketSend(pendingReq);
+    this.requests[pendingReq.id] = pendingReq;
   }
 
   public remove(id: number) {
-    clearTimeout(this.tracker[id].timeout);
-    delete this.tracker[id];
+    delete this.requests[id];
   }
 
-  public resend() {
-    // Reissue all non-completed requests.
-    Object.keys(this.tracker).forEach(k => {
-      this.websocketSend(this.tracker[k].pendingReq);
-    });
-  }
-
-  // Send this request out the websocket.
-  private websocketSend(pendingReq: PendingRequest) {
-    this.jsonRpcWs.websocket.send(
-      JSON.stringify({
-        id: pendingReq.id,
-        jsonrpc: '2.0',
-        method: pendingReq.request.method,
-        params: pendingReq.request.params
-      })
-    );
+  public all() {
+    return Object.keys(this.requests).map(k => this.requests[k]);
   }
 }
 
@@ -287,6 +273,10 @@ type PendingRequest = {
    * The promise rejection function resolving to the request's error response.
    */
   reject: Function;
+  /**
+   * The timeout returned from `setTimeout`. Used to `clearTimeout`.
+   */
+  timeout;
 };
 
 export interface WebSocketFactory {
