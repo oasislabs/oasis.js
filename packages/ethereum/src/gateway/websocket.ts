@@ -41,7 +41,7 @@ export class JsonRpcWebSocket {
   /**
    * WebSocket through which all requests are sent.
    */
-  private websocket;
+  public websocket;
 
   /**
    * This counts how many websocket errors we've encountered without an `open` event.
@@ -173,14 +173,6 @@ export class JsonRpcWebSocket {
       // Websocket is open so proceed.
       let id = this.nextId();
 
-      // Add to the pending request queue in case the websocket fails.
-      this.pendingRequestQueue.add({
-        request,
-        resolve,
-        reject,
-        id
-      });
-
       // Setup response listener. This is triggered when we receive a WebSocket
       // `message` (i.e. response) with the associated `id`.
       this.responses.once(`${id}`, jsonResponse => {
@@ -195,15 +187,13 @@ export class JsonRpcWebSocket {
         }
       });
 
-      // Send this request out the websocket.
-      this.websocket.send(
-        JSON.stringify({
-          id,
-          jsonrpc: '2.0',
-          method: request.method,
-          params: request.params
-        })
-      );
+      // Add to the pending request queue to send the request.
+      this.pendingRequestQueue.add({
+        request,
+        resolve,
+        reject,
+        id
+      });
     });
   }
 
@@ -232,7 +222,7 @@ class PendingRequestQueue {
    */
   private tracker = {};
 
-  constructor(private ws: JsonRpcWebSocket) {}
+  constructor(private jsonRpcWs: JsonRpcWebSocket) {}
 
   public add(pendingReq: PendingRequest) {
     // Set timeout for this request.
@@ -247,6 +237,8 @@ class PendingRequestQueue {
 
     // Track request and timeout.
     this.tracker[pendingReq.id] = { pendingReq, timeout };
+
+    this.websocketSend(pendingReq);
   }
 
   public remove(id: number) {
@@ -255,19 +247,22 @@ class PendingRequestQueue {
   }
 
   public resend() {
+    // Reissue all non-completed requests.
     Object.keys(this.tracker).forEach(k => {
-      let pendingReq = this.tracker[k].pendingReq;
-      // Reissue request.
-      this.ws
-        .request(pendingReq.request)
-        // Send the response back out through the original promise resolver.
-        .then(response => {
-          pendingReq.resolve(response);
-        })
-        .catch(e => {
-          console.error(e);
-        });
+      this.websocketSend(this.tracker[k].pendingReq);
     });
+  }
+
+  // Send this request out the websocket.
+  private websocketSend(pendingReq: PendingRequest) {
+    this.jsonRpcWs.websocket.send(
+      JSON.stringify({
+        id: pendingReq.id,
+        jsonrpc: '2.0',
+        method: pendingReq.request.method,
+        params: pendingReq.request.params
+      })
+    );
   }
 }
 

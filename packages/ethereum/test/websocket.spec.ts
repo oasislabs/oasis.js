@@ -28,14 +28,15 @@ describe('JsonRpcWebSocket', () => {
       MOCK_WEB_SOCKET.close(0);
     });
 
-    expect(MOCK_WEB_SOCKET.requests).toEqual([
-      // First request.
-      { id: 0, jsonrpc: '2.0', method: 'someMethod', params: [] },
-      // Retry request.
-      { id: 1, jsonrpc: '2.0', method: 'someMethod', params: [] }
-    ]);
-    // Response should be for the retried request.
-    expect(response).toEqual({ id: 1, success: 'this is a response' });
+    // Response should be for the retried request (so the `requests` feld
+    // should have two requests).
+    expect(response).toEqual({
+      id: 0,
+      requests: [
+        { id: 0, jsonrpc: '2.0', method: 'someMethod', params: [] },
+        { id: 0, jsonrpc: '2.0', method: 'someMethod', params: [] }
+      ]
+    });
   });
 
   it('Timeout requests that have not received a response', async () => {
@@ -73,7 +74,7 @@ class MockWebSocketFactory implements WebSocketFactory {
 
 class NeverResolveWebSocket {
   addEventListener(event: string, fn: Function) {}
-  close() {}
+  close(code) {}
   send(data: string) {}
 }
 
@@ -128,7 +129,7 @@ class DisruptedWebSocket {
       this.listeners.get('message')({
         data: JSON.stringify({
           id: structuredRequestData.id,
-          success: 'this is a response'
+          requests: this.requests
         })
       });
     } else {
