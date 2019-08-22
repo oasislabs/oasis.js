@@ -85,6 +85,10 @@ export default class Gateway implements OasisGateway {
   public disconnect() {
     this.inner.disconnect();
   }
+
+  public hasSigner(): boolean {
+    return this.inner.hasSigner();
+  }
 }
 
 class HttpGateway implements OasisGateway {
@@ -277,6 +281,10 @@ class HttpGateway implements OasisGateway {
   public connectionState(): any {
     // `deploy` et al. don't hide connection problems, so no need to emit these events.
     return this.connectionStateDummy;
+  }
+
+  public hasSigner(): boolean {
+    return false;
   }
 }
 
