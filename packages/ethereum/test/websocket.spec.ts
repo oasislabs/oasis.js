@@ -7,7 +7,7 @@ describe('JsonRpcWebSocket', () => {
     let ws = new JsonRpcWebSocket('test', [], new MockWebSocketFactory());
 
     // Keep the websocket shut off so that it drops all messages.
-    MOCK_WEB_SOCKET.off();
+    MOCK_WEB_SOCKET_ADMIN.off();
 
     // Make the request in the face of disruption.
     let response = await new Promise(resolve => {
@@ -21,21 +21,23 @@ describe('JsonRpcWebSocket', () => {
       });
 
       // Now the websocket should send back responses for future requests.
-      MOCK_WEB_SOCKET.on();
+      MOCK_WEB_SOCKET_ADMIN.on();
 
       // Force close the websocket to trigger a reconnection,
       // and finally receive a response for the original request.
-      MOCK_WEB_SOCKET.close(0);
+      // @ts-ignore
+      ws.websocket.close(0);
     });
 
-    // Response should be for the retried request (so the `requests` feld
-    // should have two requests).
+    // Ensure we retried (so two requests).
+    expect(MOCK_WEB_SOCKET_ADMIN.requests).toEqual([
+      { id: 0, jsonrpc: '2.0', method: 'someMethod', params: [] },
+      { id: 0, jsonrpc: '2.0', method: 'someMethod', params: [] }
+    ]);
+    // Response received.
     expect(response).toEqual({
       id: 0,
-      requests: [
-        { id: 0, jsonrpc: '2.0', method: 'someMethod', params: [] },
-        { id: 0, jsonrpc: '2.0', method: 'someMethod', params: [] }
-      ]
+      success: true
     });
   });
 
@@ -44,11 +46,7 @@ describe('JsonRpcWebSocket', () => {
     jest.setTimeout(6000);
 
     // Given a JsonRpcWebSocet.
-    let ws = new JsonRpcWebSocket(
-      '',
-      [],
-      new MockWebSocketFactory(new NeverResolveWebSocket())
-    );
+    let ws = new JsonRpcWebSocket('', [], new MockWebSocketFactory(false));
 
     try {
       // When I make a request that never resolves.
@@ -65,28 +63,21 @@ describe('JsonRpcWebSocket', () => {
 });
 
 class MockWebSocketFactory implements WebSocketFactory {
-  constructor(private ws: any = MOCK_WEB_SOCKET) {}
+  constructor(private resolve = true) {}
 
-  make(url: string) {
-    return this.ws;
+  make(url: string): WebSocket {
+    return (this.resolve
+      ? new DisruptedWebSocket()
+      : new NeverResolveWebSocket()) as WebSocket;
   }
 }
 
-class NeverResolveWebSocket {
-  addEventListener(event: string, fn: Function) {}
-  close(code) {}
-  send(data: string) {}
-}
-
-class DisruptedWebSocket {
-  // Stores all requests sent through the `send` method.
-  public requests = [];
-
-  // Delegate callbacks for websocket events, e.g., `message`, `close`, etc.
-  private listeners = new Map();
-
+class MockWebsocketAdmin {
   // If on, this websocket will send responses.
   public isOn = true;
+
+  // All requests sent through any DisruptedWebSocket.
+  public requests: any[] = [];
 
   // Disables the websocket from processing requests.
   public off() {
@@ -97,6 +88,17 @@ class DisruptedWebSocket {
   public on() {
     this.isOn = true;
   }
+}
+
+class NeverResolveWebSocket {
+  addEventListener(event: string, fn: Function) {}
+  close(code) {}
+  send(data: string) {}
+}
+
+class DisruptedWebSocket {
+  // Delegate callbacks for websocket events, e.g., `message`, `close`, etc.
+  private listeners = new Map();
 
   // MARK: WebSocket Interface
 
@@ -106,6 +108,13 @@ class DisruptedWebSocket {
   // @implements WebSocket.
   public OPEN = true;
 
+  constructor() {
+    // Give the client of the websocket a chance to addEventListeners before opening.
+    setTimeout(() => {
+      this.listeners.get('open')({});
+    }, 500);
+  }
+
   // @implements WebSocket.
   public addEventListener(event: string, fn: Function) {
     this.listeners.set(event, fn);
@@ -113,24 +122,20 @@ class DisruptedWebSocket {
 
   // @implements WebSocket.
   public close(code) {
-    // Emit a close event with an abnormal exit code.
     this.listeners.get('close')({ code });
-    // This *should* motivate the user of this websocket to reconnect.
-    this.listeners.get('open')({});
   }
 
   // @implements WebSocket.
   public send(requestData: string) {
     const structuredRequestData = JSON.parse(requestData);
 
-    // @ts-ignore
-    this.requests.push(structuredRequestData);
+    MOCK_WEB_SOCKET_ADMIN.requests.push(structuredRequestData);
 
-    if (this.isOn) {
+    if (MOCK_WEB_SOCKET_ADMIN.isOn) {
       this.listeners.get('message')({
         data: JSON.stringify({
           id: structuredRequestData.id,
-          requests: this.requests
+          success: true
         })
       });
     } else {
@@ -139,4 +144,4 @@ class DisruptedWebSocket {
   }
 }
 
-const MOCK_WEB_SOCKET = new DisruptedWebSocket();
+const MOCK_WEB_SOCKET_ADMIN = new MockWebsocketAdmin();

@@ -159,7 +159,6 @@ export class JsonRpcWebSocket {
 
   public request(request: JsonRpcRequest): Promise<any> {
     return new Promise((resolve, reject) => {
-      // Websocket is open so proceed.
       let id = this.nextId();
 
       // Set timeout for this request.
@@ -196,7 +195,6 @@ export class JsonRpcWebSocket {
         }
       });
 
-      // WebSocket is not open, so wait until it's open and try again.
       if (this.websocket.readyState === this.websocket.OPEN) {
         this.send(pendingRequest);
       }
