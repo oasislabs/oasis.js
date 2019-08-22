@@ -280,7 +280,7 @@ type PendingRequest = {
 };
 
 export interface WebSocketFactory {
-  make(url: string);
+  make(url: string): WebSocket;
 }
 
 /**
