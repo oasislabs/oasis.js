@@ -16,35 +16,46 @@ import {
 } from '@oasislabs/service';
 import { JsonRpcWebSocket } from './websocket';
 import { TransactionFactory, Transaction } from './transaction';
-import { Subscriptions } from './subscriptions';
-import { TransactionReverted, RpcFailure } from './error';
+import { Web3GatewayError, TransactionReverted, RpcFailure } from './error';
+import { Web3, Web3Provider, Web3Namespace } from './web3';
 
 export class Web3Gateway implements OasisGateway {
   /**
-   * Websocket connection to the remote gateway.
+   * Private variables used to manage the gateway.
    */
-  private ws: JsonRpcWebSocket;
+  private _inner: Web3GatewayInner;
 
   /**
-   * Subscription middleware for the websocket connection.
+   * `eth_*` web3 rpc methods.
    */
-  private subscriptions: Subscriptions;
+  public eth: Web3Namespace;
 
   /**
-   * Builds well formed transactions that are ready for signing.
+   * `oasis_*` web3 rpc methods.
    */
-  private transactions: TransactionFactory;
+  public oasis: Web3Namespace;
 
   /**
-   * Wallet for signing transactions.
+   * `net_*` web3 rpc methods.
    */
-  private wallet: Wallet;
+  public net: Web3Namespace;
 
-  constructor(url: string, wallet: Wallet) {
-    this.subscriptions = new Subscriptions();
-    this.ws = new JsonRpcWebSocket(url, [this.subscriptions]);
-    this.wallet = wallet;
-    this.transactions = new TransactionFactory(this.wallet.address, this.ws);
+  constructor(url: string, wallet?: Wallet) {
+    this._inner = this.setupInner(url, wallet);
+    this.eth = this._inner.web3.eth;
+    this.oasis = this._inner.web3.oasis;
+    this.net = this._inner.web3.net;
+  }
+
+  private setupInner(url: string, wallet?: Wallet): Web3GatewayInner {
+    const web3 = new Web3(new Web3Provider(url, wallet));
+    const subscriptionIds = new Map();
+
+    return {
+      wallet,
+      web3,
+      subscriptionIds
+    };
   }
 
   /**
@@ -56,12 +67,9 @@ export class Web3Gateway implements OasisGateway {
         reject(new Error(`Couldn't connect to gateway ${url}`));
       }, 3000);
 
-      let response = await this.ws.request({
-        method: 'net_version',
-        params: []
-      });
+      let response = await this.net.version();
 
-      if (!response.result || parseInt(response.result, 10) <= 0) {
+      if (parseInt(response, 10) <= 0) {
         reject(new Error(`Invalid gateway response ${response}`));
       }
 
@@ -72,28 +80,25 @@ export class Web3Gateway implements OasisGateway {
   }
 
   async deploy(request: DeployRequest): Promise<DeployResponse> {
+    if (!this._inner.wallet) {
+      throw new Web3GatewayError(
+        'The Web3Gateway must have a Wallet to deploy'
+      );
+    }
+
     let txParams = Object.assign(request.options || {}, {
       data: bytes.toHex(request.data)
     });
-    let tx = await this.transactions.create(txParams);
-    let rawTx = await this.wallet.sign(tx);
-    let txHash = (await this.ws.request({
-      method: 'eth_sendRawTransaction',
-      params: [rawTx]
-    })).result;
-    let receipt = (await this.ws.request({
-      method: 'eth_getTransactionReceipt',
-      params: [txHash]
-    })).result;
+    let tx = await this._inner.web3.provider.transactions!.create(txParams);
+    let rawTx = await this._inner.wallet!.sign(tx);
+    let txHash = await this.eth.sendRawTransaction(rawTx);
+    let receipt = await this.eth.getTransactionReceipt(txHash);
 
     // TODO: https://github.com/oasislabs/oasis-client/issues/103
     let tries = 0;
     while (!receipt && tries < 5) {
       await sleep(1000);
-      receipt = (await this.ws.request({
-        method: 'eth_getTransactionReceipt',
-        params: [txHash]
-      })).result;
+      receipt = await this.eth.getTransactionReceipt(txHash);
       tries += 1;
     }
     if (!receipt) {
@@ -113,16 +118,19 @@ export class Web3Gateway implements OasisGateway {
   }
 
   async rpc(request: RpcRequest): Promise<RpcResponse> {
+    if (!this._inner.wallet) {
+      throw new Web3GatewayError(
+        'The Web3Gateway must have a Wallet to execute an rpc'
+      );
+    }
+
     let txParams = Object.assign(request.options || {}, {
       data: bytes.toHex(request.data),
       to: bytes.toHex(request.address!)
     });
-    let tx = await this.transactions.create(txParams);
-    let rawTx = await this.wallet.sign(tx);
-    let executionPayload = (await this.ws.request({
-      method: 'oasis_invoke',
-      params: [rawTx]
-    })).result;
+    let tx = await this._inner.web3.provider.transactions!.create(txParams);
+    let rawTx = await this._inner.wallet!.sign(tx);
+    let executionPayload = await this.oasis.invoke(rawTx);
 
     let error = undefined;
 
@@ -150,14 +158,16 @@ export class Web3Gateway implements OasisGateway {
 
   web3Subscribe(eventName: string, params: any[]): any {
     let events = new EventEmitter();
-    this.ws
-      .request({
-        method: 'eth_subscribe',
-        params
-      })
-      .then(response => {
-        this.subscriptions.add(eventName, response.result, event => {
-          events.emit(eventName, event.params.result);
+
+    this.eth
+      .subscribe(...params)
+      .then(sub => {
+        // Set this mapping to allow clients to `unsubscribe` with an event
+        // name, instead of an id.
+        this._inner.subscriptionIds.set(eventName, sub.id);
+        // Remap web3 `data` event to the given event name.
+        sub.on('data', event => {
+          events.emit(eventName, event);
         });
       })
       .catch(console.error);
@@ -166,27 +176,16 @@ export class Web3Gateway implements OasisGateway {
   }
 
   async unsubscribe(request: UnsubscribeRequest) {
-    let id = this.subscriptions.remove(request.event);
+    const id = this._inner.subscriptionIds.get(request.event);
     if (!id) {
       return;
     }
-    let response = await this.ws.request({
-      method: 'eth_unsubscribe',
-      params: [id]
-    });
-
-    if (!response.result) {
-      throw new RpcFailure(
-        `failed to unsubscribe with request ${request} and response ${response}`
-      );
-    }
+    this._inner.subscriptionIds.delete(request.event);
+    return this.eth.unsubscribe(id);
   }
 
   async publicKey(request: PublicKeyRequest): Promise<PublicKeyResponse> {
-    let response = (await this.ws.request({
-      method: 'oasis_getPublicKey',
-      params: [bytes.toHex(request.address)]
-    })).result;
+    let response = await this.oasis.getPublicKey(bytes.toHex(request.address));
     // TODO: signature validation. https://github.com/oasislabs/oasis-client/issues/39
     return {
       publicKey: bytes.parseHex(response.public_key)
@@ -194,23 +193,23 @@ export class Web3Gateway implements OasisGateway {
   }
 
   public disconnect() {
-    this.ws.disconnect();
+    this._inner.web3.provider.ws.disconnect();
   }
 
   public async getCode(request: GetCodeRequest): Promise<GetCodeResponse> {
-    let response = await this.ws.request({
-      method: 'eth_getCode',
-      params: [bytes.toHex(request.address), 'latest']
-    });
+    let response = await this.eth.getCode(
+      bytes.toHex(request.address),
+      'latest'
+    );
     // todo: throw cleaner error when code doesn't exist
     return {
-      code: bytes.parseHex(response.result)
+      code: bytes.parseHex(response)
     };
   }
 
   // todo: https://github.com/oasislabs/oasis.js/issues/25
   public connectionState(): any {
-    return this.ws.connectionState;
+    return this._inner.web3.provider.ws.connectionState;
   }
 
   public hasSigner(): boolean {
@@ -218,7 +217,24 @@ export class Web3Gateway implements OasisGateway {
   }
 }
 
-export default interface Wallet {
+type Web3GatewayInner = {
+  /**
+   * Maps event names to subscriptionIds.
+   */
+  subscriptionIds: Map<string, number>;
+
+  /**
+   * Wallet for signing transactions.
+   */
+  wallet?: Wallet;
+
+  /**
+   * Web3 rpcs.
+   */
+  web3: Web3;
+};
+
+export interface Wallet {
   sign(tx: Transaction): Promise<string>;
   address: string;
 }

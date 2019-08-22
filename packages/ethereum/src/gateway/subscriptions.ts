@@ -2,13 +2,6 @@ import { Middleware } from './websocket';
 
 export class Subscriptions implements Middleware {
   /**
-   * Maps event names to their subscription ids. Used to implement
-   * unsubscribe, as the client frontend knows nothing about the
-   * actual subscription id.
-   */
-  private subscriptionEventIds: Map<string, string> = new Map();
-
-  /**
    * Maps subscriptionId to the callback to invoke whenever a message
    * with that id is handled.
    */
@@ -28,19 +21,11 @@ export class Subscriptions implements Middleware {
     return message;
   }
 
-  add(event: string, subscriptionId: string, callback) {
-    this.subscriptionEventIds.set(event, subscriptionId);
+  add(subscriptionId: string, callback) {
     this.subscriptionCallbacks.set(subscriptionId, callback);
   }
 
-  remove(event: string): string | undefined {
-    let id = this.subscriptionEventIds.get(event);
-    if (!id) {
-      return undefined;
-    }
-    this.subscriptionEventIds.delete(event);
+  remove(id: string) {
     this.subscriptionCallbacks.delete(id);
-
-    return id;
   }
 }
