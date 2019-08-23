@@ -159,12 +159,16 @@ export class JsonRpcWebSocket {
 
   public request(request: JsonRpcRequest): Promise<any> {
     return new Promise((resolve, reject) => {
+      // Newly allocated request id.
       let id = this.nextId();
+      // Function invoked when a response event on topic `id` is emitted.
+      let responseListener;
 
       // Set timeout for this request.
       let timeout = (() => {
         const message = `request timeout: ${REQUEST_TIMEOUT_DURATION} ms have passed`;
         return setTimeout(() => {
+          this.responses.removeListener(responseListener);
           this.pendingRequestQueue.remove(id);
           reject(new JsonRpcWebSocketError(request, message));
         }, REQUEST_TIMEOUT_DURATION);
@@ -178,11 +182,7 @@ export class JsonRpcWebSocket {
         id
       };
 
-      // Add to the pending request queue.
-      this.pendingRequestQueue.add(pendingRequest);
-
-      // Setup response listener.
-      this.responses.once(`${id}`, jsonResponse => {
+      responseListener = jsonResponse => {
         // Stop tracking this request (we have the response!).
         this.pendingRequestQueue.remove(pendingRequest.id);
         clearTimeout(timeout);
@@ -193,7 +193,13 @@ export class JsonRpcWebSocket {
         } else {
           resolve(jsonResponse);
         }
-      });
+      };
+
+      // Add to the pending request queue.
+      this.pendingRequestQueue.add(pendingRequest);
+
+      // Setup response listener.
+      this.responses.once(`${id}`, responseListener);
 
       if (this.websocket.readyState === this.websocket.OPEN) {
         this.send(pendingRequest);
