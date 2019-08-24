@@ -28,7 +28,8 @@
   },
   "prettier": {
     "semi": true,
-    "singleQuote": true
+    "singleQuote": true,
+    "trailingComma": "es5"
   },
   "commitlint": {
     "extends": [

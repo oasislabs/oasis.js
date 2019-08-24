@@ -7,7 +7,7 @@ import {
   Bytes4,
   Bytes,
   PublicKey,
-  PrivateKey
+  PrivateKey,
 } from '@oasislabs/types';
 import { Idl, RpcFn } from '../idl';
 import ConfidentialCoder from './confidential';
@@ -102,7 +102,7 @@ export class PlaintextRpcEncoder implements RpcEncoder {
 
     return cbor.encode({
       method: fn.name,
-      payload: args
+      payload: args,
     });
   }
 }

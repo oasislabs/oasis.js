@@ -10,7 +10,7 @@ import {
   ConfidentialMockOasisGateway,
   GatewayRequestDecoder,
   ConfidentialGatewayRequestDecoder,
-  aeadKeys
+  aeadKeys,
 } from './utils';
 import { OasisCoder } from '../src/coder/oasis';
 
@@ -20,7 +20,7 @@ describe('Service', () => {
   const address = '0x372FF3aeA1fc69B9C440A5fE0B4c23c38226Da68';
   it('constructs a service with a hex string address', () => {
     let service = new Service(idl, address, {
-      gateway: new EmptyOasisGateway()
+      gateway: new EmptyOasisGateway(),
     });
     // @ts-ignore
     expect(service._inner.address).toEqual(address);
@@ -29,7 +29,7 @@ describe('Service', () => {
   it('constructs a service with a buffer address', () => {
     let bufferAddress = Buffer.from(address, 'hex');
     let service = new Service(idl, address, {
-      gateway: new EmptyOasisGateway()
+      gateway: new EmptyOasisGateway(),
     });
 
     // @ts-ignore
@@ -42,7 +42,7 @@ describe('Service', () => {
     // When.
     let service = new Service(idl, address, {
       db: new DummyStorage(),
-      gateway: new EmptyOasisGateway()
+      gateway: new EmptyOasisGateway(),
     });
 
     // Then.
@@ -64,7 +64,7 @@ describe('Service', () => {
     // Given.
     let service = new Service(idl, address, {
       db: new DummyStorage(),
-      gateway: new EmptyOasisGateway()
+      gateway: new EmptyOasisGateway(),
     });
 
     // When.
@@ -87,7 +87,7 @@ describe('Service', () => {
       let service = new Service(idl, address, {
         gateway: new RpcRequestMockOasisGateway(resolve),
         db: new DummyStorage(),
-        coder: plaintextCoder()
+        coder: plaintextCoder(),
       });
 
       // When we make an rpc request.
@@ -119,7 +119,7 @@ describe('Service', () => {
           keys.publicKey.bytes()
         ),
         db: new DummyStorage(),
-        coder: confidentialCoder()
+        coder: confidentialCoder(),
       });
       // When we make an rpc request.
       await service.rpc.the(input1, input2);
@@ -144,7 +144,7 @@ function confidentialCoder() {
     privateKey: keys.peerPrivateKey,
     peerPublicKey: keys.publicKey,
     // @ts-ignore
-    peerPrivateKey: keys.privateKey
+    peerPrivateKey: keys.privateKey,
   });
   // Don't bother decoding in tests since the gateway is mocked out.
   coder.decode = async (fn, data, constructor) => {
@@ -167,7 +167,7 @@ export function defType() {
   return {
     f1: 1,
     f3: {
-      test: 0
+      test: 0,
     },
     f4: [
       bytes.parseHex(
@@ -176,8 +176,8 @@ export function defType() {
       bytes.parseHex(
         '0000000000000000000000000000000000000000000000000000000000000002'
       ),
-      bytes.parseHex('0000000000000000000000000000000000000003')
-    ]
+      bytes.parseHex('0000000000000000000000000000000000000003'),
+    ],
   };
 }
 

@@ -26,7 +26,7 @@ export default {
     include: 'src/**',
   },
   plugins: [
-	commonjs(),
+    commonjs(),
     typescript({ useTsconfigDeclarationDir: true }),
     sourceMaps(),
   ],

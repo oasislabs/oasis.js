@@ -5,7 +5,7 @@ export function defType() {
   return {
     f1: 1,
     f3: {
-      test: 0
+      test: 0,
     },
     f4: [
       bytes.parseHex(
@@ -14,7 +14,7 @@ export function defType() {
       bytes.parseHex(
         '0000000000000000000000000000000000000000000000000000000000000002'
       ),
-      bytes.parseHex('0000000000000000000000000000000000000003')
-    ]
+      bytes.parseHex('0000000000000000000000000000000000000003'),
+    ],
   };
 }

@@ -9,13 +9,13 @@ import {
   setGateway,
   defaultOasisGateway,
   fromWasm,
-  fromWasmSync
+  fromWasmSync,
 } from '@oasislabs/service';
 import { Deoxysii, encrypt, decrypt } from '@oasislabs/confidential';
 import {
   Web3Gateway,
   EthereumCoder,
-  EthereumWallet as Wallet
+  EthereumWallet as Wallet,
 } from '@oasislabs/ethereum';
 import workspace from './workspace';
 
@@ -27,7 +27,7 @@ const oasis = {
   defaultOasisGateway,
   gateways: {
     Gateway,
-    Web3Gateway
+    Web3Gateway,
   },
   utils: {
     bytes,
@@ -40,8 +40,8 @@ const oasis = {
     keccak256,
     idl: {
       fromWasm,
-      fromWasmSync
-    }
+      fromWasmSync,
+    },
   },
   workspace,
   disconnect() {
@@ -52,7 +52,7 @@ const oasis = {
       // `defaultOasisGateway` will throw if there's no default gateway.
       // Disconnecting from a nonexistent gateway is a no-op.
     }
-  }
+  },
 };
 
 export default oasis;

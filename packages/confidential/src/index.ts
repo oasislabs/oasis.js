@@ -46,7 +46,7 @@ async function encrypt(
         ciphertext,
         peerPublicKey,
         publicKey,
-        aad
+        aad,
       },
       'ciphertext or aad may not exceed 2^53-1'
     );
@@ -57,7 +57,7 @@ async function encrypt(
     bytes.parseNumber(aad.length, AAD_LEN_SIZE, true),
     ciphertext,
     aad,
-    nonce.bytes()
+    nonce.bytes(),
   ]);
 }
 
@@ -83,7 +83,7 @@ async function decrypt(
         nonce,
         ciphertext,
         peerPublicKey,
-        aad
+        aad,
       },
       'ciphertext or aad may not exceed 2^53-1'
     );
@@ -100,7 +100,7 @@ async function decrypt(
     nonce,
     plaintext,
     peerPublicKey,
-    aad
+    aad,
   };
 }
 

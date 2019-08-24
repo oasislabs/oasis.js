@@ -16,7 +16,7 @@ export default {
       format: 'umd',
       sourcemap: true,
       globals: {
-        crypto: 'crypto'
+        crypto: 'crypto',
       },
     },
     {
@@ -35,8 +35,8 @@ export default {
     }),
     commonjs({
       namedExports: {
-        '../../node_modules/eventemitter3/index.js': [ 'EventEmitter' ]     
-      }
+        '../../node_modules/eventemitter3/index.js': ['EventEmitter'],
+      },
     }),
     json(),
     typescript({ useTsconfigDeclarationDir: true }),

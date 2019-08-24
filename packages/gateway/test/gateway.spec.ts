@@ -3,7 +3,7 @@ import Gateway from '../src/';
 describe('Gateway', () => {
   it('Sends POST to /v0/api/event/unsubscribe when unsubscribing', async () => {
     let gw = new Gateway('testing', {
-      headers: new Map()
+      headers: new Map(),
     });
 
     let _resolve;
@@ -25,7 +25,7 @@ describe('Gateway', () => {
       _resolve!({
         api,
         method,
-        body
+        body,
       });
     };
 

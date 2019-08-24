@@ -9,7 +9,7 @@ import {
   SubscribeTopic,
   SubscribeFilter,
   defaultOasisGateway,
-  setGateway
+  setGateway,
 } from './oasis-gateway';
 
 export {
@@ -27,5 +27,5 @@ export {
   fromWasm,
   fromWasmSync,
   header,
-  setGateway
+  setGateway,
 };

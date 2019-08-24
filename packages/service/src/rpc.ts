@@ -81,7 +81,7 @@ export class RpcFactory {
       let response = await gateway!.rpc({
         data: txData,
         address: address,
-        options: rpcOptions
+        options: rpcOptions,
       });
 
       if (response.error) {
@@ -171,7 +171,7 @@ export class RpcFactory {
     return OasisCoder.confidential({
       peerPublicKey: serviceKey,
       publicKey: myKeyPair.publicKey,
-      privateKey: myKeyPair.privateKey
+      privateKey: myKeyPair.privateKey,
     });
   }
 }

@@ -12,7 +12,7 @@ import {
   PublicKeyRequest,
   PublicKeyResponse,
   GetCodeRequest,
-  GetCodeResponse
+  GetCodeResponse,
 } from '@oasislabs/service';
 import { Address, Bytes } from '@oasislabs/types';
 import { UrlEncoder, bytes } from '@oasislabs/common';
@@ -32,7 +32,7 @@ import {
   SubscribePollApi,
   GetCodeApi,
   HealthApi,
-  UnsubscribeApi
+  UnsubscribeApi,
 } from './api';
 import { HttpHeaders, Http } from './http';
 import { HttpSession } from './session';
@@ -45,7 +45,7 @@ export {
   SubscribeApi,
   SubscribePollApi,
   GetCodeApi,
-  PollingService
+  PollingService,
 };
 
 export default class Gateway implements OasisGateway {
@@ -113,7 +113,7 @@ class HttpGateway implements OasisGateway {
     this.session = new HttpSession(url, headers);
     this.polling = PollingService.instance({
       url: url,
-      session: this.session
+      session: this.session,
     });
     this.subscriptions = new Map();
   }
@@ -142,7 +142,7 @@ class HttpGateway implements OasisGateway {
 
   public async deploy(request: DeployRequest): Promise<DeployResponse> {
     let e = await this.postAndPoll(DeployApi, {
-      data: bytes.toHex(request.data)
+      data: bytes.toHex(request.data),
     });
     let event = e as DeployEvent;
     let address = bytes.parseHex(event.address);
@@ -157,12 +157,12 @@ class HttpGateway implements OasisGateway {
     }
     let event = await this.postAndPoll(RpcApi, {
       data: bytes.toHex(request.data),
-      address: bytes.toHex(request.address!)
+      address: bytes.toHex(request.address!),
     });
     // todo: the developer gateway should have an error if the transaction
     //       reverted.
     return {
-      output: (event as ExecuteServiceEvent).output
+      output: (event as ExecuteServiceEvent).output,
     };
   }
 
@@ -173,7 +173,7 @@ class HttpGateway implements OasisGateway {
     this.session
       .request(SubscribeApi.method, SubscribeApi.url, {
         events: ['logs'],
-        filter: urlEncodeFilter(request.filter)
+        filter: urlEncodeFilter(request.filter),
       })
       .then(response => {
         if (response.id === undefined || response.id === null) {
@@ -184,7 +184,7 @@ class HttpGateway implements OasisGateway {
         PollingService.instance({
           url: this.url,
           session: this.session,
-          queueId: response.id
+          queueId: response.id,
         }).subscribe(response.id, event => {
           events.emit(request.event, event);
         });
@@ -206,14 +206,14 @@ class HttpGateway implements OasisGateway {
     PollingService.instance({
       url: this.url,
       session: this.session,
-      queueId
+      queueId,
     }).stop();
     this.subscriptions.delete(request.event);
 
     // Cleanup the gateway's subscription.
     this.session
       .request(UnsubscribeApi.method, UnsubscribeApi.url, {
-        id: queueId
+        id: queueId,
       })
       .catch(err => {
         console.error(`Error unsubscribing from gateway: ${err}`);
@@ -227,7 +227,7 @@ class HttpGateway implements OasisGateway {
       PublicKeyApi.method,
       PublicKeyApi.url,
       {
-        address: bytes.toHex(request.address!)
+        address: bytes.toHex(request.address!),
       }
     );
 
@@ -263,12 +263,12 @@ class HttpGateway implements OasisGateway {
       GetCodeApi.method,
       GetCodeApi.url,
       {
-        address: bytes.toHex(request.address!)
+        address: bytes.toHex(request.address!),
       }
     );
     // todo: throw cleaner error when code doesn't exist
     return {
-      code: bytes.parseHex(response.code)
+      code: bytes.parseHex(response.code),
     };
   }
 

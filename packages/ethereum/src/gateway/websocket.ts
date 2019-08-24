@@ -196,7 +196,7 @@ export class JsonRpcWebSocket implements JsonRpc {
           id,
           jsonrpc: '2.0',
           method: request.method,
-          params: request.params
+          params: request.params,
         })
       );
     });
@@ -209,7 +209,7 @@ export class JsonRpcWebSocket implements JsonRpc {
 }
 
 enum CloseEvent {
-  NORMAL = 1000
+  NORMAL = 1000,
 }
 
 export interface Middleware {

@@ -6,7 +6,7 @@ import { Idl, fromWasm } from '../idl';
 import {
   OasisGateway,
   RpcOptions,
-  defaultOasisGateway
+  defaultOasisGateway,
 } from '../oasis-gateway';
 import { DeployHeader, DeployHeaderOptions } from './header';
 import { OasisCoder } from '../coder/oasis';
@@ -32,7 +32,7 @@ export default async function deploy(options: DeployOptions): Promise<Service> {
   return new Service(options.idl!, response.address, {
     gateway,
     db: options.db,
-    coder: options.coder
+    coder: options.coder,
   });
 }
 

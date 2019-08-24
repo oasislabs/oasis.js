@@ -99,14 +99,14 @@ export class KeyStore {
     let kp = nacl.box.keyPair();
     return {
       publicKey: new PublicKey(kp.publicKey),
-      privateKey: new PrivateKey(kp.secretKey)
+      privateKey: new PrivateKey(kp.secretKey),
     };
   }
 
   private static serializeKeyPair(keyPair: KeyPair): string {
     return JSON.stringify({
       publicKey: bytes.toHex(keyPair.publicKey.bytes()),
-      privateKey: bytes.toHex(keyPair.privateKey.bytes())
+      privateKey: bytes.toHex(keyPair.privateKey.bytes()),
     });
   }
 
@@ -114,7 +114,7 @@ export class KeyStore {
     let kp = JSON.parse(keyPair);
     return {
       publicKey: new PublicKey(bytes.parseHex(kp.publicKey)),
-      privateKey: new PrivateKey(bytes.parseHex(kp.privateKey))
+      privateKey: new PrivateKey(bytes.parseHex(kp.privateKey)),
     };
   }
 }

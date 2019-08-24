@@ -6,7 +6,7 @@ import {
   setGateway,
   RpcOptions,
   OasisGateway,
-  defaultOasisGateway
+  defaultOasisGateway,
 } from '@oasislabs/service';
 import { Web3Gateway, EthereumWallet as Wallet } from '@oasislabs/ethereum';
 
@@ -82,7 +82,7 @@ class ServiceDefinition {
       arguments: args.slice(0, numCtorArgs),
       bytecode: this.bytecode,
       idl: this.idl,
-      gateway: await this._getGateway()
+      gateway: await this._getGateway(),
     });
     return deploy(deployOpts);
   }

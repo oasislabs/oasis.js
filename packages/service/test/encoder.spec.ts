@@ -14,7 +14,7 @@ describe('Encoders', () => {
       let aeadKeys = {
         peerPublicKey: serviceKeys.publicKey,
         publicKey: myKeys.publicKey,
-        privateKey: myKeys.privateKey
+        privateKey: myKeys.privateKey,
       };
 
       // Create encoder and decoder.
@@ -26,7 +26,7 @@ describe('Encoders', () => {
       // Create input.
       let rpcDefinition = {
         name: 'my_method',
-        inputs: [{ type: 'bytes' }, { type: 'string' }]
+        inputs: [{ type: 'bytes' }, { type: 'string' }],
       };
       let rpcInput = [new Uint8Array([1, 2, 3]), 'encrypt me!'];
 
@@ -37,7 +37,7 @@ describe('Encoders', () => {
       // Check it equals the original input.
       let expectedResult = {
         method: 'my_method',
-        payload: rpcInput
+        payload: rpcInput,
       };
       expect(JSON.stringify(result)).toEqual(JSON.stringify(expectedResult));
     });

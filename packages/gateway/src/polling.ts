@@ -5,7 +5,7 @@ import {
   DeveloperGatewayApi,
   ServicePollApi,
   SubscribePollApi,
-  Event
+  Event,
 } from './api';
 
 export default class PollingService {
@@ -144,7 +144,7 @@ export default class PollingService {
     const responses = await this.session.request(api.method, api.url, {
       offset: this.responseWindow.start,
       discardPrevious: true,
-      id: this.queueId
+      id: this.queueId,
     });
     // No responses so exit. Can remove once this is resolved:
     // https://github.com/oasislabs/developer-gateway/issues/23

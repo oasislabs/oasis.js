@@ -1,14 +1,9 @@
 {
   "extends": "../../tsconfig.json",
-  "include": [
-    "src"
-  ],
+  "include": ["src"],
   "compilerOptions": {
     "declarationDir": "dist/lib",
     "outDir": "dist/lib"
   },
-  "references": [
-    { "path" : "../common" },
-    { "path" : "../types" }
-  ]
+  "references": [{ "path": "../common" }, { "path": "../types" }]
 }

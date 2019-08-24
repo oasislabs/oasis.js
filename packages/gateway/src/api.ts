@@ -16,7 +16,7 @@ export type DeveloperGatewayApi = {
  */
 export const DeployApi: DeveloperGatewayApi = {
   url: 'v0/api/service/deploy',
-  method: 'POST'
+  method: 'POST',
 };
 
 /**
@@ -24,7 +24,7 @@ export const DeployApi: DeveloperGatewayApi = {
  */
 export const RpcApi: DeveloperGatewayApi = {
   url: 'v0/api/service/execute',
-  method: 'POST'
+  method: 'POST',
 };
 
 /**
@@ -32,7 +32,7 @@ export const RpcApi: DeveloperGatewayApi = {
  */
 export const PublicKeyApi: DeveloperGatewayApi = {
   url: 'v0/api/service/getPublicKey',
-  method: 'GET'
+  method: 'GET',
 };
 
 /**
@@ -40,7 +40,7 @@ export const PublicKeyApi: DeveloperGatewayApi = {
  */
 export const GetCodeApi: DeveloperGatewayApi = {
   url: 'v0/api/service/getCode',
-  method: 'GET'
+  method: 'GET',
 };
 
 /**
@@ -48,7 +48,7 @@ export const GetCodeApi: DeveloperGatewayApi = {
  */
 export const ServicePollApi: DeveloperGatewayApi = {
   url: 'v0/api/service/poll',
-  method: 'POST'
+  method: 'POST',
 };
 
 /**
@@ -56,7 +56,7 @@ export const ServicePollApi: DeveloperGatewayApi = {
  */
 export const SubscribeApi: DeveloperGatewayApi = {
   url: 'v0/api/event/subscribe',
-  method: 'POST'
+  method: 'POST',
 };
 
 /**
@@ -64,7 +64,7 @@ export const SubscribeApi: DeveloperGatewayApi = {
  */
 export const SubscribePollApi: DeveloperGatewayApi = {
   url: 'v0/api/event/poll',
-  method: 'POST'
+  method: 'POST',
 };
 
 /**
@@ -72,7 +72,7 @@ export const SubscribePollApi: DeveloperGatewayApi = {
  */
 export const HealthApi: DeveloperGatewayApi = {
   url: 'v0/api/health',
-  method: 'GET'
+  method: 'GET',
 };
 
 /**
@@ -80,7 +80,7 @@ export const HealthApi: DeveloperGatewayApi = {
  */
 export const UnsubscribeApi: DeveloperGatewayApi = {
   url: 'v0/api/event/unsubscribe',
-  method: 'POST'
+  method: 'POST',
 };
 
 /**

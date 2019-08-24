@@ -35,7 +35,7 @@ export function decode(input: Uint8Array): Object {
 
 const cbor = {
   encode,
-  decode
+  decode,
 };
 
 export class CborDecodeError extends Error {

@@ -55,7 +55,7 @@ describe('Crypto', () => {
       111,
       97,
       100,
-      128
+      128,
     ]);
     let nonce = new Uint8Array([
       14,
@@ -72,7 +72,7 @@ describe('Crypto', () => {
       123,
       232,
       84,
-      170
+      170,
     ]);
     let peerPublicKey = new Uint8Array([
       116,
@@ -106,7 +106,7 @@ describe('Crypto', () => {
       238,
       30,
       55,
-      109
+      109,
     ]);
     let publicKey = new Uint8Array([
       83,
@@ -140,7 +140,7 @@ describe('Crypto', () => {
       110,
       163,
       207,
-      27
+      27,
     ]);
     let secretKey = new Uint8Array([
       157,
@@ -174,7 +174,7 @@ describe('Crypto', () => {
       153,
       141,
       237,
-      54
+      54,
     ]);
     let aad = new Uint8Array([]);
 
@@ -200,13 +200,13 @@ function aeadInput(): [Nonce, KeyPair, KeyPair, Uint8Array] {
   let keyPair = nacl.box.keyPair();
   let me = {
     publicKey: keyPair.publicKey,
-    privateKey: keyPair.secretKey
+    privateKey: keyPair.secretKey,
   };
 
   let peerKeyPair = nacl.box.keyPair();
   let peer = {
     publicKey: peerKeyPair.publicKey,
-    privateKey: peerKeyPair.secretKey
+    privateKey: peerKeyPair.secretKey,
   };
 
   let nonce = nacl.randomBytes(15);

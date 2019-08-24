@@ -1,17 +1,15 @@
 {
   "extends": "../../tsconfig.json",
-  "include": [
-    "src"
-  ],
+  "include": ["src"],
   "compilerOptions": {
     "outDir": "dist/lib",
-	"allowJs": true,
-	"declaration": false
+    "allowJs": true,
+    "declaration": false
   },
   "references": [
-    { "path" : "../common" },
-    { "path" : "../service" },
-    { "path" : "../gateway" },
-    { "path" : "../ethereum" }
+    { "path": "../common" },
+    { "path": "../service" },
+    { "path": "../gateway" },
+    { "path": "../ethereum" }
   ]
 }

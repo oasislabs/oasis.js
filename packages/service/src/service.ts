@@ -10,7 +10,7 @@ import {
   OasisGateway,
   defaultOasisGateway,
   SubscribeRequest,
-  SubscribeTopic
+  SubscribeTopic,
 } from './oasis-gateway';
 
 /**
@@ -61,7 +61,7 @@ export default class Service {
       coder,
       address,
       listeners: new EventEmitter(),
-      subscriptions: new Map()
+      subscriptions: new Map(),
     };
   }
 
@@ -128,8 +128,8 @@ export default class Service {
           event,
           filter: {
             address: this._inner.address,
-            topics: [coder.topic(event, this._inner.idl)]
-          }
+            topics: [coder.topic(event, this._inner.idl)],
+          },
         });
         // Save the subscription so that we can remove it on demand.
         this._inner.subscriptions.set(event, subscription);
@@ -240,6 +240,6 @@ function assignDefaultOptions(options: ServiceOptions): ServiceOptions {
 function defaultOptions(): ServiceOptions {
   return {
     gateway: defaultOasisGateway(),
-    db: new LocalStorage()
+    db: new LocalStorage(),
   };
 }

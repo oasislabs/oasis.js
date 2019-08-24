@@ -5,25 +5,25 @@ export const abi = [
       {
         indexed: false,
         name: 'newCounter',
-        type: 'uint256'
-      }
+        type: 'uint256',
+      },
     ],
     name: 'Incremented',
-    type: 'event'
+    type: 'event',
   },
   {
     constant: false,
     inputs: [
       {
         name: 'value',
-        type: 'uint256'
-      }
+        type: 'uint256',
+      },
     ],
     name: 'verifyCounterValue',
     outputs: [],
     payable: false,
     stateMutability: 'nonpayable',
-    type: 'function'
+    type: 'function',
   },
   {
     constant: true,
@@ -32,12 +32,12 @@ export const abi = [
     outputs: [
       {
         name: '',
-        type: 'uint256'
-      }
+        type: 'uint256',
+      },
     ],
     payable: false,
     stateMutability: 'view',
-    type: 'function'
+    type: 'function',
   },
   {
     constant: false,
@@ -46,7 +46,7 @@ export const abi = [
     outputs: [],
     payable: false,
     stateMutability: 'nonpayable',
-    type: 'function'
+    type: 'function',
   },
   {
     constant: false,
@@ -55,27 +55,27 @@ export const abi = [
     outputs: [
       {
         name: '',
-        type: 'uint256'
-      }
+        type: 'uint256',
+      },
     ],
     payable: false,
     stateMutability: 'nonpayable',
-    type: 'function'
+    type: 'function',
   },
   {
     constant: false,
     inputs: [
       {
         name: 'count',
-        type: 'uint256'
-      }
+        type: 'uint256',
+      },
     ],
     name: 'incrementCounterManyTimes',
     outputs: [],
     payable: false,
     stateMutability: 'nonpayable',
-    type: 'function'
-  }
+    type: 'function',
+  },
 ];
 
 export const bytecode =

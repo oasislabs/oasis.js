@@ -3,7 +3,7 @@ import {
   KeyStore,
   nonce,
   encrypt,
-  decrypt
+  decrypt,
 } from '@oasislabs/confidential';
 import { Bytes, PublicKey, PrivateKey } from '@oasislabs/types';
 import { bytes } from '@oasislabs/common';
