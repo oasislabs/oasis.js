@@ -8,7 +8,7 @@ import { EventEmitter } from 'eventemitter3';
  */
 const ERROR_FORWARD_THRESHOLD = 2;
 
-export class JsonRpcWebSocket {
+export class JsonRpcWebSocket implements JsonRpc {
   /**
    * responses implements a request-response pattern for `send` requests.
    */
@@ -125,7 +125,7 @@ export class JsonRpcWebSocket {
     this.websocket.close(CloseEvent.NORMAL);
   }
 
-  public request(request: JsonRpcRequest): Promise<any> {
+  public request(request: JsonRpcRequest): Promise<JsonRpcResponse> {
     return new Promise((resolve, reject) => {
       // WebSocket is not open, so wait until it's open and try again.
       if (this.websocket.readyState !== this.websocket.OPEN) {
@@ -168,11 +168,6 @@ enum CloseEvent {
   NORMAL = 1000
 }
 
-export type JsonRpcRequest = {
-  method: string;
-  params: Object[];
-};
-
 export interface Middleware {
   handle(message: any): any | undefined;
 }
@@ -185,3 +180,16 @@ function makeWebsocket(url: string) {
     : // Node.
       new (require('ws'))(url);
 }
+
+export interface JsonRpc {
+  request(request: JsonRpcRequest): Promise<JsonRpcResponse>;
+}
+
+export type JsonRpcRequest = {
+  method: string;
+  params: any[];
+};
+
+export type JsonRpcResponse = {
+  result?: any;
+};

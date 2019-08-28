@@ -1,9 +1,9 @@
-import { JsonRpcWebSocket } from './websocket';
+import { JsonRpc } from './websocket';
 
 const OASIS_CHAIN_ID = 42261;
 
 export class TransactionFactory {
-  constructor(private address: string, private ws: JsonRpcWebSocket) {}
+  constructor(private address: string, private rpc: JsonRpc) {}
 
   async create(tx: UnpreparedTransaction): Promise<Transaction> {
     // Clone the options so that we don't mutate the array given,
@@ -37,7 +37,7 @@ export class TransactionFactory {
   async estimateGas(tx: Object): Promise<any> {
     return {
       key: 'gasLimit',
-      value: (await this.ws.request({
+      value: (await this.rpc.request({
         method: 'eth_estimateGas',
         params: [tx]
       })).result
@@ -47,7 +47,7 @@ export class TransactionFactory {
   async nonce(): Promise<any> {
     return {
       key: 'nonce',
-      value: (await this.ws.request({
+      value: (await this.rpc.request({
         method: 'eth_getTransactionCount',
         params: [this.address, 'latest']
       })).result
@@ -58,7 +58,7 @@ export class TransactionFactory {
 /**
  * Transaction that might need fields to be filled in, e.g., via estimateGas.
  */
-type UnpreparedTransaction = {
+export type UnpreparedTransaction = {
   to?: string;
   value?: string;
   data?: string;

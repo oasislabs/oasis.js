@@ -5,3 +5,11 @@ export class TransactionReverted extends Error {
 }
 
 export class RpcFailure extends Error {}
+
+export class Web3GatewayError extends Error {}
+
+export class Web3Error extends Error {
+  constructor(readonly method: string, readonly rpcParams: any[], ...params) {
+    super(...params);
+  }
+}
