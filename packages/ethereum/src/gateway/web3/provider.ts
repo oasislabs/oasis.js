@@ -89,7 +89,7 @@ export default class Web3Provider {
     const tx = await this.transactions!.create(
       params[0] as UnpreparedTransaction
     );
-    const rawTx = await this.wallet!.sign(tx);
+    const rawTx = await this.wallet!.signTransaction(tx);
     return this.ws.request({
       method: 'eth_sendRawTransaction',
       params: [rawTx]

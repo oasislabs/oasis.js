@@ -1,5 +1,4 @@
 import { Web3Gateway } from './gateway';
-import { ethers } from 'ethers';
+import { Wallet } from '@ethersproject/wallet';
 
-const EthereumWallet = ethers.Wallet;
-export { Web3Gateway, EthereumWallet };
+export { Web3Gateway, Wallet as EthereumWallet };

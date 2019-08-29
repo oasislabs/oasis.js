@@ -90,7 +90,7 @@ export class Web3Gateway implements OasisGateway {
       data: bytes.toHex(request.data)
     });
     let tx = await this._inner.web3.provider.transactions!.create(txParams);
-    let rawTx = await this._inner.wallet!.sign(tx);
+    let rawTx = await this._inner.wallet!.signTransaction(tx);
     let txHash = await this.eth.sendRawTransaction(rawTx);
     let receipt = await this.eth.getTransactionReceipt(txHash);
 
@@ -129,7 +129,7 @@ export class Web3Gateway implements OasisGateway {
       to: bytes.toHex(request.address!)
     });
     let tx = await this._inner.web3.provider.transactions!.create(txParams);
-    let rawTx = await this._inner.wallet!.sign(tx);
+    let rawTx = await this._inner.wallet!.signTransaction(tx);
     let executionPayload = await this.oasis.invoke(rawTx);
 
     let error = undefined;
@@ -235,6 +235,6 @@ type Web3GatewayInner = {
 };
 
 export interface Wallet {
-  sign(tx: Transaction): Promise<string>;
+  signTransaction(tx: Transaction): Promise<string>;
   address: string;
 }

@@ -12,6 +12,13 @@ export class TransactionFactory {
 
     if (!tx.value) {
       tx.value = '0x00';
+    } else {
+      let value = tx.value.replace(/^0x/, '');
+      // ethers.js requires an even-length hext string.
+      if (value.length % 2 === 1) {
+        value = '0' + value;
+      }
+      tx.value = '0x' + value;
     }
 
     let promises: Promise<any>[] = [];
