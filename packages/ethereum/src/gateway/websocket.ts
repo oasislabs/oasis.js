@@ -1,4 +1,5 @@
 import { EventEmitter } from 'eventemitter3';
+import { JsonRpcWebSocketError } from './error';
 
 /**
  * We internally try to handle reconnection when the websocket closes abnormally,
@@ -7,6 +8,12 @@ import { EventEmitter } from 'eventemitter3';
  * number of consecutive errors after which we inform our consumer.
  */
 const ERROR_FORWARD_THRESHOLD = 2;
+
+/**
+ * Time (in milliseconds) before a request sent through a JsonRpcWebSocket
+ * expires.
+ */
+const REQUEST_TIMEOUT_DURATION = 5000;
 
 export class JsonRpcWebSocket implements JsonRpc {
   /**
@@ -34,7 +41,12 @@ export class JsonRpcWebSocket implements JsonRpc {
   /**
    * WebSocket through which all requests are sent.
    */
-  private websocket;
+  private websocket: WebSocket;
+
+  /**
+   * Creates websocket connections.
+   */
+  private websocketFactory: WebSocketFactory;
 
   /**
    * This counts how many websocket errors we've encountered without an `open` event.
@@ -48,9 +60,20 @@ export class JsonRpcWebSocket implements JsonRpc {
   //       https://github.com/oasislabs/oasis-client/issues/25
   public connectionState: any = new EventEmitter();
 
-  constructor(private url: string, middleware: Middleware[]) {
+  /**
+   * @param url is the websocket url to connect to.
+   * @param middleware is the middleware to use to process websocket messages.
+   * @param wsFactory? is given as an optional WebSocketFactory implementation
+   *        (for testing).
+   */
+  constructor(
+    private url: string,
+    middleware: Middleware[],
+    wsFactory?: WebSocketFactory
+  ) {
     this.middleware = middleware;
-    this.websocket = makeWebsocket(url);
+    this.websocketFactory = wsFactory ? wsFactory : new EnvWebSocketFactory();
+    this.websocket = this.websocketFactory.make(url);
     this.addEventListeners();
   }
 
@@ -117,7 +140,7 @@ export class JsonRpcWebSocket implements JsonRpc {
 
   public connect() {
     // @ts-ignore
-    this.websocket = makeWebsocket(this.url);
+    this.websocket = this.websocketFactory.make(this.url);
     this.addEventListeners();
   }
 
@@ -139,13 +162,31 @@ export class JsonRpcWebSocket implements JsonRpc {
 
       // Websocket is open so proceed.
       let id = this.nextId();
-      this.responses.once(`${id}`, jsonResponse => {
+
+      // Function invoked when a response event on topic `id` is emitted.
+      let responseListener;
+
+      // Set timeout for this request.
+      const timeout = setTimeout(() => {
+        this.responses.removeListener(responseListener);
+        const error = new JsonRpcWebSocketError(
+          request,
+          `request timeout: ${REQUEST_TIMEOUT_DURATION} ms have passed`
+        );
+        reject(error);
+      }, REQUEST_TIMEOUT_DURATION);
+
+      responseListener = jsonResponse => {
+        clearTimeout(timeout);
+
         if (jsonResponse.error) {
           reject(jsonResponse.error);
         } else {
           resolve(jsonResponse);
         }
-      });
+      };
+
+      this.responses.once(`${id}`, responseListener);
 
       this.websocket.send(
         JSON.stringify({
@@ -172,15 +213,6 @@ export interface Middleware {
   handle(message: any): any | undefined;
 }
 
-function makeWebsocket(url: string) {
-  // tslint:disable-next-line
-  return typeof WebSocket !== 'undefined'
-    ? // Browser.
-      new WebSocket(url)
-    : // Node.
-      new (require('ws'))(url);
-}
-
 export interface JsonRpc {
   request(request: JsonRpcRequest): Promise<JsonRpcResponse>;
 }
@@ -193,3 +225,22 @@ export type JsonRpcRequest = {
 export type JsonRpcResponse = {
   result?: any;
 };
+
+export interface WebSocketFactory {
+  make(url: string): WebSocket;
+}
+
+/**
+ * Creates a WebSocket based upon whether we're in a node or browser
+ * environment.
+ */
+class EnvWebSocketFactory implements WebSocketFactory {
+  make(url: string): WebSocket {
+    // tslint:disable-next-line
+    return typeof WebSocket !== 'undefined'
+      ? // Browser.
+        new WebSocket(url)
+      : // Node.
+        new (require('ws'))(url);
+  }
+}
