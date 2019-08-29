@@ -14,7 +14,7 @@ export class TransactionFactory {
       tx.value = '0x00';
     } else {
       let value = tx.value.replace(/^0x/, '');
-      // ethers.js requires an even-length hext string.
+      // ethers.js requires an even-length hex string.
       if (value.length % 2 === 1) {
         value = '0' + value;
       }
