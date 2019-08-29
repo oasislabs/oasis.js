@@ -10,60 +10,67 @@ import {
 } from '@oasislabs/service';
 import { Web3Gateway, EthereumWallet as Wallet } from '@oasislabs/ethereum';
 
+class WorkspaceError extends Error {}
+
 let _populatedWorkspace = false;
 
-export default new Proxy({} as any, {
-  get(
-    workspaceCache: { [key: string]: ServiceDefinition },
-    serviceName: string
-  ) {
-    const find = require('find');
-    const fs = require('fs');
-    const process = require('process');
+export default new Proxy(
+  {
+    gateway: configGateway
+  } as any,
+  {
+    get(
+      workspaceCache: { [key: string]: ServiceDefinition },
+      serviceName: string
+    ) {
+      const find = require('find');
+      const fs = require('fs');
+      const process = require('process');
 
-    // tslint:disable-next-line strict-type-predicates
-    if (typeof window !== 'undefined') {
-      throw new Error(
-        '`oasis.workspace` is not (yet) available in the browser'
-      );
-    }
-
-    if (!_populatedWorkspace) {
-      let projectRoot = process.env.OASIS_WORKSPACE;
-      if (projectRoot === undefined) {
-        const path = require('path');
-
-        projectRoot = process.cwd();
-        while (!fs.existsSync(path.join(projectRoot, '.git'))) {
-          let parentDir = path.dirname(projectRoot);
-          if (parentDir === projectRoot) {
-            projectRoot = undefined;
-          }
-          projectRoot = parentDir;
-        }
-      }
-
-      if (projectRoot === undefined) {
+      // tslint:disable-next-line strict-type-predicates
+      if (typeof window !== 'undefined') {
         throw new Error(
-          'Could not find workspace root. Perhaps set the `OASIS_WORKSPACE` env var?'
+          '`oasis.workspace` is not (yet) available in the browser'
         );
       }
 
-      find
-        .fileSync(/target\/service\/.*\.wasm/, projectRoot)
-        .reduce((services, wasmPath) => {
-          let bytecode = fs.readFileSync(wasmPath);
-          let idl = fromWasmSync(bytecode);
-          services[idl.name] = new ServiceDefinition(bytecode, idl);
-          return services;
-        }, workspaceCache);
+      if (!_populatedWorkspace) {
+        let projectRoot = process.env.OASIS_WORKSPACE;
+        if (projectRoot === undefined) {
+          const path = require('path');
 
-      _populatedWorkspace = true;
+          projectRoot = process.cwd();
+          while (!fs.existsSync(path.join(projectRoot, '.git'))) {
+            let parentDir = path.dirname(projectRoot);
+            if (parentDir === projectRoot) {
+              projectRoot = undefined;
+            }
+            projectRoot = parentDir;
+          }
+        }
+
+        if (projectRoot === undefined) {
+          throw new Error(
+            'Could not find workspace root. Perhaps set the `OASIS_WORKSPACE` env var?'
+          );
+        }
+
+        find
+          .fileSync(/target\/service\/.*\.wasm/, projectRoot)
+          .reduce((services, wasmPath) => {
+            let bytecode = fs.readFileSync(wasmPath);
+            let idl = fromWasmSync(bytecode);
+            services[idl.name] = new ServiceDefinition(bytecode, idl);
+            return services;
+          }, workspaceCache);
+
+        _populatedWorkspace = true;
+      }
+
+      return workspaceCache[serviceName];
     }
-
-    return workspaceCache[serviceName];
   }
-});
+);
 
 class ServiceDefinition {
   constructor(readonly bytecode: Uint8Array, readonly idl: Idl) {}
@@ -84,17 +91,21 @@ class ServiceDefinition {
     try {
       return defaultOasisGateway();
     } catch (e) {
-      // tslint:disable-next-line strict-type-predicates
-      if (typeof window !== 'undefined') {
-        throw e;
-      }
-
-      let config = await Config.read();
-      setGateway(config.gateway());
-
-      return defaultOasisGateway();
+      return configGateway();
     }
   }
+}
+
+async function configGateway(): Promise<OasisGateway> {
+  // tslint:disable-next-line strict-type-predicates
+  if (typeof window !== 'undefined') {
+    throw new WorkspaceError('Cannot use oasis.workspace in the browser');
+  }
+
+  let config = await Config.read();
+  setGateway(config.gateway());
+
+  return defaultOasisGateway();
 }
 
 class Config {

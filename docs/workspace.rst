@@ -9,11 +9,12 @@ This feature is for node.js only.
 The ``oasis.workspace`` namespace provides easy access to the build artifacts
 in your local project workspace for **deployment**. This is particularly useful
 when testing and is meant to be used when developing `oasis-rs <https://github.com/oasislabs/oasis-rs>`_
-services with `oasis-cli <https://github.com/oasislabs/oasis-cli>`_.
+services with `oasis-cli <https://github.com/oasislabs/oasis-cli>`_, as it
+relies on the oasis-cli configuration file.
 
 
-Example
---------
+Examples
+---------
 
 Suppose we have the following service:
 
@@ -28,7 +29,10 @@ Suppose we have the following service:
        }
    }
 
-Then we can deploy it with ``oasis.workspace`` as follows:
+Deploying a service
+-------------------
+
+Then you can deploy it with ``oasis.workspace`` as follows:
 
 .. code-block:: javascript
 
@@ -39,6 +43,20 @@ and ``options`` is an (optional) instance of :ref:`RpcOptions <rpc-options>`.
 
 Note that the number of arguments will vary per service and the ``options`` must be the **last**
 argument given.
+
+Using a gateway
+---------------
+
+You can also fetch the gateway specified in your configuration file and set that as your
+default gateway. For example,
+
+.. code-block:: javascript
+
+   // Build the gateway object from the workspace configuration file.
+   const gateway = await oasis.workspace.gateway();
+
+   // Set the client's default gateway.
+   oasis.setGateway(gateway);
 
 
 Configuration
@@ -66,8 +84,7 @@ one can also override the following environment variables.
 * ``OASIS_WORKSPACE`` - Path to the workspace root directory. Defaults to the root directory of the local git repository.
 * ``OASIS_PROFILE`` - The config profile to use. Defaults to ``default``.
 * ``OASIS_CONFIG`` - Path to the config file to use. Defaults to a system specific path, e.g.
-    * macOS - ``~/Library/Preferences/oasis/config.toml``
-    * Linux - ``~/.config/oasis/config.toml'``
+    * macOS and Linux - ``~/.config/oasis/config.toml``
 
 How it works
 ------------
