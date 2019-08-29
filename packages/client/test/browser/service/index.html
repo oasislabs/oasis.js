@@ -71,7 +71,9 @@
           }
           async rpc(request) {
             this.requestResolve(request);
-            return { output: "" }
+            return {
+              output: oasis.utils.bytes.toHex(oasis.utils.cbor.encode({ success: true}))
+            }
           }
           async publicKey(address) {
             return {};
@@ -98,7 +100,7 @@
             return { output: oasis.utils.bytes.parseHex("0x8f4f6346d2dafe2a6a0cb664d4fa17130284e2e123459471e1f0863fb78ad4a45b110d15bcb3dbfe956ebcb14947324c76ec5f571b1a42643cb03bce81aae3f38e68a3") }
           }
           async publicKey(address) {
-            return { publicKey: keys.peerPublicKey };
+            return { publicKey: keys.peerPublicKey.inner };
           }
           async getCode(request) {
             // Just return any bytecode with the deploy header with confidential === true.
