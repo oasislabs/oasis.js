@@ -2,8 +2,8 @@ import { JsonRpcWebSocket, WebSocketFactory } from '../src/gateway/websocket';
 
 describe('JsonRpcWebSocket', () => {
   it('Timeout requests that have not received a response', async () => {
-    // We expect the test to take ~5000 ms.
-    jest.setTimeout(6000);
+    // We expect the test to take ~30000 ms.
+    jest.setTimeout(31000);
 
     // Given a JsonRpcWebSocet.
     let ws = new JsonRpcWebSocket('', [], new MockWebSocketFactory());
@@ -17,7 +17,7 @@ describe('JsonRpcWebSocket', () => {
       expect(true).toEqual(false);
     } catch (e) {
       // Then the promise should timeout.
-      expect(e.message).toEqual('request timeout: 5000 ms have passed');
+      expect(e.message).toEqual('request timeout 30000 ms have passed');
     }
   });
 });

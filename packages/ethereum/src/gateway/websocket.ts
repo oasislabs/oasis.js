@@ -12,8 +12,11 @@ const ERROR_FORWARD_THRESHOLD = 2;
 /**
  * Time (in milliseconds) before a request sent through a JsonRpcWebSocket
  * expires.
+ *
+ * Some RPCs like oasis_invoke are synchronous at the gateway and so this is
+ * a bit high. We should bring this down once we remove all synchrous rpcs.
  */
-const REQUEST_TIMEOUT_DURATION = 5000;
+const REQUEST_TIMEOUT_DURATION = 30000;
 
 export class JsonRpcWebSocket implements JsonRpc {
   /**
@@ -171,7 +174,7 @@ export class JsonRpcWebSocket implements JsonRpc {
         this.responses.removeListener(responseListener);
         const error = new JsonRpcWebSocketError(
           request,
-          `request timeout: ${REQUEST_TIMEOUT_DURATION} ms have passed`
+          `request timeout ${REQUEST_TIMEOUT_DURATION} ms have passed`
         );
         reject(error);
       }, REQUEST_TIMEOUT_DURATION);
