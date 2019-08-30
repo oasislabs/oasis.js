@@ -72,13 +72,13 @@ For example, to retrieve the latest block using ``eth_getBlockByNumber``,
 
 .. code-block:: javascript
 
-   gateway.eth.getBlockByNumber('latest', true);
+   await gateway.eth.getBlockByNumber('latest', true);
 
 To get the expiration of a given service using ``oasis_getExpiry``,
 
 .. code-block:: javascript
 
-    gateway.oasis.getExpiry(address);
+    await gateway.oasis.getExpiry(address);
 
 RPCs
 ----
@@ -95,14 +95,14 @@ Subscriptions
 -------------
 
 To make a web3 subscription use the ``eth_subscribe`` method. Unlike other RPCs,
-instead of returning the server response, ``eth_subscribe`` will return an ``EventEmitter``
-object, emitting events on the ``data`` topic.
+instead of returning the server response, ``eth_subscribe`` will resolve to an
+``EventEmitter`` object, emitting events on the ``data`` topic.
 
 For example, to subscribe to logs,
 
 .. code-block:: javascript
 
-   const subscription = gateway.eth.subscribe('logs', {
+   const subscription = await gateway.eth.subscribe('logs', {
      address: '0x...'
      topics: ['0x...']
    });
@@ -115,10 +115,10 @@ To subscribe to new block headers,
 
 .. code-block:: javascript
 
-   const subscription = gateway.eth.subscribe('newBlockHeaders');
+   const subscription = await gateway.eth.subscribe('newHeads');
 
    subscription.on('data', (event) => {
-     // Do something with your headers.
+     // Do something with your block headers.
    });
 
 To unsubscribe, give the subscription id to the ``eth_unsubscribe`` method. Continuing the
@@ -126,7 +126,7 @@ above example,
 
 .. code-block:: javascript
 
-   gateway.eth.unsubscribe(subscription.id);
+   await gateway.eth.unsubscribe(subscription.id);
 
 Oasis Web3 extensions
 ---------------------
