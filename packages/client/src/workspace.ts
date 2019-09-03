@@ -16,7 +16,7 @@ let _populatedWorkspace = false;
 
 export default new Proxy(
   {
-    gateway: configGateway
+    gateway: configGateway,
   } as any,
   {
     get(
@@ -68,7 +68,7 @@ export default new Proxy(
       }
 
       return workspaceCache[serviceName];
-    }
+    },
   }
 );
 

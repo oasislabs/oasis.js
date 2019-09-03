@@ -2,7 +2,7 @@ import { EventEmitter } from 'eventemitter3';
 import {
   JsonRpcWebSocket,
   JsonRpcRequest,
-  JsonRpcResponse
+  JsonRpcResponse,
 } from '../websocket';
 import { Subscriptions } from '../subscriptions';
 import { Web3Error } from '../error';
@@ -92,7 +92,7 @@ export default class Web3Provider {
     const rawTx = await this.wallet!.sign(tx);
     return this.ws.request({
       method: 'eth_sendRawTransaction',
-      params: [rawTx]
+      params: [rawTx],
     });
   }
 

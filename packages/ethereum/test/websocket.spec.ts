@@ -12,7 +12,7 @@ describe('JsonRpcWebSocket', () => {
       // When I make a request that never resolves.
       await ws.request({
         method: 'someMethod',
-        params: []
+        params: [],
       });
       expect(true).toEqual(false);
     } catch (e) {

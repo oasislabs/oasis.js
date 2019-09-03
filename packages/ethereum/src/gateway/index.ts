@@ -54,7 +54,7 @@ export class Web3Gateway implements OasisGateway {
     return {
       wallet,
       web3,
-      subscriptionIds
+      subscriptionIds,
     };
   }
 
@@ -203,7 +203,7 @@ export class Web3Gateway implements OasisGateway {
     );
     // todo: throw cleaner error when code doesn't exist
     return {
-      code: bytes.parseHex(response)
+      code: bytes.parseHex(response),
     };
   }
 
