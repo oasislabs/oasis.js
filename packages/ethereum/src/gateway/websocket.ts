@@ -57,6 +57,13 @@ export class JsonRpcWebSocket implements JsonRpc {
   private consecutiveErrors = 0;
 
   /**
+   * True iff we want to close the websocket immediately when it is opened.
+   * This is set when we are asked to close the websocket in the middle of
+   * establishing a connection, which we can't do; hence this hack.
+   */
+  private closeOnOpen = false;
+
+  /**
    * connectionState emits `trouble` and `ok` events.
    */
   // TODO: this should be typed to be an event emitter once we address
@@ -87,6 +94,13 @@ export class JsonRpcWebSocket implements JsonRpc {
     this.websocket.addEventListener('close', this.close.bind(this));
   }
 
+  private removeEventListeners() {
+    this.websocket.removeEventListener('message', this.message);
+    this.websocket.removeEventListener('open', this.open);
+    this.websocket.removeEventListener('error', this.error);
+    this.websocket.removeEventListener('close', this.close);
+  }
+
   private message(m: any) {
     m = this.runMiddleware(m);
     if (!m) {
@@ -113,6 +127,13 @@ export class JsonRpcWebSocket implements JsonRpc {
   private open(event) {
     this.lifecycle.emit('open');
 
+    // We were asked to close this websocket while connecting,
+    // so finish the jobn.
+    if (this.closeOnOpen) {
+      this.websocket.close(CloseEvent.NORMAL);
+      return;
+    }
+
     if (this.consecutiveErrors >= ERROR_FORWARD_THRESHOLD) {
       // We have notified our consumer of connection trouble, so now notify
       // them that we've reconnected.
@@ -122,8 +143,6 @@ export class JsonRpcWebSocket implements JsonRpc {
   }
 
   private error(event) {
-    this.lifecycle.emit('error');
-
     this.consecutiveErrors++;
     if (this.consecutiveErrors === ERROR_FORWARD_THRESHOLD) {
       // This is when we've crossed the threshold for forwarding the connection
@@ -134,11 +153,11 @@ export class JsonRpcWebSocket implements JsonRpc {
   }
 
   private close(event) {
+    this.removeEventListeners();
     if (event.code !== CloseEvent.NORMAL) {
       this.connect();
       return;
     }
-    this.lifecycle.emit('close');
   }
 
   public connect() {
@@ -148,7 +167,16 @@ export class JsonRpcWebSocket implements JsonRpc {
   }
 
   public disconnect() {
-    this.websocket.close(CloseEvent.NORMAL);
+    // The websocket is open so go ahead and close it.
+    if (this.websocket.readyState === this.websocket.OPEN) {
+      this.websocket.close(CloseEvent.NORMAL);
+    }
+    // The websocket is in the middle of establishing a connection.
+    // We can't close a websocket if it's not open, so wait for it
+    // to be open then close.
+    else if (this.websocket.readyState === this.websocket.CONNECTING) {
+      this.closeOnOpen = true;
+    }
   }
 
   public request(request: JsonRpcRequest): Promise<JsonRpcResponse> {
