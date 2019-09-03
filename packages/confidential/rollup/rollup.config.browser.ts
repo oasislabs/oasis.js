@@ -18,7 +18,7 @@ export default {
       format: 'umd',
       sourcemap: true,
       globals: {
-        crypto: 'crypto'
+        crypto: 'crypto',
       },
     },
     {
@@ -37,8 +37,8 @@ export default {
     }),
     commonjs({
       namedExports: {
-        '../../node_modules/js-sha3/src/sha3.js': [ 'keccak256' ]
-      }
+        '../../node_modules/js-sha3/src/sha3.js': ['keccak256'],
+      },
     }),
     json(),
     typescript({ useTsconfigDeclarationDir: true }),

@@ -48,7 +48,7 @@ const WEB3_RPC_METHODS = [
   { method: 'net_peerCount' },
   { method: 'oasis_getPublicKey' },
   { method: 'oasis_getExpiry' },
-  { method: 'oasis_invoke' }
+  { method: 'oasis_invoke' },
 ];
 
 export default WEB3_RPC_METHODS;

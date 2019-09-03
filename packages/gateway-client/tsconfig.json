@@ -1,14 +1,10 @@
 {
   "extends": "../../tsconfig.json",
-  "include": [
-    "src"
-  ],
+  "include": ["src"],
   "compilerOptions": {
     "declarationDir": "dist/lib",
     "outDir": "dist/lib",
     "composite": true
   },
-  "references": [
-    { "path" : "../service" }
-  ]
+  "references": [{ "path": "../service" }]
 }

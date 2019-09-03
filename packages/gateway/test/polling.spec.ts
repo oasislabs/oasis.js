@@ -20,7 +20,7 @@ describe('PollingService', () => {
       emptyPollResponse(),
       emptyPollResponse(),
       emptyPollResponse(),
-      successPollResponse(id)
+      successPollResponse(id),
     ];
     let service = pollingService(responses);
     let response = await service.response(id);
@@ -39,7 +39,7 @@ describe('PollingService', () => {
           responses.push(successPollResponse(k));
         }
         return responses;
-      }
+      },
     },
     {
       label: 'Polls for a group of reverse arriving request ids',
@@ -49,7 +49,7 @@ describe('PollingService', () => {
           responses.push(successPollResponse(k));
         }
         return responses;
-      }
+      },
     },
 
     {
@@ -60,7 +60,7 @@ describe('PollingService', () => {
           responses.push(successPollResponse(k));
         }
         return shuffle(responses);
-      }
+      },
     },
     {
       label:
@@ -73,8 +73,8 @@ describe('PollingService', () => {
         return shuffle(responses);
       },
       startId: 10,
-      endId: 20
-    }
+      endId: 20,
+    },
   ];
 
   testCases.forEach(async t => {
@@ -144,14 +144,14 @@ class MockSession implements Http {
 function emptyPollResponse(): PollServiceResponse {
   return {
     offset: 0,
-    events: null
+    events: null,
   };
 }
 
 function successPollResponse(id: number): PollServiceResponse {
   return {
     offset: id,
-    events: [successEvent(id)]
+    events: [successEvent(id)],
   };
 }
 
@@ -159,7 +159,7 @@ function successEvent(id: number): ExecuteServiceEvent {
   return {
     id,
     address: '0x0000000000000000000000000000000000000000',
-    output: 'hello'
+    output: 'hello',
   };
 }
 
@@ -174,7 +174,7 @@ function pollingService(responses: PollServiceResponse[]): PollingService {
   return PollingService.instance({
     url: 'test',
     session: session,
-    interval: POLLING_INTERVAL
+    interval: POLLING_INTERVAL,
   });
 }
 

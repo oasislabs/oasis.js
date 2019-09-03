@@ -8,11 +8,11 @@ const assert = require('assert');
  */
 async function runTest() {
   // Open browser at the test's webpage.
-  const browser = await puppeteer.launch({headless: false});
+  const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
   await page.goto('localhost:8000/test/browser/e2e');
 
-  await sleep(1000*30);
+  await sleep(1000 * 30);
 
   const resultH1 = await page.$('#test');
   let result = await page.evaluate(element => element.innerHTML, resultH1);
@@ -26,7 +26,7 @@ async function runTest() {
   await browser.close();
 }
 
-function sleep (ms) {
+function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 

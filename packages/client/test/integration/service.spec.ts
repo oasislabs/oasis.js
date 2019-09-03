@@ -19,7 +19,7 @@ describe('Service', () => {
       idl,
       bytecode: '0x1234',
       arguments: ['constructor-arg'],
-      db: new DummyStorage()
+      db: new DummyStorage(),
     });
 
     // Invoke the Rpc.
@@ -44,7 +44,7 @@ describe('Service', () => {
       idl,
       bytecode: '0x1234',
       arguments: ['constructor-arg'],
-      db: new DummyStorage()
+      db: new DummyStorage(),
     });
 
     // Three listeners listening to the same event. Each should be notified
@@ -74,7 +74,7 @@ describe('Service', () => {
     let expected = [
       { indexed1: 1, indexed2: 1 },
       { indexed1: 2, indexed2: 2 },
-      { indexed1: 3, indexed2: 3 }
+      { indexed1: 3, indexed2: 3 },
     ];
 
     expect(logListeners.length).toEqual(listenerCount);

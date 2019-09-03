@@ -6,7 +6,7 @@ import {
   setGateway,
   RpcOptions,
   OasisGateway,
-  defaultOasisGateway
+  defaultOasisGateway,
 } from '@oasislabs/service';
 import { Web3Gateway, EthereumWallet as Wallet } from '@oasislabs/ethereum';
 
@@ -16,7 +16,7 @@ let _populatedWorkspace = false;
 
 export default new Proxy(
   {
-    gateway: configGateway
+    gateway: configGateway,
   } as any,
   {
     get(
@@ -68,7 +68,7 @@ export default new Proxy(
       }
 
       return workspaceCache[serviceName];
-    }
+    },
   }
 );
 
@@ -82,7 +82,7 @@ class ServiceDefinition {
       arguments: args.slice(0, numCtorArgs),
       bytecode: this.bytecode,
       idl: this.idl,
-      gateway: await this._getGateway()
+      gateway: await this._getGateway(),
     });
     return deploy(deployOpts);
   }

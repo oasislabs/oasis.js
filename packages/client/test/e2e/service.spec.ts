@@ -17,13 +17,13 @@ describe('Service', () => {
         new oasis.Wallet(process.env['DEVNET_SECRET_KEY']!)
       ),
       completion: test => test.gateway.disconnect(),
-      options: { gasLimit: '0xf00000' }
+      options: { gasLimit: '0xf00000' },
     },
     {
       gateway: new oasis.gateways.Gateway('http://localhost:1234'),
       completion: _test => {},
-      options: undefined
-    }
+      options: undefined,
+    },
   ];
 
   gateways.forEach(test => {
@@ -38,7 +38,7 @@ describe('Service', () => {
         arguments: [],
         header: { confidential: false },
         coder,
-        gateway
+        gateway,
       });
     });
 

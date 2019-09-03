@@ -18,7 +18,7 @@ export default {
       format: 'umd',
       sourcemap: true,
       globals: {
-        crypto: 'crypto'
+        crypto: 'crypto',
       },
     },
     {

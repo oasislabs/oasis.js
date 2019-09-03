@@ -9,13 +9,13 @@ describe('DeployHeader', () => {
         description: 'errors when writing a deploy header to empty bytecode',
         bytecode: '',
         header: { expiry: 100000, confidential: false },
-        error: 'Malformed deploycode'
+        error: 'Malformed deploycode',
       },
       {
         description: 'errors when writing an invalid deploy header',
         bytecode: '0x1234',
         header: { invalid: 1234, expiry: 100000, confidential: false },
-        error: 'Malformed deploycode'
+        error: 'Malformed deploycode',
       },
       {
         description:
@@ -26,8 +26,8 @@ describe('DeployHeader', () => {
         ),
         header: { expiry: 100000, confidential: false },
         error:
-          'Invalid body {"expiry":100000,"confidential":false,"badkey":true}'
-      }
+          'Invalid body {"expiry":100000,"confidential":false,"badkey":true}',
+      },
     ];
 
     failTests.forEach(test => {
@@ -46,7 +46,7 @@ describe('DeployHeader', () => {
         description: 'does not change the bytecode if the header is empty',
         bytecode: '0x1234',
         header: {},
-        expected: '0x1234'
+        expected: '0x1234',
       },
       {
         description: 'writes a deploy header to non-empty bytecode',
@@ -55,21 +55,21 @@ describe('DeployHeader', () => {
         expected: makeExpectedBytecode(
           { expiry: 100000, confidential: false },
           '1234'
-        )
+        ),
       },
       {
         description:
           'overwrites a deploy header to non-empty bytecode with an existing confidential header',
         bytecode: makeExpectedBytecode({ confidential: false }, '1234'),
         header: { confidential: true },
-        expected: makeExpectedBytecode({ confidential: true }, '1234')
+        expected: makeExpectedBytecode({ confidential: true }, '1234'),
       },
       {
         description:
           'overwrites a deploy header to non-empty bytecode with an existing expiry header',
         bytecode: makeExpectedBytecode({ expiry: 100000 }, '1234'),
         header: { expiry: 100001 },
-        expected: makeExpectedBytecode({ expiry: 100001 }, '1234')
+        expected: makeExpectedBytecode({ expiry: 100001 }, '1234'),
       },
       {
         description:
@@ -82,8 +82,8 @@ describe('DeployHeader', () => {
         expected: makeExpectedBytecode(
           { expiry: 100001, confidential: true },
           '1234'
-        )
-      }
+        ),
+      },
     ];
 
     successTests.forEach(test => {

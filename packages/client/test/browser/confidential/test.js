@@ -7,7 +7,7 @@ const puppeteer = require('puppeteer');
  */
 async function runTest() {
   // Open browser at the test's webpage.
-  const browser = await puppeteer.launch({headless: false});
+  const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
   await page.goto('localhost:8000/test/browser/confidential');
 

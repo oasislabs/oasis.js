@@ -1,45 +1,42 @@
 const idl = {
-  "name": "TestService",
-  "namespace": "test_idl_gen",
-  "imports": [
+  name: 'TestService',
+  namespace: 'test_idl_gen',
+  imports: [
     {
-      "name": "testlib",
-      "version": "0.1.0"
+      name: 'testlib',
+      version: '0.1.0'
     }
   ],
-  "type_defs": [
+  type_defs: [
     {
-      "type": "enum",
-      "name": "InnerTy",
-      "variants": [
-        "Field1",
-        "Field2"
-      ]
+      type: 'enum',
+      name: 'InnerTy',
+      variants: ['Field1', 'Field2']
     },
     {
-      "type": "event",
-      "name": "TestEvent",
-      "fields": [
+      type: 'event',
+      name: 'TestEvent',
+      fields: [
         {
-          "name": "indexed",
-          "type": {
-            "type": "defined",
-            "params": {
-              "type": "DefTy"
+          name: 'indexed',
+          type: {
+            type: 'defined',
+            params: {
+              type: 'DefTy'
             }
           },
-          "indexed": true
+          indexed: true
         },
         {
-          "name": "non_indexed",
-          "type": {
-            "type": "tuple",
-            "params": [
+          name: 'non_indexed',
+          type: {
+            type: 'tuple',
+            params: [
               {
-                "type": "u32"
+                type: 'u32'
               },
               {
-                "type": "u32"
+                type: 'u32'
               }
             ]
           }
@@ -47,63 +44,63 @@ const idl = {
       ]
     },
     {
-      "type": "struct",
-      "name": "DefTy",
-      "fields": [
+      type: 'struct',
+      name: 'DefTy',
+      fields: [
         {
-          "name": "f1",
-          "type": {
-            "type": "optional",
-            "params": {
-              "type": "i64"
+          name: 'f1',
+          type: {
+            type: 'optional',
+            params: {
+              type: 'i64'
             }
           }
         },
         {
-          "name": "f2",
-          "type": {
-            "type": "list",
-            "params": {
-              "type": "optional",
-              "params": {
-                "type": "defined",
-                "params": {
-                  "type": "DefTy"
+          name: 'f2',
+          type: {
+            type: 'list',
+            params: {
+              type: 'optional',
+              params: {
+                type: 'defined',
+                params: {
+                  type: 'DefTy'
                 }
               }
             }
           }
         },
         {
-          "name": "f3",
-          "type": {
-            "type": "map",
-            "params": [
+          name: 'f3',
+          type: {
+            type: 'map',
+            params: [
               {
-                "type": "string"
+                type: 'string'
               },
               {
-                "type": "defined",
-                "params": {
-                  "type": "InnerTy"
+                type: 'defined',
+                params: {
+                  type: 'InnerTy'
                 }
               }
             ]
           }
         },
         {
-          "name": "f4",
-          "type": {
-            "type": "tuple",
-            "params": [
+          name: 'f4',
+          type: {
+            type: 'tuple',
+            params: [
               {
-                "type": "h256"
+                type: 'h256'
               },
               {
-                "type": "u256"
+                type: 'u256'
               },
               {
-                "type": "address"
+                type: 'address'
               }
             ]
           }
@@ -111,73 +108,73 @@ const idl = {
       ]
     },
     {
-      "type": "event",
-      "name": "TestEvent2",
-      "fields": [
+      type: 'event',
+      name: 'TestEvent2',
+      fields: [
         {
-          "name": "indexed1",
-          "type": {
-            "type": "u32"
+          name: 'indexed1',
+          type: {
+            type: 'u32'
           },
-          "indexed": true
+          indexed: true
         },
         {
-          "name": "indexed2",
-          "type": {
-            "type": "u32"
+          name: 'indexed2',
+          type: {
+            type: 'u32'
           },
-          "indexed": true
+          indexed: true
         }
       ]
     }
   ],
-  "constructor": {
-    "inputs": [
+  constructor: {
+    inputs: [
       {
-        "type": "string"
+        type: 'string'
       }
     ]
   },
-  "functions": [
+  functions: [
     {
-      "name": "the",
-      "mutability": "immutable",
-      "inputs": [
+      name: 'the',
+      mutability: 'immutable',
+      inputs: [
         {
-          "type": "list",
-          "params": {
-            "type": "defined",
-            "params": {
-              "type": "DefTy"
+          type: 'list',
+          params: {
+            type: 'defined',
+            params: {
+              type: 'DefTy'
             }
           }
         },
         {
-          "type": "bytes"
+          type: 'bytes'
         }
       ],
-      "output": {
-        "type": "set",
-        "params": {
-          "type": "address"
+      output: {
+        type: 'set',
+        params: {
+          type: 'address'
         }
       }
     },
     {
-      "name": "it",
-      "mutability": "mutable",
-      "inputs": [
+      name: 'it',
+      mutability: 'mutable',
+      inputs: [
         {
-          "type": "map",
-          "params": [
+          type: 'map',
+          params: [
             {
-              "type": "bool"
+              type: 'bool'
             },
             {
-              "type": "array",
-              "params": [
+              type: 'array',
+              params: [
                 {
-                  "type": "u32"
+                  type: 'u32'
                 },
                 12
               ]
@@ -185,42 +182,42 @@ const idl = {
           ]
         },
         {
-          "type": "set",
-          "params": {
-            "type": "i64"
+          type: 'set',
+          params: {
+            type: 'i64'
           }
         }
       ]
     },
     {
-      "name": "void",
-      "mutability": "immutable",
-      "inputs": []
+      name: 'void',
+      mutability: 'immutable',
+      inputs: []
     },
     {
-      "name": "import",
-      "mutability": "mutable",
-      "inputs": [
+      name: 'import',
+      mutability: 'mutable',
+      inputs: [
         {
-          "type": "defined",
-          "params": {
-            "namespace": "testlib",
-            "type": "RpcType"
+          type: 'defined',
+          params: {
+            namespace: 'testlib',
+            type: 'RpcType'
           }
         }
       ],
-      "output": {
-        "type": "tuple",
-        "params": [
+      output: {
+        type: 'tuple',
+        params: [
           {
-            "type": "bool"
+            type: 'bool'
           },
           {
-            "type": "i8"
+            type: 'i8'
           }
         ]
       }
     }
   ],
-  "idl_gen_version": "0.1.0"
+  idl_gen_version: '0.1.0'
 };

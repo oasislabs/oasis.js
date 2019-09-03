@@ -39,8 +39,8 @@ export class TransactionFactory {
       key: 'gasLimit',
       value: (await this.rpc.request({
         method: 'eth_estimateGas',
-        params: [tx]
-      })).result
+        params: [tx],
+      })).result,
     };
   }
 
@@ -49,8 +49,8 @@ export class TransactionFactory {
       key: 'nonce',
       value: (await this.rpc.request({
         method: 'eth_getTransactionCount',
-        params: [this.address, 'latest']
-      })).result
+        params: [this.address, 'latest'],
+      })).result,
     };
   }
 }

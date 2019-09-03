@@ -4,7 +4,7 @@ import {
   PublicKey,
   PrivateKey,
   encrypt,
-  decrypt
+  decrypt,
 } from '@oasislabs/confidential';
 import { bytes, cbor } from '@oasislabs/common';
 import {
@@ -17,7 +17,7 @@ import {
   DeployRequest,
   DeployResponse,
   GetCodeRequest,
-  GetCodeResponse
+  GetCodeResponse,
 } from '../src/oasis-gateway';
 import { RpcFn } from '../src/idl';
 import { RpcRequest as FnRequest } from '../src/coder';
@@ -39,7 +39,7 @@ export class EmptyOasisGateway implements OasisGateway {
   }
   public async getCode(request: GetCodeRequest): Promise<GetCodeResponse> {
     return {
-      code: new Uint8Array([0])
+      code: new Uint8Array([0]),
     };
   }
   public disconnect() {
@@ -91,7 +91,7 @@ export class DeployMockOasisGateway extends RpcRequestMockOasisGateway {
     // So that we resolve the promise for the test to see this request.
     super.rpc(request);
     return {
-      address: DeployMockOasisGateway.address
+      address: DeployMockOasisGateway.address,
     };
   }
 }
@@ -189,7 +189,7 @@ export function aeadKeys() {
         108,
         127,
         191,
-        59
+        59,
       ])
     ),
     privateKey: new PrivateKey(
@@ -225,7 +225,7 @@ export function aeadKeys() {
         119,
         248,
         6,
-        97
+        97,
       ])
     ),
     peerPublicKey: new PublicKey(
@@ -261,7 +261,7 @@ export function aeadKeys() {
         254,
         242,
         21,
-        87
+        87,
       ])
     ),
     peerPrivateKey: new PrivateKey(
@@ -297,8 +297,8 @@ export function aeadKeys() {
         158,
         134,
         218,
-        171
+        171,
       ])
-    )
+    ),
   };
 }

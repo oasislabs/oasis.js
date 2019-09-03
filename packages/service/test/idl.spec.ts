@@ -17,8 +17,8 @@ describe('Idl', () => {
         {
           type: 'event',
           name: 'Incremented',
-          fields: [{ name: 'newCounter', type: { type: 'u64' } }]
-        }
+          fields: [{ name: 'newCounter', type: { type: 'u64' } }],
+        },
       ],
       constructor: { inputs: [], error: null },
       functions: [
@@ -27,8 +27,8 @@ describe('Idl', () => {
           mutability: 'mutable',
           output: {
             type: 'result',
-            params: [{ type: 'u64' }, { type: 'string' }]
-          }
+            params: [{ type: 'u64' }, { type: 'string' }],
+          },
         },
         {
           name: 'setCounter',
@@ -36,31 +36,31 @@ describe('Idl', () => {
           inputs: [{ name: 'c', type: { type: 'u64' } }],
           output: {
             type: 'result',
-            params: [{ type: 'tuple', params: [] }, { type: 'string' }]
-          }
+            params: [{ type: 'tuple', params: [] }, { type: 'string' }],
+          },
         },
         {
           name: 'setCounter2',
           mutability: 'mutable',
           inputs: [
             { name: '_c', type: { type: 'u64' } },
-            { name: 'c2', type: { type: 'u64' } }
+            { name: 'c2', type: { type: 'u64' } },
           ],
           output: {
             type: 'result',
-            params: [{ type: 'tuple', params: [] }, { type: 'string' }]
-          }
+            params: [{ type: 'tuple', params: [] }, { type: 'string' }],
+          },
         },
         {
           name: 'incrementCounter',
           mutability: 'mutable',
           output: {
             type: 'result',
-            params: [{ type: 'tuple', params: [] }, { type: 'string' }]
-          }
-        }
+            params: [{ type: 'tuple', params: [] }, { type: 'string' }],
+          },
+        },
       ],
-      oasis_build_version: '0.2.0'
+      oasis_build_version: '0.2.0',
     });
   });
 });

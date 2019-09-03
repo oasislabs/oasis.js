@@ -4,7 +4,7 @@ import {
   KeyStore,
   KeyProvider,
   PublicKeyRequest,
-  PublicKeyResponse
+  PublicKeyResponse,
 } from '../src/key-store';
 
 describe('KeyStore', () => {
@@ -72,7 +72,7 @@ export class PublicKeyMockProvider implements KeyProvider {
     32,
     138,
     118,
-    115
+    115,
   ]);
 
   public static address = '0x5c7b817e80680fec250a6f638c504d39ad353b26';

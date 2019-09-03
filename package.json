@@ -12,8 +12,8 @@
   },
   "scripts": {
     "build": "lerna run build",
-    "lint": "lerna run lint --concurrency 1",
-    "lint:fix": "lerna run lint:fix --concurrency 1",
+    "lint": "lerna run lint --concurrency 1 && prettier -c 'packages/*/{src,test}/**/*.ts'",
+    "lint:fix": "lerna run lint:fix --concurrency 1 && prettier --write 'packages/*/{src,test}/**/*.ts'",
     "prebuild": "rimraf dist",
     "test": "lerna run test --concurrency 1 --stream",
     "precommit": "lint-staged",
@@ -28,7 +28,8 @@
   },
   "prettier": {
     "semi": true,
-    "singleQuote": true
+    "singleQuote": true,
+    "trailingComma": "es5"
   },
   "commitlint": {
     "extends": [

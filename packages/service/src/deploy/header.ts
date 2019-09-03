@@ -316,5 +316,5 @@ function parseHex(deploycode: Bytes): DeployHeader | null {
 
 // Convenience api export.
 export const header = {
-  parseHex
+  parseHex,
 };

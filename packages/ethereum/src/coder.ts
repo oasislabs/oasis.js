@@ -8,7 +8,7 @@ import {
   Idl,
   RpcFn,
   AeadKeys,
-  RpcOptions
+  RpcOptions,
 } from '@oasislabs/service';
 
 export class EthereumCoder implements RpcCoder {

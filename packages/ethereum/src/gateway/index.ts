@@ -12,7 +12,7 @@ import {
   PublicKeyRequest,
   PublicKeyResponse,
   GetCodeRequest,
-  GetCodeResponse
+  GetCodeResponse,
 } from '@oasislabs/service';
 import { JsonRpcWebSocket } from './websocket';
 import { TransactionFactory, Transaction } from './transaction';
@@ -54,7 +54,7 @@ export class Web3Gateway implements OasisGateway {
     return {
       wallet,
       web3,
-      subscriptionIds
+      subscriptionIds,
     };
   }
 
@@ -87,7 +87,7 @@ export class Web3Gateway implements OasisGateway {
     }
 
     let txParams = Object.assign(request.options || {}, {
-      data: bytes.toHex(request.data)
+      data: bytes.toHex(request.data),
     });
     let tx = await this._inner.web3.provider.transactions!.create(txParams);
     let rawTx = await this._inner.wallet!.sign(tx);
@@ -113,7 +113,7 @@ export class Web3Gateway implements OasisGateway {
     }
 
     return {
-      address: bytes.parseHex(receipt.contractAddress)
+      address: bytes.parseHex(receipt.contractAddress),
     };
   }
 
@@ -126,7 +126,7 @@ export class Web3Gateway implements OasisGateway {
 
     let txParams = Object.assign(request.options || {}, {
       data: bytes.toHex(request.data),
-      to: bytes.toHex(request.address!)
+      to: bytes.toHex(request.address!),
     });
     let tx = await this._inner.web3.provider.transactions!.create(txParams);
     let rawTx = await this._inner.wallet!.sign(tx);
@@ -142,7 +142,7 @@ export class Web3Gateway implements OasisGateway {
 
     return {
       output: executionPayload.output,
-      error
+      error,
     };
   }
 
@@ -151,8 +151,8 @@ export class Web3Gateway implements OasisGateway {
       'logs',
       {
         address: bytes.toHex(request.filter!.address),
-        topics: request.filter!.topics.map(t => bytes.toHex(t))
-      }
+        topics: request.filter!.topics.map(t => bytes.toHex(t)),
+      },
     ]);
   }
 
@@ -188,7 +188,7 @@ export class Web3Gateway implements OasisGateway {
     let response = await this.oasis.getPublicKey(bytes.toHex(request.address));
     // TODO: signature validation. https://github.com/oasislabs/oasis-client/issues/39
     return {
-      publicKey: bytes.parseHex(response.public_key)
+      publicKey: bytes.parseHex(response.public_key),
     };
   }
 
@@ -203,7 +203,7 @@ export class Web3Gateway implements OasisGateway {
     );
     // todo: throw cleaner error when code doesn't exist
     return {
-      code: bytes.parseHex(response)
+      code: bytes.parseHex(response),
     };
   }
 

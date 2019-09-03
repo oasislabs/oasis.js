@@ -33,8 +33,8 @@ export default class TransactionObserver {
     subscription = gw.web3Subscribe(bytes.toHex(address), [
       'completedTransaction',
       {
-        fromAddress: address
-      }
+        fromAddress: address,
+      },
     ]);
 
     this.subscriptions.set(address, subscription);

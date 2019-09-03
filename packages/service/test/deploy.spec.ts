@@ -2,7 +2,7 @@ import { idl } from '@oasislabs/test';
 import {
   EmptyOasisGateway,
   DeployMockOasisGateway,
-  GatewayRequestDecoder
+  GatewayRequestDecoder,
 } from './utils';
 import { Idl } from '../src/idl';
 import { deploy, Service } from '../src/index';
@@ -16,23 +16,23 @@ describe('Service deploys', () => {
     {
       bytecode: '0x010203',
       header: undefined,
-      label: 'deploys a service with hex string bytecode'
+      label: 'deploys a service with hex string bytecode',
     },
     {
       bytecode: Buffer.from('0102039999', 'hex'),
       header: undefined,
-      label: 'deploys a service with buffer bytecode'
+      label: 'deploys a service with buffer bytecode',
     },
     {
       bytecode: Buffer.from('0102039999', 'hex'),
       header: { confidential: false },
-      label: 'deploys a service without confidentiality'
+      label: 'deploys a service without confidentiality',
     },
     {
       bytecode: Buffer.from('0102039999', 'hex'),
       header: { confidential: true, expiry: 12345 },
-      label: 'deploys a service with expiry'
-    }
+      label: 'deploys a service with expiry',
+    },
   ];
 
   testCases.forEach(test => {
@@ -48,7 +48,7 @@ describe('Service deploys', () => {
             bytecode: test.bytecode,
             arguments: args,
             header: test.header,
-            gateway: new DeployMockOasisGateway(resolve)
+            gateway: new DeployMockOasisGateway(resolve),
           });
           // @ts-ignore
           expect(service!._inner.address).toEqual(

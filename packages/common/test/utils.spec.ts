@@ -18,10 +18,9 @@ describe('Utils', () => {
       111,
       114,
       108,
-      100
+      100,
     ]);
     expect(decoded).toEqual(input);
     expect(JSON.stringify(encoded)).toEqual(JSON.stringify(expectedEncoded));
   });
 });
-

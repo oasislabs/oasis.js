@@ -6,7 +6,7 @@ import {
   GetCodeApi,
   PollingService,
   HttpGateway,
-  Http
+  Http,
 } from '@oasislabs/gateway';
 import { Address } from '@oasislabs/types';
 import { bytes, cbor } from '@oasislabs/common';
@@ -21,14 +21,14 @@ export default class GatewayBuilder {
   public deploy(address: string): GatewayBuilder {
     // Deploy response.
     this.addServiceResponse({
-      event: { address }
+      event: { address },
     });
     return this;
   }
 
   public rpc(output: any): GatewayBuilder {
     this.addServiceResponse({
-      event: { output: bytes.toHex(cbor.encode(output)) }
+      event: { output: bytes.toHex(cbor.encode(output)) },
     });
     return this;
   }
@@ -36,7 +36,7 @@ export default class GatewayBuilder {
   public subscribe(event: Object): GatewayBuilder {
     let data = bytes.toHex(cbor.encode(event));
     this.addSubscribeResponse({
-      event: { data }
+      event: { data },
     });
 
     return this;
@@ -60,7 +60,7 @@ export default class GatewayBuilder {
     // parameters.
     let subscriptionPoll = PollingService.instance({
       url: url,
-      queueId: 0
+      queueId: 0,
     });
     // @ts-ignore
     subscriptionPoll.session = session;
@@ -127,7 +127,7 @@ class MockSession implements Http {
       this.count += 1;
       return {
         offset: body.offset,
-        events: [this.serviceResponses[body.offset].event]
+        events: [this.serviceResponses[body.offset].event],
       };
     }
     // Subscription log.
@@ -140,7 +140,7 @@ class MockSession implements Http {
       }
       return {
         offset: body.offset,
-        events: [this.subscribeResponses[body.offset].event]
+        events: [this.subscribeResponses[body.offset].event],
       };
     }
     // Subscribe queue id (handles the initial, non-poll request).

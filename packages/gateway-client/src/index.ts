@@ -6,8 +6,8 @@ const oasis = {
   deploy,
   setGateway,
   gateways: {
-    Gateway
-  }
+    Gateway,
+  },
 };
 
 export default oasis;

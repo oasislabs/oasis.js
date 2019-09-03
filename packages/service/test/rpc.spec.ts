@@ -7,7 +7,7 @@ describe('RpcFactory', () => {
     // Given.
     let rpc = (() => {
       let fn = {
-        name: 'myMethod'
+        name: 'myMethod',
       };
       let address = '0x288e7e1cc60962f40d4d782950470e3705c5acf4';
       let gateway = new EmptySignerGateway();
