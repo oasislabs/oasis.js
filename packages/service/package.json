@@ -1,6 +1,6 @@
 {
   "name": "@oasislabs/service",
-  "version": "1.0.0-rc.9",
+  "version": "1.0.0-rc.10",
   "description": "",
   "keywords": [],
   "main": "dist/index.umd.js",
@@ -34,9 +34,9 @@
     ]
   },
   "dependencies": {
-    "@oasislabs/common": "^1.0.0-rc.6",
-    "@oasislabs/confidential": "^1.0.0-rc.6",
-    "@oasislabs/types": "^1.0.0-rc.1",
+    "@oasislabs/common": "^1.0.0-rc.7",
+    "@oasislabs/confidential": "^1.0.0-rc.7",
+    "@oasislabs/types": "^1.0.0-rc.2",
     "eventemitter3": "^3.1.2",
     "js-sha3": "^0.8.0",
     "pako": "^1.0.10"
