@@ -10,7 +10,7 @@
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "noImplicitAny": false,
+    "noImplicitAny": true,
     "typeRoots": ["node_modules/@types", "packages/*/dist/lib"]
   },
   "include": ["src"]
