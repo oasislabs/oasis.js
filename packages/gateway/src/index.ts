@@ -51,9 +51,9 @@ export {
 export default class Gateway implements OasisGateway {
   private inner: OasisGateway;
 
-  constructor(url: string, headers: HttpHeaders) {
+  constructor(url: string, apiToken: string, headers: HttpHeaders) {
     // TODO: WebSocket gateway and extract protocol from url.
-    this.inner = new HttpGateway(url, headers);
+    this.inner = new HttpGateway(url, apiToken, headers);
   }
 
   public async deploy(request: DeployRequest): Promise<DeployResponse> {
@@ -109,7 +109,11 @@ class HttpGateway implements OasisGateway {
 
   private connectionStateDummy = new EventEmitter();
 
-  public constructor(private url: string, private headers: HttpHeaders) {
+  public constructor(
+    private url: string,
+    private apiToken: string,
+    private headers: HttpHeaders
+  ) {
     this.session = new HttpSession(url, headers);
     this.polling = PollingService.instance({
       url: url,

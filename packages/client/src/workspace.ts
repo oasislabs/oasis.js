@@ -1,3 +1,4 @@
+import { EthereumWallet as Wallet, Web3Gateway } from '@oasislabs/ethereum';
 import Gateway from '@oasislabs/gateway';
 import {
   Idl,
@@ -8,7 +9,6 @@ import {
   OasisGateway,
   defaultOasisGateway,
 } from '@oasislabs/service';
-import { Web3Gateway, EthereumWallet as Wallet } from '@oasislabs/ethereum';
 
 class WorkspaceError extends Error {}
 
@@ -138,24 +138,87 @@ class Config {
   }
 
   public gateway(): OasisGateway {
-    if (this.inner.mnemonic && this.inner.private_key) {
-      throw new Error(
-        `Configuration file cannot have both a mnemonic and private key`
-      );
+    let gatewayUrl;
+    let gatewayType;
+    const credential = new Credential(this.inner.credential);
+    if (typeof this.inner.gateway === 'object') {
+      gatewayUrl = this.inner.gateway.url;
+      gatewayType = getGatewayType(this.inner.gateway.type);
+    } else {
+      gatewayUrl = this.inner.gateway;
+    }
+    if (!gatewayType) {
+      gatewayType = inferGatewayType(gatewayUrl, credential);
     }
 
-    if (this.inner.mnemonic) {
-      return new Web3Gateway(
-        this.inner.endpoint,
-        Wallet.fromMnemonic(this.inner.mnemonic)
-      );
-    } else if (this.inner.private_key) {
-      return new Web3Gateway(
-        this.inner.endpoint,
-        new Wallet(this.inner.private_key)
-      );
+    if (gatewayType === GatewayType.Web3) {
+      return new Web3Gateway(gatewayUrl, credential.wallet!);
+    }
+    return new Gateway(gatewayUrl, credential);
+  }
+}
+
+function getGatewayType(gateway: string): GatewayType {
+  if (gateway === 'web3') {
+    return GatewayType.Web3;
+  } else if (gateway === 'oasis') {
+    return GatewayType.Oasis;
+  }
+  throw new Error(
+    `Invalid gateway type: \`${gateway}\`.${''} Available options are \`web3\` and \`oasis\``
+  );
+}
+
+function inferGatewayType(
+  gatewayUrl: string,
+  credential: Credential
+): GatewayType {
+  let url = require('url').parse(gatewayUrl.toLowerCase());
+  let port = parseInt(url.port, 10);
+  if (
+    url.hostname.match(/web3/gi) ||
+    port in [8545, 8546] ||
+    credential.type === CredentialType.Mnemonic ||
+    credential.type === CredentialType.PrivateKey
+  ) {
+    return GatewayType.Web3;
+  }
+  return GatewayType.Oasis;
+}
+
+enum GatewayType {
+  Web3,
+  Oasis,
+}
+
+class Credential {
+  public type: CredentialType;
+
+  /** The Ethereum wallet associated with this credential */
+  public wallet?: Wallet;
+
+  constructor(public credential: string) {
+    const API_TOKEN_NUM_BYTES = 32;
+    const PRIVATE_KEY_NUM_BYTES = 32;
+    const MNEMONIC_NUM_WORDS = 12;
+    if (Buffer.from(credential, 'base64').length === API_TOKEN_NUM_BYTES) {
+      this.type = CredentialType.ApiToken;
+    } else if (
+      Buffer.from(credential, 'hex').length === PRIVATE_KEY_NUM_BYTES
+    ) {
+      this.type = CredentialType.PrivateKey;
+      this.wallet = new Wallet(credential);
+    } else if (credential.split(' ').length === MNEMONIC_NUM_WORDS) {
+      this.type = CredentialType.Mnemonic;
+      this.wallet = Wallet.fromMnemonic(credential);
     } else {
-      return new Gateway(this.inner.endpoint);
+      throw new Error(`Invalid credential: \`${credential}\`.`);
     }
   }
+}
+
+enum CredentialType {
+  PrivateKey,
+  Mnemonic,
+  ApiToken, // API token is used use with Oasis gateway.
 }
