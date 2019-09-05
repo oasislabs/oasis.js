@@ -32,7 +32,7 @@ export const RpcApi: DeveloperGatewayApi = {
  */
 export const PublicKeyApi: DeveloperGatewayApi = {
   url: 'v0/api/service/getPublicKey',
-  method: 'GET',
+  method: 'POST',
 };
 
 /**
@@ -40,7 +40,7 @@ export const PublicKeyApi: DeveloperGatewayApi = {
  */
 export const GetCodeApi: DeveloperGatewayApi = {
   url: 'v0/api/service/getCode',
-  method: 'GET',
+  method: 'POST',
 };
 
 /**
