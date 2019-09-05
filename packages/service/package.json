@@ -37,6 +37,7 @@
     "@oasislabs/common": "^1.0.0-rc.7",
     "@oasislabs/confidential": "^1.0.0-rc.7",
     "@oasislabs/types": "^1.0.0-rc.2",
+    "camelcase": "^5.3.1",
     "eventemitter3": "^3.1.2",
     "js-sha3": "^0.8.0",
     "pako": "^1.0.10"

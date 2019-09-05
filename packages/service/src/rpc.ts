@@ -1,3 +1,5 @@
+import camelCase from 'camelcase';
+
 import { KeyStore } from '@oasislabs/confidential';
 import { Address } from '@oasislabs/types';
 import { bytes } from '@oasislabs/common';
@@ -22,6 +24,11 @@ export interface Rpcs {
  * Rpc is a single rpc method.
  */
 export type Rpc = (...args: any[]) => Promise<any>;
+
+type RpcDefinition = {
+  rpc: Rpc;
+  name: string;
+};
 
 /**
  * RpcFactory builds an Rpcs object for a given idl.
@@ -49,12 +56,13 @@ export class RpcFactory {
     let rpcs: Rpcs = {};
 
     functions.forEach((fn: RpcFn) => {
-      rpcs[fn.name] = RpcFactory.buildRpc(
+      const rpcDef = RpcFactory.buildRpc(
         fn,
         address,
         options.gateway!,
         rpcCoder
       );
+      rpcs[rpcDef.name] = rpcDef.rpc;
     });
 
     return [rpcs, rpcCoder];
@@ -65,11 +73,14 @@ export class RpcFactory {
     address: Address,
     gateway: OasisGateway,
     rpcCoder: Promise<RpcCoder>
-  ): Rpc {
+  ): RpcDefinition {
     if (fn.name === '_inner') {
       throw new IdlError('the _inner name is reserved by the oasis-client');
     }
-    return async (...args: any[]) => {
+
+    const name = RpcFactory.rpcName(fn.name);
+
+    const rpc = async (...args: any[]) => {
       let coder = await rpcCoder;
       let [rpcArgs, rpcOptions] = RpcFactory.parseOptions(
         fn,
@@ -91,6 +102,20 @@ export class RpcFactory {
 
       return coder.decode(fn, response.output);
     };
+
+    return {
+      rpc,
+      name,
+    };
+  }
+
+  /**
+   * Transforms the given `idlName` into a properly formatted
+   * snakeCase rpc name to be exposed on the service client.
+   *
+   */
+  private static rpcName(idlName: string): string {
+    return camelCase(idlName);
   }
 
   private static parseOptions(
