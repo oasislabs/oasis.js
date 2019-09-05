@@ -1,4 +1,3 @@
-import { Bytes } from '@oasislabs/types';
 import { bytes } from '@oasislabs/common';
 
 export type DeployHeaderOptions = {
@@ -53,8 +52,8 @@ export class DeployHeader {
    */
   public static deployCode(
     headerBody: DeployHeaderOptions,
-    deploycode: Bytes
-  ): Bytes {
+    deploycode: Uint8Array | string
+  ): Uint8Array | string {
     if (typeof deploycode !== 'string') {
       deploycode = bytes.toHex(deploycode);
     }
@@ -136,13 +135,13 @@ export class DeployHeader {
  * A collection of utilities for parsing through deploycode including the Oasis contract
  * deploy header in the form of a hex string.
  */
-// TODO: change return values to be Bytes.
+// TODO: change return values to be Uint8Array | string.
 export class DeployHeaderReader {
   /**
    * @param   {String} deploycode is the transaction data to deploy a contract as a hex string.
    * @returns the contract deploy header prefixed to the deploycode, otherwise, null.
    */
-  public static header(deploycode: Bytes): DeployHeader | null {
+  public static header(deploycode: Uint8Array | string): DeployHeader | null {
     if (typeof deploycode !== 'string') {
       deploycode = bytes.toHex(deploycode);
     }
@@ -162,7 +161,7 @@ export class DeployHeaderReader {
   /**
    * @param {String} deploycode is a hex string of the header || initcode.
    */
-  public static body(deploycode: Bytes): DeployHeaderOptions {
+  public static body(deploycode: Uint8Array | string): DeployHeaderOptions {
     if (typeof deploycode !== 'string') {
       deploycode = bytes.toHex(deploycode);
     }
@@ -183,7 +182,7 @@ export class DeployHeaderReader {
   /**
    * @param {String} deploycode is a hex string of the header || initcode.
    */
-  public static size(deploycode: Bytes): number {
+  public static size(deploycode: Uint8Array | string): number {
     if (typeof deploycode !== 'string') {
       deploycode = bytes.toHex(deploycode);
     }
@@ -203,7 +202,7 @@ export class DeployHeaderReader {
   /**
    * @param {String} deploycode is a hex string of the header || initcode.
    */
-  public static version(deploycode: Bytes): number {
+  public static version(deploycode: Uint8Array | string): number {
     if (typeof deploycode !== 'string') {
       deploycode = bytes.toHex(deploycode);
     }
@@ -223,7 +222,7 @@ export class DeployHeaderReader {
   /**
    * @param {String} deploycode is a hex string of the header || initcode.
    */
-  public static initcode(deploycode: Bytes): string {
+  public static initcode(deploycode: Uint8Array | string): string {
     if (typeof deploycode !== 'string') {
       deploycode = bytes.toHex(deploycode);
     }
@@ -237,7 +236,7 @@ export class DeployHeaderReader {
     );
   }
 
-  private static initcodeStart(deploycode: Bytes): number {
+  private static initcodeStart(deploycode: Uint8Array | string): number {
     if (typeof deploycode !== 'string') {
       deploycode = bytes.toHex(deploycode);
     }
@@ -289,9 +288,9 @@ export class DeployHeaderReader {
   }
 }
 
-// TODO: change return values to be Bytes.
+// TODO: change return values to be Uint8Array | string.
 export class DeployHeaderWriter {
-  public static size(body: Bytes): string {
+  public static size(body: Uint8Array | string): string {
     if (typeof body !== 'string') {
       body = bytes.toHex(body);
     }
@@ -310,7 +309,7 @@ export class DeployHeaderWriter {
 }
 
 // Alias.
-function parseHex(deploycode: Bytes): DeployHeader | null {
+function parseHex(deploycode: Uint8Array | string): DeployHeader | null {
   return DeployHeaderReader.header(deploycode);
 }
 

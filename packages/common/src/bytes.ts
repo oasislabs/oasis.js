@@ -1,5 +1,3 @@
-import { Bytes } from '@oasislabs/types';
-
 /**
  * Return a Uint8Array of an ethereum hex-encoded key (EthHex)
  * @param   keystring is the EthHex encoding of the value
@@ -33,7 +31,7 @@ export function parseHex(keystring: string, littleEndian = false): Uint8Array {
  * @param {Uint8Array} keybytes
  * @returns {String} The EthHex encoding
  */
-export function toHex(keybytes: Bytes): string {
+export function toHex(keybytes: Uint8Array | string): string {
   // Already a hex string so return.
   if (typeof keybytes === 'string') {
     if (!keybytes.startsWith('0x')) {
@@ -163,7 +161,7 @@ export function assertLength(
 }
 
 export class InvalidBytesError extends Error {
-  constructor(readonly bytes: Uint8Array, ...params) {
+  constructor(readonly bytes: Uint8Array, ...params: any[]) {
     super(...params);
   }
 }

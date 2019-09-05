@@ -1,7 +1,6 @@
 import camelCase from 'camelcase';
 
 import { KeyStore } from '@oasislabs/confidential';
-import { Address } from '@oasislabs/types';
 import { bytes } from '@oasislabs/common';
 
 import { RpcError } from './error';
@@ -41,7 +40,7 @@ export class RpcFactory {
    */
   public static build(
     idl: Idl,
-    address: Address,
+    address: Uint8Array | string,
     options: ServiceOptions
   ): [Rpcs, Promise<RpcCoder>] {
     let functions = options.coder
@@ -70,7 +69,7 @@ export class RpcFactory {
 
   private static buildRpc(
     fn: RpcFn,
-    address: Address,
+    address: Uint8Array | string,
     gateway: OasisGateway,
     rpcCoder: Promise<RpcCoder>
   ): RpcDefinition {
@@ -179,7 +178,7 @@ export class RpcFactory {
    * @returns the OasisCoder to use based upon whether it's confidential.
    */
   private static async discover(
-    address: Address,
+    address: Uint8Array | string,
     options: ServiceOptions
   ): Promise<RpcCoder> {
     // Check the contract's deploy header to see if it's confidential.
@@ -190,7 +189,7 @@ export class RpcFactory {
       return OasisCoder.plaintext();
     }
 
-    let keyStore = new KeyStore(options.db, options.gateway!);
+    let keyStore = new KeyStore(options.db!, options.gateway!);
     let serviceKey = await keyStore.publicKey(address);
     let myKeyPair = keyStore.localKeys();
     return OasisCoder.confidential({

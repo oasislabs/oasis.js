@@ -6,5 +6,5 @@
     "outDir": "dist/lib",
     "composite": true
   },
-  "references": [{ "path": "../common" }, { "path": "../service" }]
+  "references": [{ "path": "../common" }, { "path": "../confidential" }, { "path": "../service" }]
 }

@@ -53,7 +53,7 @@ export class Web3 {
     let generatedRpcs = { eth: {}, oasis: {}, net: {} };
     WEB3_RPC_METHODS.forEach(rpc => {
       let [namespace, method] = rpc.method.split('_');
-      generatedRpcs[namespace][method] = async (...params: any[]) => {
+      (generatedRpcs as any)[namespace][method] = async (...params: any[]) => {
         const rpcMethod = `${namespace}_${method}`;
         return this.provider.send(rpcMethod, params);
       };

@@ -8,7 +8,6 @@ import {
   HttpGateway,
   Http,
 } from '@oasislabs/gateway';
-import { Address } from '@oasislabs/types';
 import { bytes, cbor } from '@oasislabs/common';
 
 /**
@@ -44,7 +43,8 @@ export default class GatewayBuilder {
 
   public gateway(): HttpGateway {
     let url = 'test';
-    let gateway = new HttpGateway(url);
+    const dummyApiToken = 'r2lJ2E3ur40sNqj2YR8qytAnPhUTLZyTRUxhVY9Fmh4=';
+    let gateway = new HttpGateway(url, dummyApiToken, { headers: new Map() });
     let session = new MockSession(
       this.serviceResponses,
       this.subscribeResponses
@@ -61,6 +61,7 @@ export default class GatewayBuilder {
     let subscriptionPoll = PollingService.instance({
       url: url,
       queueId: 0,
+      session: session,
     });
     // @ts-ignore
     subscriptionPoll.session = session;

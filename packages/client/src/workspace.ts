@@ -57,7 +57,7 @@ export default new Proxy(
 
         find
           .fileSync(/target\/service\/.*\.wasm/, projectRoot)
-          .reduce((services, wasmPath) => {
+          .reduce((services: any, wasmPath: string) => {
             let bytecode = fs.readFileSync(wasmPath);
             let idl = fromWasmSync(bytecode);
             services[idl.name] = new ServiceDefinition(bytecode, idl);
@@ -109,7 +109,7 @@ async function configGateway(): Promise<OasisGateway> {
 }
 
 class Config {
-  constructor(private inner) {}
+  constructor(private inner: any) {}
 
   public static async read(): Promise<Config> {
     const path = require('path');
@@ -154,7 +154,9 @@ class Config {
     if (gatewayType === GatewayType.Web3) {
       return new Web3Gateway(gatewayUrl, credential.wallet!);
     }
-    return new Gateway(gatewayUrl, credential);
+    return new Gateway(gatewayUrl, credential.credential, {
+      headers: new Map(),
+    });
   }
 }
 
@@ -195,7 +197,7 @@ class Credential {
   public type: CredentialType;
 
   /** The Ethereum wallet associated with this credential */
-  public wallet?: Wallet;
+  public wallet?: any;
 
   constructor(public credential: string) {
     const API_TOKEN_NUM_BYTES = 32;

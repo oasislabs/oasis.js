@@ -22,7 +22,7 @@ export class TransactionFactory {
       promises.push(this.nonce());
     }
     (await Promise.all(promises)).forEach(r => {
-      tx[r.key] = r.value;
+      (tx as any)[r.key] = r.value;
     });
 
     if (!tx.gasPrice) {

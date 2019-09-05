@@ -5,7 +5,6 @@ import {
   encrypt,
   decrypt,
 } from '@oasislabs/confidential';
-import { Bytes, PublicKey, PrivateKey } from '@oasislabs/types';
 import { bytes } from '@oasislabs/common';
 
 import { Idl, RpcFn } from '../idl';
@@ -37,7 +36,7 @@ export default class ConfidentialCoder {
 
   public async decode(
     fn: RpcFn,
-    encrypted: Bytes,
+    encrypted: Uint8Array | string,
     constructor?: boolean
   ): Promise<any> {
     if (constructor) {
@@ -59,8 +58,8 @@ export default class ConfidentialCoder {
   public async initcode(
     abi: Idl,
     params: any[],
-    bytecode: Bytes
-  ): Promise<Bytes> {
+    bytecode: Uint8Array | string
+  ): Promise<Uint8Array | string> {
     return this.internalCoder.initcode(abi, params, bytecode);
   }
 

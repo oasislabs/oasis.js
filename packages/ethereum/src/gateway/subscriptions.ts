@@ -21,7 +21,7 @@ export class Subscriptions implements Middleware {
     return message;
   }
 
-  add(subscriptionId: string, callback) {
+  add(subscriptionId: string, callback: Function) {
     this.subscriptionCallbacks.set(subscriptionId, callback);
   }
 

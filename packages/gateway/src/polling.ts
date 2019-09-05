@@ -157,7 +157,7 @@ export default class PollingService {
 
     this.lastResponseTs = Date.now();
 
-    responses.events.forEach(r => {
+    responses.events.forEach((r: any) => {
       this.responses.emit(this.topic(r), r);
       this.responseWindow.slide(r.id, r);
       if (this.responseWindow.isClosed()) {

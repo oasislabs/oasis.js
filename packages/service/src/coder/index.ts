@@ -1,4 +1,3 @@
-import { Bytes4, Bytes } from '@oasislabs/types';
 import { Idl, RpcFn } from '../idl';
 import { RpcOptions } from '../oasis-gateway';
 
@@ -14,7 +13,11 @@ export interface RpcEncoder {
 }
 
 export interface RpcDecoder {
-  decode(fn: RpcFn, data: Bytes, constructor?: boolean): Promise<any>;
+  decode(
+    fn: RpcFn,
+    data: Uint8Array | string,
+    constructor?: boolean
+  ): Promise<any>;
   decodeError(error: Uint8Array): Promise<string>;
 }
 
@@ -23,7 +26,11 @@ interface RpcFunctions {
 }
 
 interface RpcInitcode {
-  initcode(idl: Idl, params: any[], bytecode: Bytes): Promise<Bytes>;
+  initcode(
+    idl: Idl,
+    params: any[],
+    bytecode: Uint8Array | string
+  ): Promise<Uint8Array | string>;
 }
 
 interface RpcSubscribeTopic {

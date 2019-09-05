@@ -5,7 +5,7 @@
   "keywords": [],
   "main": "dist/index.umd.js",
   "module": "dist/index.es5.js",
-  "typings": "dist/types/index.d.ts",
+  "typings": "dist/lib/src/index.d.ts",
   "license": "Apache-2.0",
   "publishConfig": {
     "access": "public"
@@ -37,6 +37,7 @@
     "@oasislabs/common": "^1.0.0-rc.7",
     "@oasislabs/confidential": "^1.0.0-rc.7",
     "@oasislabs/types": "^1.0.0-rc.2",
+    "@types/pako": "^1.0.1",
     "camelcase": "^5.3.1",
     "eventemitter3": "^3.1.2",
     "js-sha3": "^0.8.0",

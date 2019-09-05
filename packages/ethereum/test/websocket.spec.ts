@@ -30,6 +30,6 @@ class MockWebSocketFactory implements WebSocketFactory {
 
 class NeverResolveWebSocket {
   addEventListener(event: string, fn: Function) {}
-  close(code) {}
+  close(code: number) {}
   send(data: string) {}
 }

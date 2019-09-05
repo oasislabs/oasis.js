@@ -1,4 +1,3 @@
-import { Bytes } from '@oasislabs/types';
 import { Db, bytes } from '@oasislabs/common';
 
 import Service from '../service';
@@ -65,7 +64,9 @@ function deployHeader(options: DeployOptions): DeployHeaderOptions {
  * @returns the deploycode from the given options, i.e.,
  *          OASIS_HEADER || INITCODE.
  */
-async function deploycode(options: DeployOptions): Promise<Bytes> {
+async function deploycode(
+  options: DeployOptions
+): Promise<Uint8Array | string> {
   let code = await initcode(options);
   let header = deployHeader(options);
   return DeployHeader.deployCode(header, code);
@@ -74,7 +75,7 @@ async function deploycode(options: DeployOptions): Promise<Bytes> {
 /**
  * @returns the initcode, i.e., BYTECODE || ABI_ENCODED(args).
  */
-async function initcode(options: DeployOptions): Promise<Bytes> {
+async function initcode(options: DeployOptions): Promise<Uint8Array | string> {
   let encoder = options.coder ? options.coder : OasisCoder.plaintext();
   return encoder.initcode(
     options.idl!,
@@ -94,7 +95,7 @@ function oasisGateway(options: DeployOptions): OasisGateway {
  * DeployOptions specify the arguments for deploying a Service.
  */
 type DeployOptions = {
-  bytecode: Bytes;
+  bytecode: Uint8Array | string;
   idl?: Idl;
   arguments?: Array<any>;
   header?: DeployHeaderOptions;

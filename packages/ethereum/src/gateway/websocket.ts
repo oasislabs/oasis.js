@@ -124,7 +124,7 @@ export class JsonRpcWebSocket implements JsonRpc {
     this.responses.emit(`${data.id}`, data);
   }
 
-  private open(event) {
+  private open(event: any) {
     this.lifecycle.emit('open');
 
     // We were asked to close this websocket while connecting,
@@ -142,7 +142,7 @@ export class JsonRpcWebSocket implements JsonRpc {
     this.consecutiveErrors = 0;
   }
 
-  private error(event) {
+  private error(event: any) {
     this.consecutiveErrors++;
     if (this.consecutiveErrors === ERROR_FORWARD_THRESHOLD) {
       // This is when we've crossed the threshold for forwarding the connection
@@ -152,7 +152,7 @@ export class JsonRpcWebSocket implements JsonRpc {
     }
   }
 
-  private close(event) {
+  private close(event: any) {
     this.removeEventListeners();
     if (event.code !== CloseEvent.NORMAL) {
       this.connect();
@@ -195,7 +195,7 @@ export class JsonRpcWebSocket implements JsonRpc {
       let id = this.nextId();
 
       // Function invoked when a response event on topic `id` is emitted.
-      let responseListener;
+      let responseListener: any;
 
       // Set timeout for this request.
       const timeout = setTimeout(() => {
@@ -207,7 +207,7 @@ export class JsonRpcWebSocket implements JsonRpc {
         reject(error);
       }, REQUEST_TIMEOUT_DURATION);
 
-      responseListener = jsonResponse => {
+      responseListener = (jsonResponse: any) => {
         clearTimeout(timeout);
 
         if (jsonResponse.error) {

@@ -1,4 +1,3 @@
-import { Address } from '@oasislabs/types';
 import { bytes, Db } from '@oasislabs/common';
 import nacl from './tweetnacl';
 import { PublicKey, PrivateKey } from './';
@@ -28,7 +27,7 @@ export class KeyStore {
   /**
    * @returns the public key for the given service.
    */
-  public async publicKey(service: Address): Promise<PublicKey> {
+  public async publicKey(service: Uint8Array | string): Promise<PublicKey> {
     // First check the cache.
     let key = this.getCachedPublicKey(service);
     if (key) {
@@ -46,7 +45,9 @@ export class KeyStore {
   /**
    * @returns the cached public key if it exists.
    */
-  private getCachedPublicKey(service: Address): PublicKey | undefined {
+  private getCachedPublicKey(
+    service: Uint8Array | string
+  ): PublicKey | undefined {
     service = typeof service === 'string' ? service : bytes.toHex(service);
     let key = this.db.get(service);
     if (!key) {
@@ -60,7 +61,10 @@ export class KeyStore {
   /**
    * Saves the public key in the cache.
    */
-  private setCachedPublicKey(service: Address, publicKey: PublicKey) {
+  private setCachedPublicKey(
+    service: Uint8Array | string,
+    publicKey: PublicKey
+  ) {
     service = typeof service === 'string' ? service : bytes.toHex(service);
     let value = bytes.toHex(publicKey.bytes());
     this.db.set(service, value);
@@ -69,7 +73,9 @@ export class KeyStore {
   /**
    * Makes a request to the keyProvider for the public key for the given service.
    */
-  private async getRequestPublicKey(service: Address): Promise<PublicKey> {
+  private async getRequestPublicKey(
+    service: Uint8Array | string
+  ): Promise<PublicKey> {
     // Ensure we are using Uint8Array.
     service = typeof service !== 'string' ? service : bytes.parseHex(service);
     let response = await this.keyProvider.publicKey({ address: service });
@@ -129,7 +135,7 @@ export interface KeyProvider {
 }
 
 export type PublicKeyRequest = {
-  address: Address;
+  address: Uint8Array | string;
 };
 
 export type PublicKeyResponse = {

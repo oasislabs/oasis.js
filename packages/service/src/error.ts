@@ -1,5 +1,11 @@
+import { RpcOptions } from './oasis-gateway';
+
 export class RpcError extends Error {
-  constructor(readonly rpcArgs, readonly rpcOptions, ...params) {
+  constructor(
+    readonly rpcArgs: any[],
+    readonly rpcOptions?: RpcOptions,
+    ...params: any[]
+  ) {
     super(...params);
   }
 }

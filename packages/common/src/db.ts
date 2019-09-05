@@ -1,6 +1,6 @@
 export interface Db {
   get(key: string): string | undefined;
-  set(key: string, value: string);
+  set(key: string, value: string): void;
 }
 
 export class LocalStorage implements Db {

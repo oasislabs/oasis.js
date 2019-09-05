@@ -5,5 +5,5 @@
     "declarationDir": "dist/lib",
     "outDir": "dist/lib"
   },
-  "references": [{ "path": "../common" }, { "path": "../types" }]
+  "references": [{ "path": "../common" }]
 }

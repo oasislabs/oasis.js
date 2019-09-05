@@ -27,7 +27,7 @@ describe('Service', () => {
   });
 
   it('constructs a service with a buffer address', () => {
-    let bufferAddress = Buffer.from(address, 'hex');
+    let bufferBytes = Buffer.from(address, 'hex');
     let service = new Service(idl, address, {
       gateway: new EmptyOasisGateway(),
     });
@@ -114,10 +114,7 @@ describe('Service', () => {
     let txDataPromise: Promise<RpcRequest> = new Promise(async resolve => {
       // Given a service.
       let service = new Service(idl, address, {
-        gateway: new ConfidentialMockOasisGateway(
-          resolve,
-          keys.publicKey.bytes()
-        ),
+        gateway: new ConfidentialMockOasisGateway(resolve, keys.publicKey),
         db: new DummyStorage(),
         coder: confidentialCoder(),
       });

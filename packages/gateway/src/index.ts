@@ -14,8 +14,7 @@ import {
   GetCodeRequest,
   GetCodeResponse,
 } from '@oasislabs/service';
-import { Address, Bytes } from '@oasislabs/types';
-import { UrlEncoder, bytes } from '@oasislabs/common';
+import { bytes } from '@oasislabs/common';
 import PollingService from './polling';
 import {
   Event,
@@ -50,6 +49,8 @@ export {
 
 export default class Gateway implements OasisGateway {
   private inner: OasisGateway;
+
+  public connectionState: any = new EventEmitter();
 
   constructor(url: string, apiToken: string, headers: HttpHeaders) {
     // TODO: WebSocket gateway and extract protocol from url.
@@ -177,7 +178,7 @@ class HttpGateway implements OasisGateway {
     this.session
       .request(SubscribeApi.method, SubscribeApi.url, {
         events: ['logs'],
-        filter: urlEncodeFilter(request.filter),
+        filter: urlEncodeFilter(request.filter!),
       })
       .then(response => {
         if (response.id === undefined || response.id === null) {
@@ -189,7 +190,7 @@ class HttpGateway implements OasisGateway {
           url: this.url,
           session: this.session,
           queueId: response.id,
-        }).subscribe(response.id, event => {
+        }).subscribe(response.id, (event: any) => {
           events.emit(request.event, event);
         });
       })
@@ -296,6 +297,8 @@ function urlEncodeFilter(filter: SubscribeFilter): string {
   return (
     `address=${bytes.toHex(filter.address)}` +
     '&' +
-    filter.topics.map(t => 'topic=' + t).join('&')
+    filter.topics
+      .map((t: Uint8Array | string) => 'topic=' + bytes.toHex(t))
+      .join('&')
   );
 }
