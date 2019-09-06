@@ -82,7 +82,7 @@ export class RpcRequestMockOasisGateway extends EmptyOasisGateway {
  */
 export class DeployMockOasisGateway extends RpcRequestMockOasisGateway {
   /**
-   * The address the conrtract will be deployed at.
+   * The address the contract will be deployed at.
    */
   public static address = '0x5C7b817e80680fec250a6f638c504d39AD353b26';
 
@@ -90,7 +90,7 @@ export class DeployMockOasisGateway extends RpcRequestMockOasisGateway {
     // So that we resolve the promise for the test to see this request.
     super.rpc(request);
     return {
-      address: DeployMockOasisGateway.address,
+      address: bytes.parseHex(DeployMockOasisGateway.address),
     };
   }
 }
@@ -123,10 +123,7 @@ export class EventEmitterMockOasisGateway extends EmptyOasisGateway {
 }
 
 export class GatewayRequestDecoder {
-  async decode(
-    data: Uint8Array | string,
-    constructor?: boolean
-  ): Promise<FnRequest> {
+  async decode(data: Uint8Array, constructor?: boolean): Promise<FnRequest> {
     if (typeof data === 'string') {
       data = bytes.parseHex(data);
     }
@@ -141,7 +138,7 @@ export class ConfidentialGatewayRequestDecoder extends GatewayRequestDecoder {
   }
 
   async decode(
-    encrypted: Uint8Array | string,
+    encrypted: Uint8Array,
     constructor?: boolean
   ): Promise<FnRequest> {
     if (constructor) {

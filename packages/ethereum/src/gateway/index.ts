@@ -151,7 +151,7 @@ export class Web3Gateway implements OasisGateway {
       'logs',
       {
         address: bytes.toHex(request.filter!.address),
-        topics: request.filter!.topics.map(t => bytes.toHex(t)),
+        topics: request.filter!.topics,
       },
     ]);
   }

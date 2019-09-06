@@ -45,6 +45,9 @@ export default class Service {
     address: Uint8Array | string,
     options?: ServiceOptions
   ) {
+    if (typeof address === 'string') {
+      address = bytes.parseHex(address);
+    }
     // Fill in any options not provided by the arguments.
     options = Service.setupOptions(options);
 
@@ -73,14 +76,12 @@ export default class Service {
    * chain wasm and extracting the idl.
    */
   public static async at(
-    address: Uint8Array | string,
+    address: Uint8Array,
     options?: ServiceOptions
   ): Promise<Service> {
     options = Service.setupOptions(options);
     let response = await options.gateway!.getCode({ address });
-    let wasm = bytes.parseHex(
-      DeployHeaderReader.initcode(bytes.toHex(response.code))
-    );
+    let wasm = DeployHeaderReader.initcode(response.code);
     let idl = await fromWasm(wasm);
     return new Service(idl, address, options);
   }
@@ -170,9 +171,9 @@ export default class Service {
  */
 type ServiceInner = {
   /**
-   * Uint8Array | string of the service.
+   * Uint8Array of the service.
    */
-  address: Uint8Array | string;
+  address: Uint8Array;
 
   /**
    * Configureable options for the Service.

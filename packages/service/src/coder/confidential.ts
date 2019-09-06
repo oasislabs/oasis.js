@@ -36,15 +36,12 @@ export default class ConfidentialCoder {
 
   public async decode(
     fn: RpcFn,
-    encrypted: Uint8Array | string,
+    encrypted: Uint8Array,
     constructor?: boolean
   ): Promise<any> {
     if (constructor) {
       // Constructor rpcs aren't encrypted.
       return this.internalCoder.decode(fn, encrypted, constructor);
-    }
-    if (typeof encrypted === 'string') {
-      encrypted = bytes.parseHex(encrypted);
     }
     let decryption = await decrypt(encrypted, this.keys.privateKey);
     return this.internalCoder.decode(fn, decryption.plaintext, constructor);
@@ -58,8 +55,8 @@ export default class ConfidentialCoder {
   public async initcode(
     abi: Idl,
     params: any[],
-    bytecode: Uint8Array | string
-  ): Promise<Uint8Array | string> {
+    bytecode: Uint8Array
+  ): Promise<Uint8Array> {
     return this.internalCoder.initcode(abi, params, bytecode);
   }
 

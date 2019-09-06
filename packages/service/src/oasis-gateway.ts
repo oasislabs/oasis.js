@@ -27,20 +27,20 @@ export interface OasisGateway {
 }
 
 export type DeployRequest = {
-  data: Uint8Array | string;
+  data: Uint8Array;
   options?: RpcOptions;
 };
 
 export type DeployResponse = {
-  address: Uint8Array | string;
+  address: Uint8Array;
 };
 
 export type PublicKeyRequest = {
-  address: Uint8Array | string;
+  address: Uint8Array;
 };
 
 export type GetCodeRequest = {
-  address: Uint8Array | string;
+  address: Uint8Array;
 };
 
 export type GetCodeResponse = {
@@ -48,8 +48,8 @@ export type GetCodeResponse = {
 };
 
 export type RpcRequest = {
-  data: Uint8Array | string;
-  address?: Uint8Array | string;
+  data: Uint8Array;
+  address?: Uint8Array;
   options?: RpcOptions;
 };
 
@@ -71,8 +71,8 @@ export type SubscribeRequest = {
 };
 
 export type SubscribeFilter = {
-  address: Uint8Array | string;
-  topics: (Uint8Array | string)[];
+  address: Uint8Array;
+  topics: string[];
 };
 
 export type UnsubscribeRequest = {

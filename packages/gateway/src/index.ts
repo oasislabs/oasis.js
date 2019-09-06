@@ -297,8 +297,6 @@ function urlEncodeFilter(filter: SubscribeFilter): string {
   return (
     `address=${bytes.toHex(filter.address)}` +
     '&' +
-    filter.topics
-      .map((t: Uint8Array | string) => 'topic=' + bytes.toHex(t))
-      .join('&')
+    filter.topics.map((t: string) => 'topic=' + t).join('&')
   );
 }

@@ -13,11 +13,7 @@ export interface RpcEncoder {
 }
 
 export interface RpcDecoder {
-  decode(
-    fn: RpcFn,
-    data: Uint8Array | string,
-    constructor?: boolean
-  ): Promise<any>;
+  decode(fn: RpcFn, data: Uint8Array, constructor?: boolean): Promise<any>;
   decodeError(error: Uint8Array): Promise<string>;
 }
 
@@ -26,11 +22,7 @@ interface RpcFunctions {
 }
 
 interface RpcInitcode {
-  initcode(
-    idl: Idl,
-    params: any[],
-    bytecode: Uint8Array | string
-  ): Promise<Uint8Array | string>;
+  initcode(idl: Idl, params: any[], bytecode: Uint8Array): Promise<Uint8Array>;
 }
 
 interface RpcSubscribeTopic {

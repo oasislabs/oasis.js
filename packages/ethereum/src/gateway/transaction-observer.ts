@@ -23,7 +23,7 @@ export default class TransactionObserver {
    * Watches the given gateway for all completed transactions sent by `from`
    * and caches the transaction outcome locally.
    */
-  public static observe(address: Uint8Array | string, gw: Web3Gateway) {
+  public static observe(address: Uint8Array, gw: Web3Gateway) {
     let subscription = this.subscriptions.get(address);
     if (subscription) {
       return;

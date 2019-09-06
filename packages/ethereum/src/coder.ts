@@ -24,7 +24,7 @@ export class EthereumCoder implements RpcCoder {
 
   public async decode(
     fn: RpcFn,
-    data: Uint8Array | string,
+    data: Uint8Array,
     constructor?: boolean
   ): Promise<any> {
     // @ts-ignore
@@ -45,8 +45,8 @@ export class EthereumCoder implements RpcCoder {
   public async initcode(
     abi: Idl,
     params: any[],
-    bytecode: Uint8Array | string
-  ): Promise<Uint8Array | string> {
+    bytecode: Uint8Array
+  ): Promise<Uint8Array> {
     // @ts-ignore
     let iface = new Interface(abi);
     return iface.deployFunction.encode(bytes.toHex(bytecode), params);

@@ -3,6 +3,8 @@ import { idl, defType } from '@oasislabs/test';
 import oasis from '../../src/index';
 import GatewayBuilder from './gateway-builder';
 
+const bytecode = bytes.parseHex('0x1234');
+
 describe('Service', () => {
   it('deploys a service and executes an rpc', async () => {
     let expectedOutput = 'rpc success!';
@@ -17,7 +19,7 @@ describe('Service', () => {
     // Deploy the service.
     let service = await oasis.deploy({
       idl,
-      bytecode: '0x1234',
+      bytecode: bytecode,
       arguments: ['constructor-arg'],
       db: new DummyStorage(),
     });
@@ -42,7 +44,7 @@ describe('Service', () => {
     // Deploy the service.
     let service = await oasis.deploy({
       idl,
-      bytecode: '0x1234',
+      bytecode: bytecode,
       arguments: ['constructor-arg'],
       db: new DummyStorage(),
     });

@@ -23,7 +23,7 @@ export class OasisCoder implements RpcCoder {
 
   public async decode(
     fn: RpcFn,
-    data: Uint8Array | string,
+    data: Uint8Array,
     constructor?: boolean
   ): Promise<any> {
     return this.decoder.decode(fn, data, constructor);
@@ -48,8 +48,8 @@ export class OasisCoder implements RpcCoder {
   public async initcode(
     idl: Idl,
     params: any[],
-    bytecode: Uint8Array | string
-  ): Promise<Uint8Array | string> {
+    bytecode: Uint8Array
+  ): Promise<Uint8Array> {
     let constructorArgs = idl.constructor.inputs;
 
     if (constructorArgs.length === 0) {
@@ -60,7 +60,7 @@ export class OasisCoder implements RpcCoder {
       { name: 'constructor', inputs: constructorArgs },
       params || []
     );
-    let b = bytecode as Uint8Array;
+    let b = bytecode;
     return bytes.concat([b, args]);
   }
 
@@ -102,12 +102,9 @@ export class PlaintextRpcEncoder implements RpcEncoder {
 export class PlaintextRpcDecoder {
   async decode(
     fn: RpcFn,
-    data: Uint8Array | string,
+    data: Uint8Array,
     constructor?: boolean
   ): Promise<any> {
-    if (typeof data === 'string') {
-      data = bytes.parseHex(data);
-    }
     return cbor.decode(data);
   }
 

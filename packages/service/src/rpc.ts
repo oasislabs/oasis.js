@@ -40,7 +40,7 @@ export class RpcFactory {
    */
   public static build(
     idl: Idl,
-    address: Uint8Array | string,
+    address: Uint8Array,
     options: ServiceOptions
   ): [Rpcs, Promise<RpcCoder>] {
     let functions = options.coder
@@ -69,7 +69,7 @@ export class RpcFactory {
 
   private static buildRpc(
     fn: RpcFn,
-    address: Uint8Array | string,
+    address: Uint8Array,
     gateway: OasisGateway,
     rpcCoder: Promise<RpcCoder>
   ): RpcDefinition {
@@ -178,12 +178,12 @@ export class RpcFactory {
    * @returns the OasisCoder to use based upon whether it's confidential.
    */
   private static async discover(
-    address: Uint8Array | string,
+    address: Uint8Array,
     options: ServiceOptions
   ): Promise<RpcCoder> {
     // Check the contract's deploy header to see if it's confidential.
     let response = await options.gateway!.getCode({ address });
-    let deployHeader = header.parseHex(bytes.toHex(response.code));
+    let deployHeader = header.parseFromCode(response.code);
 
     if (!deployHeader || !deployHeader.body.confidential) {
       return OasisCoder.plaintext();
