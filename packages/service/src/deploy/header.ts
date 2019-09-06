@@ -33,7 +33,7 @@ export class DeployHeader {
    * @param   {Object} headerBody is the header object to encode.
    * @param   {Uint8Array} deploycode is the bytecode to which we want to prefix the header.
    * @returns The deploycode with the header prefixed as the encoded wire format, i.e.,
-   *          b'\0sis' || version (2 bytes little endian) || length (2 bytes little endian) || json-header.
+   *          b'\0sis' || version (2 bytes big endian) || length (2 bytes big endian) || json-header.
    *          Overrides any header fields that may already exist in the deploycode.
    */
   public static deployCode(
@@ -210,7 +210,7 @@ export class DeployHeaderReader {
   public static shortFromBytes(arr: Uint8Array): number {
     return new DataView(arr.buffer).getUint16(
       arr.byteOffset,
-      true /* little endian */
+      false /* little endian */
     );
   }
 
@@ -276,7 +276,7 @@ export class DeployHeaderWriter {
     new DataView(arr.buffer).setUint16(
       0 /* offset */,
       num,
-      true /* little endian */
+      false /* little endian */
     );
     return arr;
   }
