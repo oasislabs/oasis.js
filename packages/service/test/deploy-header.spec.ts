@@ -7,13 +7,13 @@ describe('DeployHeader', () => {
     let failTests = [
       {
         description: 'errors when writing a deploy header to empty bytecode',
-        bytecode: '',
+        bytecode: new Uint8Array(),
         header: { expiry: 100000, confidential: false },
         error: 'Malformed deploycode',
       },
       {
         description: 'errors when writing an invalid deploy header',
-        bytecode: '0x1234',
+        bytecode: bytes.parseHex('0x1234'),
         header: { invalid: 1234, expiry: 100000, confidential: false },
         error: 'Malformed deploycode',
       },
@@ -33,10 +33,7 @@ describe('DeployHeader', () => {
     failTests.forEach(test => {
       it(test.description, async function() {
         expect(() => {
-          bytes.toHex(DeployHeader.deployCode(
-            test.header,
-            test.bytecode
-          ) as Uint8Array);
+          DeployHeader.deployCode(test.header, test.bytecode) as Uint8Array;
         }).toThrowError(test.error);
       });
     });
@@ -44,13 +41,13 @@ describe('DeployHeader', () => {
     let successTests = [
       {
         description: 'does not change the bytecode if the header is empty',
-        bytecode: '0x1234',
+        bytecode: bytes.parseHex('0x1234'),
         header: {},
-        expected: '0x1234',
+        expected: bytes.parseHex('0x1234'),
       },
       {
         description: 'writes a deploy header to non-empty bytecode',
-        bytecode: '0x1234',
+        bytecode: bytes.parseHex('0x1234'),
         header: { expiry: 100000, confidential: false },
         expected: makeExpectedBytecode(
           { expiry: 100000, confidential: false },
@@ -88,26 +85,27 @@ describe('DeployHeader', () => {
 
     successTests.forEach(test => {
       it(test.description, function() {
-        let data = bytes.toHex(DeployHeader.deployCode(
+        let data = DeployHeader.deployCode(
           test.header,
           test.bytecode
-        ) as Uint8Array);
-        expect(data).toBe(test.expected);
+        ) as Uint8Array;
+        expect(data).toEqual(test.expected);
       });
     });
   });
 });
 
-function makeExpectedBytecode(headerBody: any, bytecode: any) {
+function makeExpectedBytecode(headerBody: any, bytecode: string): Uint8Array {
   let body = DeployHeaderWriter.body(headerBody);
-  let version = DeployHeaderWriter.version(DeployHeader.currentVersion());
-  let size = DeployHeaderWriter.size(body);
-  return (
-    '0x' +
-    DeployHeader.prefix() +
-    version.substr(2) +
-    size.substr(2) +
-    body.substr(2) +
-    bytecode
+  let version = DeployHeaderWriter.shortToBytes(DeployHeader.currentVersion());
+  let size = DeployHeaderWriter.shortToBytes(body.length);
+  return new Uint8Array(
+    Buffer.concat([
+      DeployHeader.prefix(),
+      version,
+      size,
+      body,
+      bytes.parseHex(bytecode),
+    ])
   );
 }

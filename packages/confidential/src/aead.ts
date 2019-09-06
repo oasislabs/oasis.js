@@ -1,6 +1,6 @@
-import { Nonce, PublicKey, PrivateKey } from '@oasislabs/types';
-import { ecdhTweak } from './ecdh-tweak';
 import * as deoxysii from 'deoxysii';
+import { Nonce, PublicKey, PrivateKey } from '.';
+import { ecdhTweak } from './ecdh-tweak';
 
 export interface Aead {
   seal(
@@ -34,7 +34,7 @@ export class Deoxysii implements Aead {
   ): Promise<Uint8Array> {
     let aesKey = await ecdhTweak(peerPublicKey, privateKey);
     let aead = new deoxysii.AEAD(aesKey);
-    return aead.encrypt(nonce, plaintext, additionalData);
+    return aead.encrypt(nonce.bytes(), plaintext, additionalData);
   }
 
   public async open(
@@ -46,7 +46,7 @@ export class Deoxysii implements Aead {
   ): Promise<Uint8Array> {
     let aesKey = await ecdhTweak(peerPublicKey, privateKey);
     let aead = new deoxysii.AEAD(aesKey);
-    return aead.decrypt(nonce, ciphertext, additionalData);
+    return aead.decrypt(nonce.bytes(), ciphertext, additionalData);
   }
 
   public nonceSize(): number {

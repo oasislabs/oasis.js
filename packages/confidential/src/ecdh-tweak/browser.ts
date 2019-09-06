@@ -1,5 +1,5 @@
 import * as deoxysii from 'deoxysii';
-import { PublicKey, PrivateKey } from '@oasislabs/types';
+import { Nonce, PublicKey, PrivateKey } from '..';
 import nacl from '../tweetnacl';
 
 let hmacKey: any = undefined;
@@ -11,7 +11,7 @@ export async function ecdhTweak(
   if (!hmacKey) {
     hmacKey = await makeHmacKey();
   }
-  let preMasterKey = nacl.scalarMult(privateKey, peerPublicKey);
+  let preMasterKey = nacl.scalarMult(privateKey.bytes(), peerPublicKey.bytes());
 
   // tslint:disable-next-line
   let aesKey = await window.crypto.subtle.sign(

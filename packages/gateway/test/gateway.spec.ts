@@ -10,7 +10,7 @@ describe('Gateway', () => {
       }
     );
 
-    let _resolve;
+    let _resolve: Function;
     let testCompletion: Promise<RequestPayload> = new Promise(
       (resolve, _reject) => {
         _resolve = resolve;

@@ -78,10 +78,10 @@ export class PublicKeyMockProvider implements KeyProvider {
   public static address = '0x5c7b817e80680fec250a6f638c504d39ad353b26';
 
   async publicKey(request: PublicKeyRequest): Promise<PublicKeyResponse> {
-    let givenAddress = bytes.toHex(request.address as Uint8Array);
-    if (givenAddress !== PublicKeyMockProvider.address) {
+    let givenBytes = bytes.toHex(request.address as Uint8Array);
+    if (givenBytes !== PublicKeyMockProvider.address) {
       throw new Error(
-        `Unexpected data. Expected ${PublicKeyMockProvider.address} got ${givenAddress}`
+        `Unexpected data. Expected ${PublicKeyMockProvider.address} got ${givenBytes}`
       );
     }
 

@@ -1,14 +1,6 @@
 import { keccak256 } from 'js-sha3';
 import { AeadKeys } from '@oasislabs/confidential';
 import { bytes, cbor } from '@oasislabs/common';
-import {
-  Address,
-  H256,
-  Bytes4,
-  Bytes,
-  PublicKey,
-  PrivateKey,
-} from '@oasislabs/types';
 import { Idl, RpcFn } from '../idl';
 import ConfidentialCoder from './confidential';
 import { RpcCoder, RpcEncoder, RpcDecoder, RpcRequest } from './';
@@ -31,7 +23,7 @@ export class OasisCoder implements RpcCoder {
 
   public async decode(
     fn: RpcFn,
-    data: Bytes,
+    data: Uint8Array,
     constructor?: boolean
   ): Promise<any> {
     return this.decoder.decode(fn, data, constructor);
@@ -56,8 +48,8 @@ export class OasisCoder implements RpcCoder {
   public async initcode(
     idl: Idl,
     params: any[],
-    bytecode: Bytes
-  ): Promise<Bytes> {
+    bytecode: Uint8Array
+  ): Promise<Uint8Array> {
     let constructorArgs = idl.constructor.inputs;
 
     if (constructorArgs.length === 0) {
@@ -68,7 +60,7 @@ export class OasisCoder implements RpcCoder {
       { name: 'constructor', inputs: constructorArgs },
       params || []
     );
-    let b = bytecode as Uint8Array;
+    let b = bytecode;
     return bytes.concat([b, args]);
   }
 
@@ -108,10 +100,11 @@ export class PlaintextRpcEncoder implements RpcEncoder {
 }
 
 export class PlaintextRpcDecoder {
-  async decode(fn: RpcFn, data: Bytes, constructor?: boolean): Promise<any> {
-    if (typeof data === 'string') {
-      data = bytes.parseHex(data);
-    }
+  async decode(
+    fn: RpcFn,
+    data: Uint8Array,
+    constructor?: boolean
+  ): Promise<any> {
     return cbor.decode(data);
   }
 

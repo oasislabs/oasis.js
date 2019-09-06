@@ -69,7 +69,7 @@ Parameters
 
 .. code-block:: javascript
 
-   b'\0sis' || version (2 bytes little endian) || length (2 bytes little endian) || json-header
+   b'\0sis' || version (2 bytes big endian) || length (2 bytes big endian) || json-header
 
 Returns
 --------

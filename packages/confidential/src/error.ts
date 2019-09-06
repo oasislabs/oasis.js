@@ -1,7 +1,7 @@
-import { Nonce, PublicKey, PrivateKey } from '@oasislabs/types';
+import { Nonce, PublicKey, PrivateKey } from '.';
 
 export class EncryptError extends Error {
-  constructor(readonly encParams: EncryptionParams, ...params) {
+  constructor(readonly encParams: EncryptionParams, ...params: any[]) {
     super(...params);
   }
 }

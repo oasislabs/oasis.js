@@ -1,6 +1,5 @@
 import { EventEmitter } from 'eventemitter3';
 import { keccak256 } from 'js-sha3';
-import { Address, cbor } from '@oasislabs/types';
 import { Db, LocalStorage, bytes } from '@oasislabs/common';
 import { Idl, RpcFn, fromWasm } from './idl';
 import { Rpcs, RpcFactory } from './rpc';
@@ -41,7 +40,14 @@ export default class Service {
    * @param address? is the address of the currently deployed service.
    * @param options? are the optinos configuring the Service client.
    */
-  public constructor(idl: Idl, address: Address, options?: ServiceOptions) {
+  public constructor(
+    idl: Idl,
+    address: Uint8Array | string,
+    options?: ServiceOptions
+  ) {
+    if (typeof address === 'string') {
+      address = bytes.parseHex(address);
+    }
     // Fill in any options not provided by the arguments.
     options = Service.setupOptions(options);
 
@@ -70,14 +76,12 @@ export default class Service {
    * chain wasm and extracting the idl.
    */
   public static async at(
-    address: Address,
+    address: Uint8Array,
     options?: ServiceOptions
   ): Promise<Service> {
     options = Service.setupOptions(options);
     let response = await options.gateway!.getCode({ address });
-    let wasm = bytes.parseHex(
-      DeployHeaderReader.initcode(bytes.toHex(response.code))
-    );
+    let wasm = DeployHeaderReader.initcode(response.code);
     let idl = await fromWasm(wasm);
     return new Service(idl, address, options);
   }
@@ -95,8 +99,8 @@ export default class Service {
     } else {
       // Remove all undefined fields so that Object.assign overwrites them.
       Object.keys(options).forEach(key => {
-        if (options![key] === undefined) {
-          delete options![key];
+        if ((options! as any)[key] === undefined) {
+          delete (options! as any)[key];
         }
       });
       options = assignDefaultOptions(options);
@@ -135,7 +139,7 @@ export default class Service {
         this._inner.subscriptions.set(event, subscription);
 
         // Decode the gateway's response and return it to the listener.
-        subscription.addListener(event, async e => {
+        subscription.addListener(event, async (e: any) => {
           let decoded = await coder.decodeSubscriptionEvent(e, this._inner.idl);
 
           this._inner.listeners.emit(event, decoded);
@@ -167,9 +171,9 @@ export default class Service {
  */
 type ServiceInner = {
   /**
-   * Address of the service.
+   * Uint8Array of the service.
    */
-  address: Address;
+  address: Uint8Array;
 
   /**
    * Configureable options for the Service.

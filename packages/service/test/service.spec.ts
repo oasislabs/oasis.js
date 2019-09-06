@@ -17,7 +17,7 @@ import { OasisCoder } from '../src/coder/oasis';
 setGateway(new EmptyOasisGateway());
 
 describe('Service', () => {
-  const address = '0x372FF3aeA1fc69B9C440A5fE0B4c23c38226Da68';
+  const address = bytes.parseHex('0x372FF3aeA1fc69B9C440A5fE0B4c23c38226Da68');
   it('constructs a service with a hex string address', () => {
     let service = new Service(idl, address, {
       gateway: new EmptyOasisGateway(),
@@ -27,7 +27,6 @@ describe('Service', () => {
   });
 
   it('constructs a service with a buffer address', () => {
-    let bufferAddress = Buffer.from(address, 'hex');
     let service = new Service(idl, address, {
       gateway: new EmptyOasisGateway(),
     });
@@ -114,10 +113,7 @@ describe('Service', () => {
     let txDataPromise: Promise<RpcRequest> = new Promise(async resolve => {
       // Given a service.
       let service = new Service(idl, address, {
-        gateway: new ConfidentialMockOasisGateway(
-          resolve,
-          keys.publicKey.bytes()
-        ),
+        gateway: new ConfidentialMockOasisGateway(resolve, keys.publicKey),
         db: new DummyStorage(),
         coder: confidentialCoder(),
       });

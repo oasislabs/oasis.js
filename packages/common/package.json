@@ -5,7 +5,7 @@
   "keywords": [],
   "main": "dist/index.umd.js",
   "module": "dist/index.es5.js",
-  "typings": "dist/types/index.d.ts",
+  "typings": "dist/lib/src/index.d.ts",
   "license": "Apache-2.0",
   "publishConfig": {
     "access": "public"
@@ -34,7 +34,6 @@
     ]
   },
   "dependencies": {
-    "@oasislabs/types": "^1.0.0-rc.2",
     "cbor-js": "^0.1.0"
   }
 }

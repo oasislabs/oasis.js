@@ -76,7 +76,7 @@ export default class Web3Provider {
    * eth_sendRawTransaction.
    */
   private async eth_sendTransaction(
-    method,
+    method: string,
     params: any[]
   ): Promise<JsonRpcResponse> {
     if (!this.wallet) {
@@ -111,7 +111,7 @@ export default class Web3Provider {
   private subscribeResponse(subscriptionId: string) {
     let subscription = new Subscription(subscriptionId);
 
-    this.subscriptions.add(subscriptionId, event => {
+    this.subscriptions.add(subscriptionId, (event: any) => {
       subscription.emit('data', event.params.result);
     });
 
@@ -123,7 +123,7 @@ export class Subscription extends EventEmitter {
   /**
    * @param `id` is the subscription id given by the remote web3 gateway.
    */
-  constructor(readonly id) {
+  constructor(readonly id: string) {
     super();
   }
 

@@ -14,7 +14,7 @@ setGateway(new EmptyOasisGateway());
 describe('Service deploys', () => {
   let testCases = [
     {
-      bytecode: '0x010203',
+      bytecode: Buffer.from('0x010203', 'hex'),
       header: undefined,
       label: 'deploys a service with hex string bytecode',
     },
@@ -52,7 +52,9 @@ describe('Service deploys', () => {
           });
           // @ts-ignore
           expect(service!._inner.address).toEqual(
-            DeployMockOasisGateway.address
+            new Uint8Array(
+              Buffer.from(DeployMockOasisGateway.address.substr(2), 'hex')
+            )
           );
         }
       );
@@ -76,11 +78,9 @@ describe('Service deploys', () => {
 
       // Check initcode (deployCode without the header).
       let initcode = DeployHeaderReader.initcode(deployCode);
-      // Ensure it's a hex string before comparing.
-      if (typeof test.bytecode !== 'string') {
-        test.bytecode = '0x' + (test.bytecode as Buffer).toString('hex');
-      }
-      expect(initcode.startsWith(test.bytecode)).toEqual(true);
+      expect(initcode.subarray(0, test.bytecode.length)).toEqual(
+        new Uint8Array(test.bytecode)
+      );
 
       // Finally check arguments.
       let encodedArgs = initcode.slice(test.bytecode.length);

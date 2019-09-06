@@ -30,11 +30,11 @@ async function encrypt(
   aad: Uint8Array
 ): Promise<Uint8Array> {
   let ciphertext = await aead.seal(
-    nonce.bytes(),
+    nonce,
     plaintext,
     aad,
-    peerPublicKey.bytes(),
-    privateKey.bytes()
+    peerPublicKey,
+    privateKey
   );
   if (
     ciphertext.length > Number.MAX_SAFE_INTEGER ||
@@ -90,11 +90,11 @@ async function decrypt(
   }
 
   let plaintext = await aead.open(
-    nonce.bytes(),
+    nonce,
     ciphertext,
     aad,
-    peerPublicKey.bytes(),
-    secretKey.bytes()
+    peerPublicKey,
+    secretKey
   );
   return {
     nonce,

@@ -113,7 +113,7 @@ export class Web3Gateway implements OasisGateway {
     }
 
     return {
-      address: bytes.parseHex(receipt.contractAddress),
+      address: bytes.parseHex(receipt.contractBytes),
     };
   }
 
@@ -151,7 +151,7 @@ export class Web3Gateway implements OasisGateway {
       'logs',
       {
         address: bytes.toHex(request.filter!.address),
-        topics: request.filter!.topics.map(t => bytes.toHex(t)),
+        topics: request.filter!.topics,
       },
     ]);
   }
@@ -161,12 +161,12 @@ export class Web3Gateway implements OasisGateway {
 
     this.eth
       .subscribe(...params)
-      .then(sub => {
+      .then((sub: any) => {
         // Set this mapping to allow clients to `unsubscribe` with an event
         // name, instead of an id.
         this._inner.subscriptionIds.set(eventName, sub.id);
         // Remap web3 `data` event to the given event name.
-        sub.on('data', event => {
+        sub.on('data', (event: any) => {
           events.emit(eventName, event);
         });
       })

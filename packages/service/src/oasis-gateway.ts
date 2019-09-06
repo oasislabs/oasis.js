@@ -1,5 +1,4 @@
 import EventEmitter from 'eventemitter3';
-import { Address, PublicKey, Bytes } from '@oasislabs/types';
 
 /**
  * OasisGateway is the client's interface used to access services running on Oasis.
@@ -8,10 +7,10 @@ export interface OasisGateway {
   deploy(request: DeployRequest): Promise<DeployResponse>;
   rpc(request: RpcRequest): Promise<RpcResponse>;
   subscribe(request: SubscribeRequest): EventEmitter;
-  unsubscribe(request: UnsubscribeRequest);
+  unsubscribe(request: UnsubscribeRequest): void;
   publicKey(request: PublicKeyRequest): Promise<PublicKeyResponse>;
   getCode(request: GetCodeRequest): Promise<GetCodeResponse>;
-  disconnect();
+  disconnect(): void;
   /**
    * For implementations that manage reconnection internally, this emits advisory
    * events about its internal connection status:
@@ -28,20 +27,20 @@ export interface OasisGateway {
 }
 
 export type DeployRequest = {
-  data: Bytes;
+  data: Uint8Array;
   options?: RpcOptions;
 };
 
 export type DeployResponse = {
-  address: Address;
+  address: Uint8Array;
 };
 
 export type PublicKeyRequest = {
-  address: Address;
+  address: Uint8Array;
 };
 
 export type GetCodeRequest = {
-  address: Address;
+  address: Uint8Array;
 };
 
 export type GetCodeResponse = {
@@ -49,8 +48,8 @@ export type GetCodeResponse = {
 };
 
 export type RpcRequest = {
-  data: Bytes;
-  address?: Address;
+  data: Uint8Array;
+  address?: Uint8Array;
   options?: RpcOptions;
 };
 
@@ -72,8 +71,8 @@ export type SubscribeRequest = {
 };
 
 export type SubscribeFilter = {
-  address: Address;
-  topics: Bytes[];
+  address: Uint8Array;
+  topics: string[];
 };
 
 export type UnsubscribeRequest = {

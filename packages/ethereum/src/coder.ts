@@ -1,15 +1,14 @@
 import { keccak256 } from 'js-sha3';
 import { Interface } from 'ethers/utils/interface';
-import { Bytes4, Bytes } from '@oasislabs/types';
 import { bytes } from '@oasislabs/common';
 import {
   RpcCoder,
   RpcRequest,
   Idl,
   RpcFn,
-  AeadKeys,
   RpcOptions,
 } from '@oasislabs/service';
+import { AeadKeys } from '@oasislabs/confidential';
 
 export class EthereumCoder implements RpcCoder {
   public async encode(
@@ -25,7 +24,7 @@ export class EthereumCoder implements RpcCoder {
 
   public async decode(
     fn: RpcFn,
-    data: Bytes,
+    data: Uint8Array,
     constructor?: boolean
   ): Promise<any> {
     // @ts-ignore
@@ -46,15 +45,15 @@ export class EthereumCoder implements RpcCoder {
   public async initcode(
     abi: Idl,
     params: any[],
-    bytecode: Bytes
-  ): Promise<Bytes> {
+    bytecode: Uint8Array
+  ): Promise<Uint8Array> {
     // @ts-ignore
     let iface = new Interface(abi);
     return iface.deployFunction.encode(bytes.toHex(bytecode), params);
   }
 
   public functions(idl: Idl): RpcFn[] {
-    return idl.filter(fn => fn.type === 'function');
+    return idl.filter((fn: any) => fn.type === 'function');
   }
 
   public topic(event: string, idl: Idl): string {
@@ -69,10 +68,10 @@ export class EthereumCoder implements RpcCoder {
 }
 
 export function sighashFormat(event: string, idl: Idl): string {
-  let items = idl.filter(fn => fn.type === 'event' && fn.name === event);
+  let items = idl.filter((fn: any) => fn.type === 'event' && fn.name === event);
   if (items.length !== 1) {
     throw new Error(`Must have a single event for ${event}`);
   }
-  let inputs = items[0].inputs.map(i => i.type).join(',');
+  let inputs = items[0].inputs.map((i: any) => i.type).join(',');
   return `${event}(${inputs})`;
 }

@@ -1,4 +1,3 @@
-import { Bytes } from '@oasislabs/types';
 import { bytes } from '@oasislabs/common';
 
 export type DeployHeaderOptions = {
@@ -18,57 +17,39 @@ export class DeployHeader {
    */
   constructor(public version: number, public body: DeployHeaderOptions) {}
 
-  data(): string {
-    let version = DeployHeaderWriter.version(this.version);
-    let body = DeployHeaderWriter.body(this.body);
-
-    if (body.length % 2 !== 0) {
-      throw new DeployHeaderError('Invalid body length');
-    }
-
-    let length = DeployHeaderWriter.size(body);
-
-    if (length.substr(2).length > 4) {
-      throw new DeployHeaderError(
-        'Length of the contract deploy header must be no greater than two bytes'
-      );
-    }
-
-    return (
-      '0x' +
-      DeployHeader.prefix() +
-      version.substr(2) +
-      length.substr(2) +
-      body.substr(2)
+  data(): Uint8Array {
+    let bodyBytes = DeployHeaderWriter.body(this.body);
+    return new Uint8Array(
+      Buffer.concat([
+        DeployHeader.prefix(),
+        DeployHeaderWriter.shortToBytes(this.version),
+        DeployHeaderWriter.shortToBytes(bodyBytes.length),
+        bodyBytes,
+      ])
     );
   }
 
   /**
    * @param   {Object} headerBody is the header object to encode.
-   * @param   {String} deploycode is a hex string of the current code to which we
-   *          want to prefix the header.
+   * @param   {Uint8Array} deploycode is the bytecode to which we want to prefix the header.
    * @returns The deploycode with the header prefixed as the encoded wire format, i.e.,
-   *          b'\0sis' || version (2 bytes little endian) || length (2 bytes little endian) || json-header.
+   *          b'\0sis' || version (2 bytes big endian) || length (2 bytes big endian) || json-header.
    *          Overrides any header fields that may already exist in the deploycode.
    */
   public static deployCode(
     headerBody: DeployHeaderOptions,
-    deploycode: Bytes
-  ): Bytes {
-    if (typeof deploycode !== 'string') {
-      deploycode = bytes.toHex(deploycode);
-    }
+    deploycode: Uint8Array
+  ): Uint8Array {
     DeployHeader.deployCodePreconditions(headerBody, deploycode);
 
     if (Object.keys(headerBody).length === 0) {
-      // All apis should return buffers not hex strings.
-      return bytes.parseHex(deploycode.substr(2));
+      return deploycode; // No header, so do nothing.
     }
 
     // Read the existing header, if it exists.
     let currentHeader = DeployHeaderReader.header(deploycode);
-    // Hex code to create the contract without the serialized deploy header prepended.
-    let initcode;
+    // Bytecode to create the contract without the serialized deploy header prepended.
+    let initcode: Uint8Array;
     // No header so just make a new one. The initcode is the given deploycode.
     if (currentHeader === null) {
       currentHeader = new DeployHeader(DeployHeader.currentVersion(), {});
@@ -82,20 +63,23 @@ export class DeployHeader {
       Object.assign(currentHeader.body, headerBody);
     }
 
-    let code = currentHeader.data() + initcode.substr(2);
-    // All apis should return buffers not hex strings.
-    return bytes.parseHex(code.substr(2));
+    let headerData = currentHeader.data();
+    let code = new Uint8Array(headerData.length + initcode.length);
+    code.set(headerData);
+    code.set(initcode, headerData.length);
+
+    return code;
   }
 
   private static deployCodePreconditions(
     headerBody: DeployHeaderOptions,
-    deploycode: string
+    deploycode: Uint8Array
   ) {
-    if (!deploycode.startsWith('0x')) {
-      throw new Error('Malformed deploycode');
-    }
     if (!headerBody) {
       throw new Error('No header given');
+    }
+    if (deploycode.length === 0) {
+      throw new Error('Malformed deploycode');
     }
     if (!DeployHeader.isValidBody(headerBody)) {
       throw new Error('Malformed deploycode or header');
@@ -124,11 +108,8 @@ export class DeployHeader {
     return 1;
   }
 
-  /**
-   * Hex representation of b'\0sis'.
-   */
-  public static prefix(): string {
-    return '00736973';
+  public static prefix(): Uint8Array {
+    return bytes.encodeUtf8('\0sis');
   }
 }
 
@@ -136,18 +117,13 @@ export class DeployHeader {
  * A collection of utilities for parsing through deploycode including the Oasis contract
  * deploy header in the form of a hex string.
  */
-// TODO: change return values to be Bytes.
 export class DeployHeaderReader {
   /**
    * @param   {String} deploycode is the transaction data to deploy a contract as a hex string.
    * @returns the contract deploy header prefixed to the deploycode, otherwise, null.
    */
-  public static header(deploycode: Bytes): DeployHeader | null {
-    if (typeof deploycode !== 'string') {
-      deploycode = bytes.toHex(deploycode);
-    }
-
-    if (!deploycode.startsWith('0x' + DeployHeader.prefix())) {
+  public static header(deploycode: Uint8Array): DeployHeader | null {
+    if (!DeployHeaderReader.codeHasPrefixPrefix(deploycode)) {
       return null;
     }
     let version = DeployHeaderReader.version(deploycode);
@@ -160,109 +136,106 @@ export class DeployHeaderReader {
     return new DeployHeader(version, body);
   }
   /**
-   * @param {String} deploycode is a hex string of the header || initcode.
+   * @param {Uint8Array} deploycode is a hex string of the header || initcode.
    */
-  public static body(deploycode: Bytes): DeployHeaderOptions {
-    if (typeof deploycode !== 'string') {
-      deploycode = bytes.toHex(deploycode);
-    }
-
-    if (!deploycode.startsWith('0x' + DeployHeader.prefix())) {
+  public static body(deploycode: Uint8Array): DeployHeaderOptions {
+    if (!DeployHeaderReader.codeHasPrefixPrefix(deploycode)) {
       throw new DeployHeaderError('code must have the header prefiix');
     }
 
     let length = DeployHeaderReader.size(deploycode);
-    let serializedBody = deploycode.substr(
+    let serializedBody = deploycode.subarray(
       DeployHeaderReader.bodyStart(),
-      length * 2
+      DeployHeaderReader.bodyStart() + length
     );
 
-    return JSON.parse(bytes.decodeUtf8(bytes.parseHex(serializedBody)));
+    return JSON.parse(bytes.decodeUtf8(serializedBody));
   }
 
   /**
    * @param {String} deploycode is a hex string of the header || initcode.
    */
-  public static size(deploycode: Bytes): number {
-    if (typeof deploycode !== 'string') {
-      deploycode = bytes.toHex(deploycode);
-    }
-
-    if (!deploycode.startsWith('0x' + DeployHeader.prefix())) {
+  public static size(deploycode: Uint8Array): number {
+    if (!DeployHeaderReader.codeHasPrefixPrefix(deploycode)) {
       throw new DeployHeaderError('code must have the header prefix');
     }
 
-    let length = deploycode.substr(
-      DeployHeaderReader.sizeStart(),
-      DeployHeaderReader.sizeLength()
+    let start = DeployHeaderReader.sizeStart();
+    let lengthBytes = deploycode.subarray(
+      start,
+      start + DeployHeaderReader.sizeLength()
     );
 
-    return parseInt('0x' + length, 16);
+    return DeployHeaderReader.shortFromBytes(lengthBytes);
   }
 
   /**
    * @param {String} deploycode is a hex string of the header || initcode.
    */
-  public static version(deploycode: Bytes): number {
-    if (typeof deploycode !== 'string') {
-      deploycode = bytes.toHex(deploycode);
-    }
-
-    if (!deploycode.startsWith('0x' + DeployHeader.prefix())) {
+  public static version(deploycode: Uint8Array): number {
+    if (!DeployHeaderReader.codeHasPrefixPrefix(deploycode)) {
       throw new DeployHeaderError('code must have the header prefix');
     }
 
-    let version = deploycode.substr(
-      DeployHeaderReader.versionStart(),
-      DeployHeaderReader.versionLength()
+    let start = DeployHeaderReader.versionStart();
+    let versionBytes = deploycode.subarray(
+      start,
+      start + DeployHeaderReader.versionLength()
     );
 
-    return parseInt('0x' + version, 16);
+    return DeployHeaderReader.shortFromBytes(versionBytes);
   }
 
   /**
    * @param {String} deploycode is a hex string of the header || initcode.
    */
-  public static initcode(deploycode: Bytes): string {
-    if (typeof deploycode !== 'string') {
-      deploycode = bytes.toHex(deploycode);
-    }
-
-    if (!deploycode.startsWith('0x' + DeployHeader.prefix())) {
+  public static initcode(deploycode: Uint8Array): Uint8Array {
+    if (!DeployHeaderReader.codeHasPrefixPrefix(deploycode)) {
       throw new DeployHeaderError('code must have the header prefix');
     }
+    return deploycode.subarray(DeployHeaderReader.initcodeStart(deploycode));
+  }
 
-    return (
-      '0x' + deploycode.substr(DeployHeaderReader.initcodeStart(deploycode))
+  private static initcodeStart(deploycode: Uint8Array): number {
+    if (!DeployHeaderReader.codeHasPrefixPrefix(deploycode)) {
+      throw new DeployHeaderError('code must have the header prefix');
+    }
+    return DeployHeaderReader.bodyStart() + DeployHeaderReader.size(deploycode);
+  }
+
+  /**
+   * @param {Uint8Array} the 2-byte representation of the input.
+   * @returns {Number} an unsigned 16-bit number.
+   */
+  public static shortFromBytes(arr: Uint8Array): number {
+    return new DataView(arr.buffer).getUint16(
+      arr.byteOffset,
+      false /* little endian */
     );
   }
 
-  private static initcodeStart(deploycode: Bytes): number {
-    if (typeof deploycode !== 'string') {
-      deploycode = bytes.toHex(deploycode);
+  public static codeHasPrefixPrefix(code: Uint8Array): boolean {
+    let prefix = DeployHeader.prefix();
+    for (let i = 0; i < prefix.length; i++) {
+      if (code[i] !== prefix[i]) {
+        return false;
+      }
     }
-
-    if (!deploycode.startsWith('0x' + DeployHeader.prefix())) {
-      throw new DeployHeaderError('code must have the header prefix');
-    }
-    // Make sure to convert the "length" to nibbles, since it's in units of bytes.
-    return (
-      DeployHeaderReader.bodyStart() + DeployHeaderReader.size(deploycode) * 2
-    );
+    return true;
   }
 
   /**
    * @returns the hex string index of the start section.
    */
   private static versionStart(): number {
-    return 2 + DeployHeader.prefix().length;
+    return DeployHeader.prefix().length;
   }
 
   /**
-   * @returns the length of the version in nibbles.
+   * @returns the length of the version in bytes.
    */
   public static versionLength(): number {
-    return 2 * 2;
+    return 2;
   }
 
   /**
@@ -275,10 +248,10 @@ export class DeployHeaderReader {
   }
 
   /**
-   * @returns the length of the header size in nibbles.
+   * @returns the length of the body size in bytes.
    */
   private static sizeLength(): number {
-    return 2 * 2;
+    return 2;
   }
 
   /**
@@ -289,32 +262,32 @@ export class DeployHeaderReader {
   }
 }
 
-// TODO: change return values to be Bytes.
 export class DeployHeaderWriter {
-  public static size(body: Bytes): string {
-    if (typeof body !== 'string') {
-      body = bytes.toHex(body);
-    }
-    return bytes.toHex(bytes.parseNumber(body.substr(2).length / 2, 2));
+  public static body(body: DeployHeaderOptions): Uint8Array {
+    return bytes.encodeUtf8(JSON.stringify(body));
   }
 
-  public static version(version: number): string {
-    return bytes.toHex(
-      bytes.parseNumber(version, DeployHeaderReader.versionLength() / 2)
+  /**
+   * @param {Number} an unsigned 16-bit number.
+   * @returns {Uint8Array} the 2-byte representation of the input.
+   */
+  public static shortToBytes(num: number): Uint8Array {
+    let arr = new Uint8Array(2);
+    new DataView(arr.buffer).setUint16(
+      0 /* offset */,
+      num,
+      false /* little endian */
     );
-  }
-
-  public static body(body: DeployHeaderOptions): string {
-    return bytes.toHex(bytes.encodeUtf8(JSON.stringify(body)));
+    return arr;
   }
 }
 
 // Alias.
-function parseHex(deploycode: Bytes): DeployHeader | null {
+function parseFromCode(deploycode: Uint8Array): DeployHeader | null {
   return DeployHeaderReader.header(deploycode);
 }
 
 // Convenience api export.
 export const header = {
-  parseHex,
+  parseFromCode,
 };

@@ -1,4 +1,4 @@
-import { PublicKey, PrivateKey } from '@oasislabs/types';
+import { PublicKey, PrivateKey } from '..';
 import nacl from '../tweetnacl';
 
 export async function ecdhTweak(
@@ -11,7 +11,7 @@ export async function ecdhTweak(
     boxKDFTweak[i] = boxKDFTweakStr.charCodeAt(i);
   }
 
-  let preMasterKey = nacl.scalarMult(privateKey, peerPublicKey);
+  let preMasterKey = nacl.scalarMult(privateKey.bytes(), peerPublicKey.bytes());
   let hash = require('crypto').createHmac('sha256', boxKDFTweak);
   hash.update(preMasterKey);
   return new Uint8Array(hash.digest());

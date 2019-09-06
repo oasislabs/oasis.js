@@ -38,7 +38,9 @@ export class AxiosClient implements HttpClient {
     httpHeaders: HttpHeaders
   ): Promise<any> {
     const headers: Object = {};
-    httpHeaders.headers.forEach((value, key) => (headers[key] = value));
+    httpHeaders.headers.forEach(
+      (value, key) => ((headers as any)[key] = value)
+    );
     return axios.request({ method, url, data, headers });
   }
 }

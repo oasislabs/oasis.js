@@ -17,7 +17,6 @@ See the [documentation](https://oasis-labs-oasis-client.readthedocs-hosted.com/e
 | [`@oasislabs/service`](/packages/service)                         | [![npm](https://img.shields.io/npm/v/@oasislabs/service.svg)](https://www.npmjs.com/package/@oasislabs/service)                | Connects to and deploys IDL defined services      |
 | [`@oasislabs/confidential`](/packages/confidential)               | [![npm](https://img.shields.io/npm/v/@oasislabs/confidential.svg)](https://www.npmjs.com/package/@oasislabs/confidential)      | Primitives for confidentiality                    |
 | [`@oasislabs/common`](/packages/common)                           | [![npm](https://img.shields.io/npm/v/@oasislabs/common.svg)](https://www.npmjs.com/package/@oasislabs/common)                  | Common utilities for Oasis packages                                |
-| [`@oasislabs/types`](/packages/types)                             | [![npm](https://img.shields.io/npm/v/@oasislabs/types.svg)](https://www.npmjs.com/package/@oasislabs/types)                    | Types for Oasis packages                                           |
 | [`@oasislabs/test`](/packages/test)                               | [![npm](https://img.shields.io/npm/v/@oasislabs/test.svg)](https://www.npmjs.com/package/@oasislabs/test)                      | Tools used in Oasis tests                                          |
 
 
