@@ -99,7 +99,7 @@ export class RpcFactory {
         throw new Error(errorStr);
       }
 
-      return coder.decode(fn, response.output);
+      return coder.decode(fn, bytes.parseHex(response.output));
     };
 
     return {
