@@ -45,16 +45,22 @@ export default class Service {
     address: Uint8Array | string,
     options?: ServiceOptions
   ) {
-    if (typeof address === 'string') {
-      address = bytes.parseHex(address);
-    }
+    // Convert to Uint8Array.
+    let _address: Uint8Array = (() => {
+      if (typeof address === 'string') {
+        return bytes.parseHex(address);
+      } else {
+        return address;
+      }
+    })();
+
     // Fill in any options not provided by the arguments.
     options = Service.setupOptions(options);
 
     // Attach the rpcs onto the rpc interface so that we can generate dynamic
     // rpc methods while keeping the compiler happy. Without this, we need
     // to use a types file when using a service within TypeScript.
-    let [rpc, coder] = RpcFactory.build(idl, address, options);
+    let [rpc, coder] = RpcFactory.build(idl, _address, options);
     this.rpc = rpc;
 
     // Attach the rpcs directly onto the Service object so that we can have
@@ -65,7 +71,7 @@ export default class Service {
       idl,
       options,
       coder,
-      address,
+      address: _address,
       listeners: new EventEmitter(),
       subscriptions: new Map(),
     };

@@ -113,7 +113,7 @@ export class Web3Gateway implements OasisGateway {
     }
 
     return {
-      address: bytes.parseHex(receipt.contractBytes),
+      address: bytes.parseHex(receipt.contractAddress),
     };
   }
 

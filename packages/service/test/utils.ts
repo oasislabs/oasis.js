@@ -128,7 +128,7 @@ export class GatewayRequestDecoder {
       data = bytes.parseHex(data);
     }
 
-    return cbor.decode(data);
+    return cbor.decode(data) as FnRequest;
   }
 }
 

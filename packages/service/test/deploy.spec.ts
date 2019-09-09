@@ -38,15 +38,13 @@ describe('Service deploys', () => {
   testCases.forEach(test => {
     it(test.label, async () => {
       // Given an idl, and deploy options.
-      let args = ['constructor-arg'];
       let service: Service | undefined = undefined;
       let deployRequestPromise: Promise<RpcRequest> = new Promise(
         async resolve => {
           // When I deploy.
-          service = await deploy({
+          service = await deploy('constructor-arg', {
             idl,
             bytecode: test.bytecode,
-            arguments: args,
             header: test.header,
             gateway: new DeployMockOasisGateway(resolve),
           });
@@ -86,7 +84,7 @@ describe('Service deploys', () => {
       let encodedArgs = initcode.slice(test.bytecode.length);
       let decoder = new GatewayRequestDecoder();
       let decodedArgs = await decoder.decode(encodedArgs, true);
-      expect(decodedArgs).toEqual(args);
+      expect(decodedArgs).toEqual(['constructor-arg']);
     });
   });
 });
