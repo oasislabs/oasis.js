@@ -1,6 +1,6 @@
-import { EthereumWallet } from '../src';
-import { JsonRpcRequest, JsonRpcResponse } from '../src/gateway/websocket';
-import { Web3, Web3Provider } from '../src/gateway/web3';
+import { ethers } from 'ethers';
+import { JsonRpcRequest, JsonRpcResponse } from '../src/websocket';
+import { Web3, Web3Provider } from '../src/web3';
 
 describe('Web3', () => {
   // Mock out the websocket json rpc requester for all testing.
@@ -10,7 +10,7 @@ describe('Web3', () => {
   };
 
   it('Issues eth_getBlockByNumber Web3 JSON RPC', async () => {
-    const wallet = EthereumWallet.createRandom();
+    const wallet = ethers.Wallet.createRandom();
     const web3 = new Web3(new Web3Provider('', wallet));
 
     const response = await web3.eth.getBlockByNumber('latest', true);
@@ -22,7 +22,7 @@ describe('Web3', () => {
   });
 
   it('Issues eth_sendTransaction Web3 JSON RPC', async () => {
-    const wallet = new EthereumWallet(
+    const wallet = new ethers.Wallet(
       '0x0d0b8fb7d60f37b370731f4de70dc1837997ea5e16023792c3573e8b3238bc0e'
     );
     const jsonRpc = new MockJsonRpc();

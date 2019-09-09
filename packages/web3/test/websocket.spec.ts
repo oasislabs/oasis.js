@@ -1,4 +1,4 @@
-import { JsonRpcWebSocket, WebSocketFactory } from '../src/gateway/websocket';
+import { JsonRpcWebSocket, WebSocketFactory } from '../src/websocket';
 
 describe('JsonRpcWebSocket', () => {
   it('Timeout requests that have not received a response', async () => {

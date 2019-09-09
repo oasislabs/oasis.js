@@ -46,13 +46,8 @@ export default class Service {
     options?: ServiceOptions
   ) {
     // Convert to Uint8Array.
-    let _address: Uint8Array = (() => {
-      if (typeof address === 'string') {
-        return bytes.parseHex(address);
-      } else {
-        return address;
-      }
-    })();
+    let _address: Uint8Array =
+      typeof address === 'string' ? bytes.parseHex(address) : address;
 
     // Fill in any options not provided by the arguments.
     options = Service.setupOptions(options);

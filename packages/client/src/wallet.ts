@@ -1,5 +1,7 @@
-import { ethers } from 'ethers';
+import { EthereumWallet } from '@oasislabs/web3';
 
-const Wallet = ethers.Wallet;
+// TODO: Bring in the ethers.Wallet import directly here once we address
+//       https://github.com/oasislabs/oasis.js/issues/118.
+const Wallet = EthereumWallet;
 
 export default Wallet;

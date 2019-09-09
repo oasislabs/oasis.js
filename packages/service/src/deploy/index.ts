@@ -101,13 +101,7 @@ async function toDeployOptions(
   args: any[],
   options: any
 ): Promise<DeployOptions> {
-  const idl = await (async () => {
-    if (!options.idl) {
-      return fromWasm(options.bytecode);
-    }
-    return options.idl;
-  })();
-
+  const idl = options.idl || (await fromWasm(options.bytecode));
   const rpcOptions = (() => {
     if (!options.options) {
       return {};

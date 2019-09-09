@@ -38,7 +38,7 @@ export class OasisCoder implements RpcCoder {
   }
 
   public topic(event: string, idl: Idl): string {
-    return keccak256(event);
+    return '0x' + keccak256(event);
   }
 
   public async decodeSubscriptionEvent(e: any, idl: Idl): Promise<any> {

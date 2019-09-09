@@ -37,6 +37,7 @@ export default {
       namedExports: {
         '../../node_modules/js-sha3/src/sha3.js': ['keccak256'],
         '../../node_modules/eventemitter3/index.js': ['EventEmitter'],
+        '../../node_modules/ethers/dist/ethers.min.js': ['ethers'],
       },
     }),
     json(),
