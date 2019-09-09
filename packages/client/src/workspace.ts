@@ -1,4 +1,4 @@
-import { EthereumWallet as Wallet, Web3Gateway } from '@oasislabs/ethereum';
+import { Web3Gateway } from '@oasislabs/web3';
 import Gateway from '@oasislabs/gateway';
 import {
   Idl,
@@ -9,6 +9,7 @@ import {
   OasisGateway,
   defaultOasisGateway,
 } from '@oasislabs/service';
+import Wallet from './wallet';
 
 class WorkspaceError extends Error {}
 
