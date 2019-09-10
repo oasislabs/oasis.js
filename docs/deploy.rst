@@ -11,16 +11,22 @@ deploy
 
 .. code-block:: javascript
 
-	deploy(options)
+	deploy(...args, options)
+
+-------------
+Parameters
+-------------
+1. ``args`` - The positional constructor arguments for the service. Note that the type and number of these arguments depend on the service being constructed.
+2. ``options`` - ``Object`` (optional): The service deploy options. Must be the last argument in the deploy function call.
 
 ----------
 options
 ----------
 * ``bytecode`` - ``string | Uint8Array``: The bytecode for the service.
-* ``arguments`` - ``Array``: Constructor arguments to pass to the service.
 * ``header`` - ``Object`` (optional): The deploy header. See the default values below.
 * ``gateway`` - :ref:`OasisGateway <gateways>` (optional): The client backend to communicate with an oasis gateway.
-* ``options`` - :ref:`RpcOptions <rpc-options>` (optional): The transaction options to use for deploy.
+* ``gasLimit`` - ``string`` | ``number`` (optional): Gas limit to use for the transaction.
+* ``value`` - ``string`` | ``number`` (optional): Value to send in the transaction.
 
 ----------
 header

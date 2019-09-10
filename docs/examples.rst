@@ -33,12 +33,11 @@ After connecting, one can deploy a new service.
    const bytecode = require('fs').readFileSync('/path/to/target/service/my-service.wasm');
 
    // Service constructor args.
-   const arguments = [];
+   const arg = "this is an argument";
 
    // Deploy it through the connected gateway.
-   const service = await oasis.deploy({
+   const service = await oasis.deploy(arg, {
       bytecode,
-      arguments,
    });
 
 Service
