@@ -35,7 +35,6 @@ import { DeployError } from '../error';
  *  value?: string | number;
  * };
  *
- *
  * @returns a Service object to make rpc requests with.
  */
 export default async function deploy(...args: any[]): Promise<Service> {
@@ -63,7 +62,7 @@ export default async function deploy(...args: any[]): Promise<Service> {
  * DeployOptions type, throwing an error if the arguments are
  * malformed in any way.
  */
-export async function extractOptions(args: any[]): Promise<DeployOptions> {
+async function extractOptions(args: any[]): Promise<DeployOptions> {
   if (args.length === 0) {
     throw new DeployError(args, 'No deploy arguments provided');
   }
