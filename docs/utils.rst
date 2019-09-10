@@ -56,8 +56,8 @@ Returns
   * ``peerPublicKey`` - ``Uint8Array``: The public key from which the ciphertext encrypted.
   * ``aad`` - ``Uint8Array`` the additional authenticated data for the AEAD.
 
-utils.header.parseHex
-========================
+utils.header.parseFromCode
+==========================
 
 .. code-block:: javascript
 
@@ -65,7 +65,7 @@ utils.header.parseHex
 
 Parameters
 ----------
-1. ``deploycode`` - ``String``: Hex string representing the deployed bytecode of a service, prefixed with the header wire format:
+1. ``deploycode`` - ``Uint8Array | String``: The deployed bytecode of a service, prefixed with the header wire format:
 
 .. code-block:: javascript
 

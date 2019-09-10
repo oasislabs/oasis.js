@@ -77,11 +77,14 @@ export default class Service {
    * chain wasm and extracting the idl.
    */
   public static async at(
-    address: Uint8Array,
+    address: Uint8Array | string,
     options?: ServiceOptions
   ): Promise<Service> {
+    const _address: Uint8Array =
+      typeof address === 'string' ? bytes.parseHex(address) : address;
+
     options = Service.setupOptions(options);
-    let response = await options.gateway!.getCode({ address });
+    let response = await options.gateway!.getCode({ address: _address });
     let wasm = DeployHeaderReader.initcode(response.code);
     let idl = await fromWasm(wasm);
     return new Service(idl, address, options);
