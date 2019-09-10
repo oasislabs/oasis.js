@@ -283,8 +283,11 @@ export class DeployHeaderWriter {
 }
 
 // Alias.
-function parseFromCode(deploycode: Uint8Array): DeployHeader | null {
-  return DeployHeaderReader.header(deploycode);
+function parseFromCode(deploycode: Uint8Array | string): DeployHeader | null {
+  let _deploycode: Uint8Array =
+    typeof deploycode === 'string' ? bytes.parseHex(deploycode) : deploycode;
+
+  return DeployHeaderReader.header(_deploycode);
 }
 
 // Convenience api export.
