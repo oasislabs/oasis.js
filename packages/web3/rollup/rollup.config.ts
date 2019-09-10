@@ -14,7 +14,7 @@ export default {
   output: [
     {
       file: pkg.main,
-      name: 'ethereum',
+      name: 'web3',
       format: 'umd',
       sourcemap: true,
       globals: {

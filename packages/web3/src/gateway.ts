@@ -19,7 +19,7 @@ import { TransactionFactory, Transaction } from './transaction';
 import { Web3GatewayError, TransactionReverted, RpcFailure } from './error';
 import { Web3, Web3Provider, Web3Namespace } from './web3';
 
-export class Web3Gateway implements OasisGateway {
+export default class Web3Gateway implements OasisGateway {
   /**
    * Private variables used to manage the gateway.
    */
@@ -113,7 +113,7 @@ export class Web3Gateway implements OasisGateway {
     }
 
     return {
-      address: bytes.parseHex(receipt.contractBytes),
+      address: bytes.parseHex(receipt.contractAddress),
     };
   }
 

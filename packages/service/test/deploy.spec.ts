@@ -1,3 +1,4 @@
+import { cbor, bytes } from '@oasislabs/common';
 import { idl } from '@oasislabs/test';
 import {
   EmptyOasisGateway,
@@ -14,22 +15,22 @@ setGateway(new EmptyOasisGateway());
 describe('Service deploys', () => {
   let testCases = [
     {
-      bytecode: Buffer.from('0x010203', 'hex'),
+      bytecode: bytes.parseHex('0x010203'),
       header: undefined,
       label: 'deploys a service with hex string bytecode',
     },
     {
-      bytecode: Buffer.from('0102039999', 'hex'),
+      bytecode: bytes.parseHex('0x0102039999'),
       header: undefined,
       label: 'deploys a service with buffer bytecode',
     },
     {
-      bytecode: Buffer.from('0102039999', 'hex'),
+      bytecode: bytes.parseHex('0x0102039999'),
       header: { confidential: false },
       label: 'deploys a service without confidentiality',
     },
     {
-      bytecode: Buffer.from('0102039999', 'hex'),
+      bytecode: bytes.parseHex('0x0102039999'),
       header: { confidential: true, expiry: 12345 },
       label: 'deploys a service with expiry',
     },
@@ -38,22 +39,20 @@ describe('Service deploys', () => {
   testCases.forEach(test => {
     it(test.label, async () => {
       // Given an idl, and deploy options.
-      let args = ['constructor-arg'];
       let service: Service | undefined = undefined;
       let deployRequestPromise: Promise<RpcRequest> = new Promise(
         async resolve => {
           // When I deploy.
-          service = await deploy({
+          service = await deploy('constructor-arg', {
             idl,
             bytecode: test.bytecode,
-            arguments: args,
             header: test.header,
             gateway: new DeployMockOasisGateway(resolve),
           });
           // @ts-ignore
           expect(service!._inner.address).toEqual(
             new Uint8Array(
-              Buffer.from(DeployMockOasisGateway.address.substr(2), 'hex')
+              bytes.parseHex(DeployMockOasisGateway.address.substr(2))
             )
           );
         }
@@ -86,7 +85,53 @@ describe('Service deploys', () => {
       let encodedArgs = initcode.slice(test.bytecode.length);
       let decoder = new GatewayRequestDecoder();
       let decodedArgs = await decoder.decode(encodedArgs, true);
-      expect(decodedArgs).toEqual(args);
+      expect(decodedArgs).toEqual(['constructor-arg']);
     });
+  });
+
+  it('deploys a service with multiple deploy arguments', async () => {
+    const idl = {
+      constructor: {
+        inputs: [
+          {
+            type: 'string',
+          },
+          {
+            type: 'string',
+          },
+        ],
+      },
+    };
+
+    const bytecode = bytes.parseHex('0x010203');
+    const args = ['arg1', 'arg2'];
+
+    let deployRequestPromise: Promise<RpcRequest> = new Promise(
+      async resolve => {
+        // When I deploy.
+        const service = await deploy(args[0], args[1], {
+          idl,
+          bytecode,
+          gateway: new DeployMockOasisGateway(resolve),
+        });
+        // @ts-ignore
+        expect(service!._inner.address).toEqual(
+          new Uint8Array(
+            bytes.parseHex(DeployMockOasisGateway.address.substr(2))
+          )
+        );
+      }
+    );
+
+    // Await the request.
+    const deployRequestSerialized = await deployRequestPromise;
+
+    // Bytecode || cbor.encode([...args])
+    const initcode = DeployHeaderReader.initcode(deployRequestSerialized.data);
+
+    // Chop off the bytecode and decode the args.
+    const deployArgs = cbor.decode(initcode.slice(bytecode.length));
+
+    expect(deployArgs).toEqual(args);
   });
 });

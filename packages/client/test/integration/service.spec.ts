@@ -17,10 +17,9 @@ describe('Service', () => {
     oasis.setGateway(gateway);
 
     // Deploy the service.
-    let service = await oasis.deploy({
+    let service = await oasis.deploy('constructor-arg', {
       idl,
       bytecode: bytecode,
-      arguments: ['constructor-arg'],
       db: new DummyStorage(),
     });
 
@@ -42,10 +41,9 @@ describe('Service', () => {
     oasis.setGateway(gateway);
 
     // Deploy the service.
-    let service = await oasis.deploy({
+    let service = await oasis.deploy('constructor-arg', {
       idl,
       bytecode: bytecode,
-      arguments: ['constructor-arg'],
       db: new DummyStorage(),
     });
 

@@ -9,3 +9,9 @@ export class RpcError extends Error {
     super(...params);
   }
 }
+
+export class DeployError extends Error {
+  constructor(readonly deployArgs: any[], ...params: any[]) {
+    super(...params);
+  }
+}

@@ -20,7 +20,7 @@ export class DeployHeader {
   data(): Uint8Array {
     let bodyBytes = DeployHeaderWriter.body(this.body);
     return new Uint8Array(
-      Buffer.concat([
+      bytes.concat([
         DeployHeader.prefix(),
         DeployHeaderWriter.shortToBytes(this.version),
         DeployHeaderWriter.shortToBytes(bodyBytes.length),

@@ -1,4 +1,4 @@
-import { EthereumWallet as Wallet, Web3Gateway } from '@oasislabs/ethereum';
+import { Web3Gateway } from '@oasislabs/web3';
 import Gateway from '@oasislabs/gateway';
 import {
   Idl,
@@ -9,6 +9,7 @@ import {
   OasisGateway,
   defaultOasisGateway,
 } from '@oasislabs/service';
+import Wallet from './wallet';
 
 class WorkspaceError extends Error {}
 
@@ -76,23 +77,13 @@ class ServiceDefinition {
   constructor(readonly bytecode: Uint8Array, readonly idl: Idl) {}
 
   public async deploy(...args: any[]): Promise<any> {
-    let numCtorArgs = this.idl.constructor.inputs.length;
-    let options = args[numCtorArgs];
-    let deployOpts = Object.assign({}, options, {
-      arguments: args.slice(0, numCtorArgs),
-      bytecode: this.bytecode,
-      idl: this.idl,
-      gateway: await this._getGateway(),
-    });
-    return deploy(deployOpts);
-  }
-
-  private async _getGateway(): Promise<OasisGateway> {
+    // Lazily configure the gateway if needed.
     try {
-      return defaultOasisGateway();
+      defaultOasisGateway();
     } catch (e) {
-      return configGateway();
+      await configGateway();
     }
+    return deploy(...args);
   }
 }
 

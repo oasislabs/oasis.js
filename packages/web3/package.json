@@ -1,6 +1,6 @@
 {
-  "name": "@oasislabs/ethereum",
-  "version": "1.0.0-rc.13",
+  "name": "@oasislabs/web3",
+  "version": "0.0.0",
   "description": "",
   "keywords": [],
   "main": "dist/index.umd.js",

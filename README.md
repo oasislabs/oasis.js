@@ -13,11 +13,12 @@ See the [documentation](https://oasis-labs-oasis-client.readthedocs-hosted.com/e
 | Package                                                           | Version                                                                                                                        | Description                                                        |
 | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------ |
 | [`@oasislabs/client`](/packages/client)                           | [![npm](https://img.shields.io/npm/v/@oasislabs/client.svg)](https://www.npmjs.com/package/@oasislabs/client)                  | Client SDK for interacting with services on Oasis              |
-| [`@oasislabs/gateway`](/packages/gateway)                         | [![npm](https://img.shields.io/npm/v/@oasislabs/gateway.svg)](https://www.npmjs.com/package/@oasislabs/gateway)                | Gateway implementation used as the client backend          |
+| [`@oasislabs/gateway`](/packages/gateway)                         | [![npm](https://img.shields.io/npm/v/@oasislabs/gateway.svg)](https://www.npmjs.com/package/@oasislabs/gateway)                | Oasis Gateway implementation used as the client backend          |
 | [`@oasislabs/service`](/packages/service)                         | [![npm](https://img.shields.io/npm/v/@oasislabs/service.svg)](https://www.npmjs.com/package/@oasislabs/service)                | Connects to and deploys IDL defined services      |
 | [`@oasislabs/confidential`](/packages/confidential)               | [![npm](https://img.shields.io/npm/v/@oasislabs/confidential.svg)](https://www.npmjs.com/package/@oasislabs/confidential)      | Primitives for confidentiality                    |
 | [`@oasislabs/common`](/packages/common)                           | [![npm](https://img.shields.io/npm/v/@oasislabs/common.svg)](https://www.npmjs.com/package/@oasislabs/common)                  | Common utilities for Oasis packages                                |
 | [`@oasislabs/test`](/packages/test)                               | [![npm](https://img.shields.io/npm/v/@oasislabs/test.svg)](https://www.npmjs.com/package/@oasislabs/test)                      | Tools used in Oasis tests                                          |
+| [`@oasislabs/web3`](/packages/web3)                            | [![npm](https://img.shields.io/npm/v/@oasislabs/web3.svg)](https://www.npmjs.com/package/@oasislabs/web3)                         | Web3 JSON RPC version of an Oasis Gateway|
 
 
 ## Contributing

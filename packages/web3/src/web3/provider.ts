@@ -6,7 +6,7 @@ import {
 } from '../websocket';
 import { Subscriptions } from '../subscriptions';
 import { Web3Error } from '../error';
-import { Wallet } from '../';
+import { Wallet } from '../gateway';
 import { TransactionFactory, UnpreparedTransaction } from '../transaction';
 
 /**

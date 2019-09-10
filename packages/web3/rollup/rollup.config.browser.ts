@@ -13,7 +13,7 @@ export default {
   output: [
     {
       file: './dist/index.browser.umd.js',
-      name: 'ethereum',
+      name: 'web3',
       format: 'umd',
       sourcemap: true,
       globals: {
