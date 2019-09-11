@@ -73,7 +73,7 @@ export default new Proxy(
   }
 );
 
-class ServiceDefinition {
+export class ServiceDefinition {
   constructor(readonly bytecode: Uint8Array, readonly idl: Idl) {}
 
   public async deploy(...args: any[]): Promise<any> {
@@ -83,7 +83,50 @@ class ServiceDefinition {
     } catch (e) {
       await configGateway();
     }
+
+    // Place the bytecode into the DeployOptions.
+    this.injectBytecode(args);
+
+    // Finally, perform the deploy.
     return deploy(...args);
+  }
+
+  /**
+   * Inject the bytecode into the deploy options.
+   * Deploy options were either provided or not.
+   */
+  private injectBytecode(args: any[]): void {
+    // Deploy options provided, so inject the bytecode into them.
+    if (this.idl.constructor.inputs.length + 1 === args.length) {
+      // Replace the args' options with a cloned version.
+      const options = (() => {
+        let o = args.pop();
+
+        if (typeof o !== 'object') {
+          throw new WorkspaceError('Options argument must be an object');
+        }
+        if (o.bytecode) {
+          throw new WorkspaceError(
+            'Bytecode should not be provided when deploying a workspace service'
+          );
+        }
+
+        o = JSON.parse(JSON.stringify(o));
+        args.push(o);
+        return o;
+      })();
+
+      // Inject the bytecode into the options.
+      options.bytecode = this.bytecode;
+    }
+    // Deploy options not provided, so create them and then add them
+    // to the arguments.
+    else if (this.idl.constructor.inputs.length === args.length) {
+      const options = {
+        bytecode: this.bytecode,
+      };
+      args.push(options);
+    }
   }
 }
 
