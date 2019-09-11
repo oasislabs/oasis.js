@@ -1,6 +1,6 @@
 import { bytes } from '@oasislabs/common';
-
 import { DeployHeader, DeployHeaderWriter } from '../src/deploy/header';
+import { makeExpectedBytecode } from './utils';
 
 describe('DeployHeader', () => {
   describe('deployCode', () => {
@@ -94,18 +94,3 @@ describe('DeployHeader', () => {
     });
   });
 });
-
-function makeExpectedBytecode(headerBody: any, bytecode: string): Uint8Array {
-  let body = DeployHeaderWriter.body(headerBody);
-  let version = DeployHeaderWriter.shortToBytes(DeployHeader.currentVersion());
-  let size = DeployHeaderWriter.shortToBytes(body.length);
-  return new Uint8Array(
-    Buffer.concat([
-      DeployHeader.prefix(),
-      version,
-      size,
-      body,
-      bytes.parseHex(bytecode),
-    ])
-  );
-}
