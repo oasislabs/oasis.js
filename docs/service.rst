@@ -73,12 +73,30 @@ For example,
    // Connects to the remote service.
    const service = await Service.at(address);
 
+   // Service specific rpc parameter.
+   const argument = 'this is an argument to a Service rpc';
+
+   // RpcOptions.
+   const options = { gasLimit: '0xe79732' };
+
    // Makes an rpc request to `myMethod` and returns the result.
-   const returnValue = await service.myMethod();
+   const returnValue = await service.myMethod(argument, options);
+
+.. note::
+
+   The client will ensure all Service api methods are camelCase, as is idiomatic JavaScript,
+   even if your on-chain service uses snake_case, as is idiomatic Rust.
 
 The positional arguments for a given rpc should be passed directly into the method.
-In addition, one can specify the ``RpcOptions`` if desired. Note that these options
+In addition, one can **optionally** specify ``RpcOptions``. When used, these options
 must be the last argument given to a method.
+
+.. important:: Confidential Services
+
+   When making RPCs to **confidential** services, one **must** specify the ``gasLimit`` option.
+   The client can't estimiate the gas limit when state is confidential.
+
+A Service's method call returns only after the transaction has been finalized by the Oasis network.
 
 .. _rpc-options:
 
@@ -99,6 +117,8 @@ To listen to events emitted by the service, use the ``addEventListener`` method.
    service.addEventListener(event, function listener(event) {
      console.log('Received the event, ' event);
    });
+
+An event is emitted only after the block containing it has been finalized by the Oasis network.
 
 Parameters
 ----------
