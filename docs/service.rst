@@ -98,6 +98,8 @@ must be the last argument given to a method.
    accepted by the Key Manager. As a result, the client can't infer a gas limit by estimating
    gas at a gateway.
 
+A Service's method call returns only after the transaction has been finalized by the Oasis network.
+
 .. _rpc-options:
 
 RpcOptions
@@ -117,6 +119,8 @@ To listen to events emitted by the service, use the ``addEventListener`` method.
    service.addEventListener(event, function listener(event) {
      console.log('Received the event, ' event);
    });
+
+An event is emitted only after the block containing it has been finalized by the Oasis network.
 
 Parameters
 ----------
