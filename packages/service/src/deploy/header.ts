@@ -293,4 +293,5 @@ function parseFromCode(deploycode: Uint8Array | string): DeployHeader | null {
 // Convenience api export.
 export const header = {
   parseFromCode,
+  deployCode: DeployHeader.deployCode,
 };
