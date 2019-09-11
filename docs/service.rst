@@ -88,15 +88,13 @@ For example,
    even if your on-chain service uses snake_case, as is idiomatic Rust.
 
 The positional arguments for a given rpc should be passed directly into the method.
-In addition, one can specify ``RpcOptions``. When used, these options
+In addition, one can **optionally** specify ``RpcOptions``. When used, these options
 must be the last argument given to a method.
 
 .. important:: Confidential Services
 
-   When making RPCs to confidential services, one **must** specify the ``gasLimit`` option.
-   Confidential state one can only be accessed by staked committee members in the Oasis protocol
-   accepted by the Key Manager. As a result, the client can't infer a gas limit by estimating
-   gas at a gateway.
+   When making RPCs to **confidential** services, one **must** specify the ``gasLimit`` option.
+   The client can't estimiate the gas limit when state is confidential.
 
 A Service's method call returns only after the transaction has been finalized by the Oasis network.
 
