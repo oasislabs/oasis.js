@@ -1,6 +1,6 @@
 {
   "name": "@oasislabs/client",
-  "version": "1.0.0-rc.18",
+  "version": "1.0.0-rc.19",
   "description": "",
   "keywords": [],
   "main": "dist/index.umd.js",
@@ -38,9 +38,9 @@
   },
   "dependencies": {
     "@oasislabs/common": "^1.0.0-rc.8",
-    "@oasislabs/gateway": "^1.0.0-rc.15",
-    "@oasislabs/service": "^1.0.0-rc.12",
-    "@oasislabs/web3": "^1.0.0-rc.1",
+    "@oasislabs/gateway": "^1.0.0-rc.16",
+    "@oasislabs/service": "^1.0.0-rc.13",
+    "@oasislabs/web3": "^1.0.0-rc.2",
     "find": "^0.3.0",
     "js-sha3": "^0.8.0",
     "toml": "^3.0.0"
