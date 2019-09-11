@@ -13,6 +13,7 @@ import {
   aeadKeys,
 } from './utils';
 import { OasisCoder } from '../src/coder/oasis';
+import { makeExpectedBytecode } from './utils';
 
 setGateway(new EmptyOasisGateway());
 
@@ -131,6 +132,27 @@ describe('Service', () => {
     expect(JSON.stringify(plaintext.payload)).toEqual(
       JSON.stringify([input1, input2])
     );
+  });
+
+  it('Service.at should accept a hex string', async () => {
+    const address = '0x288e7e1cc60962f40d4d782950470e3705c5acf4';
+    const bin = bytes.toHex(
+      new Uint8Array(
+        require('fs').readFileSync('test/wasm/mantle-counter.wasm')
+      )
+    );
+    const gateway = {
+      getCode: () => {
+        return { code: makeExpectedBytecode({ confidential: false }, bin) };
+      },
+    };
+    // @ts-ignore
+    const s = await Service.at(address, {
+      gateway,
+      db: new DummyStorage(),
+    });
+
+    expect(bytes.parseHex(address)).toEqual(s._inner.address);
   });
 });
 

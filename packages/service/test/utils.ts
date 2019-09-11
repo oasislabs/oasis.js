@@ -20,6 +20,7 @@ import {
 } from '../src/oasis-gateway';
 import { RpcFn } from '../src/idl';
 import { RpcRequest as FnRequest } from '../src/coder';
+import { DeployHeader, DeployHeaderWriter } from '../src/deploy/header';
 
 export class EmptyOasisGateway implements OasisGateway {
   private connectionStateDummy = new EventEmitter();
@@ -303,4 +304,22 @@ export function aeadKeys() {
       ])
     ),
   };
+}
+
+export function makeExpectedBytecode(
+  headerBody: any,
+  bytecode: string
+): Uint8Array {
+  let body = DeployHeaderWriter.body(headerBody);
+  let version = DeployHeaderWriter.shortToBytes(DeployHeader.currentVersion());
+  let size = DeployHeaderWriter.shortToBytes(body.length);
+  return new Uint8Array(
+    Buffer.concat([
+      DeployHeader.prefix(),
+      version,
+      size,
+      body,
+      bytes.parseHex(bytecode),
+    ])
+  );
 }
