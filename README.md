@@ -6,13 +6,28 @@
 [![Gitter chat](https://badges.gitter.im/Oasis-official/Lobby.svg)](https://gitter.im/Oasis-official/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![docs](https://readthedocs.com/projects/oasis-labs-oasis-client/badge/?version=latest)](https://oasis-labs-oasis-client.readthedocs-hosted.com/en/latest/)
 
-See the [documentation](https://oasis-labs-oasis-client.readthedocs-hosted.com/en/latest/)
+See the [documentation](https://oasis-labs-oasis-client.readthedocs-hosted.com/en/latest/).
 
 ## Packages
+
+### The Client
+
+For most use cases, it's recommended to use the main `@oasislabs/client` package
+for all your Oasis client needs, for which there is extensive documentation.
 
 | Package                                                           | Version                                                                                                                        | Description                                                        |
 | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------ |
 | [`@oasislabs/client`](/packages/client)                           | [![npm](https://img.shields.io/npm/v/@oasislabs/client.svg)](https://www.npmjs.com/package/@oasislabs/client)                  | Client SDK for interacting with services on Oasis              |
+
+### Internal Packages
+
+However, if you only need a subset of the client's features, you can take what
+you need directly from the underlying packages. Together these packages compose
+the client. Standalone documentation is not provided so it's recommended to use
+these only if you know what you're doing.
+
+| Package                                                           | Version                                                                                                                        | Description                                                        |
+| ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------ |
 | [`@oasislabs/gateway`](/packages/gateway)                         | [![npm](https://img.shields.io/npm/v/@oasislabs/gateway.svg)](https://www.npmjs.com/package/@oasislabs/gateway)                | Oasis Gateway implementation used as the client backend          |
 | [`@oasislabs/service`](/packages/service)                         | [![npm](https://img.shields.io/npm/v/@oasislabs/service.svg)](https://www.npmjs.com/package/@oasislabs/service)                | Connects to and deploys IDL defined services      |
 | [`@oasislabs/confidential`](/packages/confidential)               | [![npm](https://img.shields.io/npm/v/@oasislabs/confidential.svg)](https://www.npmjs.com/package/@oasislabs/confidential)      | Primitives for confidentiality                    |

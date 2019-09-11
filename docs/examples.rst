@@ -5,7 +5,7 @@ Examples
 .. include:: links.rst
 
 Here we walk through a workflow demonstrating the core apis provided by the client.
-These examples assume an `oasis-rs docs <https://github.com/oasislabs/oasis-rs>`_
+These examples assume an `oasis-rs <https://github.com/oasislabs/oasis-rs>`_
 service is being used.
 
 Set the gateway
