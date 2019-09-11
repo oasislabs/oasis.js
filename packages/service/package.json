@@ -1,6 +1,6 @@
 {
   "name": "@oasislabs/service",
-  "version": "1.0.0-rc.13",
+  "version": "1.0.0-rc.14",
   "description": "",
   "keywords": [],
   "main": "dist/index.umd.js",
@@ -34,8 +34,8 @@
     ]
   },
   "dependencies": {
-    "@oasislabs/common": "^1.0.0-rc.8",
-    "@oasislabs/confidential": "^1.0.0-rc.8",
+    "@oasislabs/common": "^1.0.0-rc.9",
+    "@oasislabs/confidential": "^1.0.0-rc.9",
     "@oasislabs/types": "^1.0.0-rc.2",
     "@types/pako": "^1.0.1",
     "camelcase": "^5.3.1",
