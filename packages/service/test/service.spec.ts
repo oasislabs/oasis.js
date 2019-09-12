@@ -14,6 +14,7 @@ import {
 } from './utils';
 import { OasisCoder } from '../src/coder/oasis';
 import { makeExpectedBytecode } from './utils';
+import { NO_CODE_ERROR_MSG } from '../src/error';
 
 setGateway(new EmptyOasisGateway());
 
@@ -153,6 +154,33 @@ describe('Service', () => {
     });
 
     expect(bytes.parseHex(address)).toEqual(s._inner.address);
+  });
+
+  it('Service.at should give an informative error when an invalid address is used', async () => {
+    const address = bytes.parseHex(
+      '0x288e7e1cc60962f40d4d782950470e3705c5acf4'
+    );
+    const bin = bytes.toHex(
+      new Uint8Array(
+        require('fs').readFileSync('test/wasm/mantle-counter.wasm')
+      )
+    );
+    const gateway = {
+      // Null getCode response means the service doesn't exist at the address.
+      getCode: () => {
+        return { code: null };
+      },
+    };
+
+    try {
+      // @ts-ignore
+      await Service.at(address, {
+        gateway,
+        db: new DummyStorage(),
+      });
+    } catch (e) {
+      expect(e.message).toBe(NO_CODE_ERROR_MSG(address));
+    }
   });
 });
 

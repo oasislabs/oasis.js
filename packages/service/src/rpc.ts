@@ -3,7 +3,7 @@ import camelCase from 'camelcase';
 import { KeyStore } from '@oasislabs/confidential';
 import { bytes } from '@oasislabs/common';
 
-import { RpcError } from './error';
+import { RpcError, ServiceError, NO_CODE_ERROR_MSG } from './error';
 import { Idl, IdlError, RpcFn, RpcInput } from './idl';
 import { ServiceOptions } from './service';
 import { OasisGateway, RpcOptions } from './oasis-gateway';
@@ -183,7 +183,12 @@ export class RpcFactory {
   ): Promise<RpcCoder> {
     // Check the contract's deploy header to see if it's confidential.
     let response = await options.gateway!.getCode({ address });
-    let deployHeader = header.parseFromCode(response.code);
+
+    if (!response.code) {
+      throw new ServiceError(address, NO_CODE_ERROR_MSG(address));
+    }
+
+    let deployHeader = header.parseFromCode(response.code!);
 
     if (!deployHeader || !deployHeader.body.confidential) {
       return OasisCoder.plaintext();

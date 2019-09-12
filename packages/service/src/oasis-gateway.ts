@@ -44,7 +44,7 @@ export type GetCodeRequest = {
 };
 
 export type GetCodeResponse = {
-  code: Uint8Array;
+  code: Uint8Array | null;
 };
 
 export type RpcRequest = {
