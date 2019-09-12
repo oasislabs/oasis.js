@@ -234,7 +234,7 @@ class Credential {
   public wallet?: any;
 
   constructor(public credential: string) {
-    const API_TOKEN_NUM_BYTES = 32;
+    const API_TOKEN_NUM_BYTES = 32 + 32 / 8;
     const PRIVATE_KEY_NUM_BYTES = 32;
     const MNEMONIC_NUM_WORDS = 12;
     if (Buffer.from(credential, 'base64').length === API_TOKEN_NUM_BYTES) {
