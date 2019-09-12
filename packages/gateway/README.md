@@ -2,4 +2,4 @@
 
 Gateway client backend.
 
-See the main [README](/README.md).
+See the main [README](https://github.com/oasislabs/oasis.js/blob/master/README.md).

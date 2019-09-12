@@ -2,4 +2,4 @@
 
 Shared test utilities for Oasis packages.
 
-See the main [README](/README.md).
+See the main [README](https://github.com/oasislabs/oasis.js/blob/master/README.md).
