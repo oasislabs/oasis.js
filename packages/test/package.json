@@ -1,6 +1,6 @@
 {
   "name": "@oasislabs/test",
-  "version": "1.0.0-rc.14",
+  "version": "1.0.0-rc.15",
   "description": "Defines common utilities for testing Oasis packages.",
   "keywords": [],
   "main": "dist/index.umd.js",
@@ -17,7 +17,7 @@
     "build": "tsc --module commonjs && rollup -c rollup.config.ts"
   },
   "dependencies": {
-    "@oasislabs/common": "^1.0.0-rc.9",
-    "@oasislabs/service": "^1.0.0-rc.14"
+    "@oasislabs/common": "^1.0.0-rc.10",
+    "@oasislabs/service": "^1.0.0-rc.15"
   }
 }
