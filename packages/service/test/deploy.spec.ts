@@ -101,6 +101,7 @@ describe('Service deploys', () => {
           },
         ],
       },
+      functions: [],
     };
 
     const bytecode = bytes.parseHex('0x010203');

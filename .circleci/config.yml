@@ -1,6 +1,17 @@
+version: 2.1
+
 defaults: &defaults
   docker:
     - image: circleci/node:10-browsers
+
+executors:
+  rust:
+    docker:
+      - image: oasislabs/rust:latest
+    environment:
+      PATH: /root/.local/bin:/root/.cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      LD_LIBRARY_PATH: /root/.rustup/toolchains/nightly-2019-08-26-x86_64-unknown-linux-gnu/lib
+    resource_class: xlarge
 
 restore_dependencies: &restore_dependencies
   restore_cache:
@@ -15,7 +26,18 @@ save_dependencies: &save_dependencies
       - node_modules
     key: v1-dependencies-{{ checksum "yarn.lock" }}
 
-version: 2
+commands:
+  install_oasis:
+    steps:
+      - run:
+          name: Install Tools
+          command: |
+            apt-get -qq update
+            apt-get -qq install python curl git gcc
+            curl --proto '=https' --tlsv1.2 -sSL https://get.oasis.dev | python - --toolchain 19.37
+            npm install -g lerna
+            npm install -g yarn
+
 jobs:
   build:
     <<: *defaults
@@ -44,6 +66,26 @@ jobs:
           paths:
             - output
 
+  #
+  # Note that the test-e2e job uses a different executor because it requires
+  # the ability to build the oasis toolchain, while the build job requires
+  # the ability to run browser based tests.
+  #
+  test-e2e:
+    executor: rust
+
+    steps:
+      - checkout
+      - install_oasis
+
+      - <<: *restore_dependencies
+      - run: yarn
+      - <<: *save_dependencies
+
+      - run: yarn build
+      - run: pushd packages/client/test/e2e && oasis build && popd
+      - run: oasis-chain > /tmp/oasis-chain.log & yarn test:e2e
+
   deploy-staging:
     docker:
       - image: circleci/python:2.7-jessie
@@ -53,8 +95,8 @@ jobs:
           command: sudo pip install awscli
       - run:
           # CircleCI's AWS Credentials are allowed to assume a role that has S3
-          # access in the staging account. 
-          name: Create an ~/.aws/config file to assume the staging role for aws. 
+          # access in the staging account.
+          name: Create an ~/.aws/config file to assume the staging role for aws.
           command: mkdir -p ~/.aws && printf "[profile staging]\nrole_arn = ${AWS_STAGING_ROLE_ARN}\ncredential_source = Environment\n" > ~/.aws/config
       - attach_workspace:
           at: oasis-client
@@ -71,8 +113,8 @@ jobs:
           command: sudo pip install awscli
       - run:
           # CircleCI's AWS Credentials are allowed to assume a role that has S3
-          # access in the staging account. 
-          name: Create an ~/.aws/config file to assume the staging role for aws. 
+          # access in the staging account.
+          name: Create an ~/.aws/config file to assume the staging role for aws.
           command: mkdir -p ~/.aws && printf "[profile staging]\nrole_arn = ${AWS_STAGING_ROLE_ARN}\ncredential_source = Environment\n" > ~/.aws/config
       - attach_workspace:
           at: oasis-client
@@ -85,6 +127,7 @@ workflows:
   build-and-deploy:
     jobs:
       - build
+      - test-e2e
       - deploy-staging:
           requires:
             - build
@@ -99,4 +142,3 @@ workflows:
               only: master
             tags:
               only: /^@oasislabs*/
-          
