@@ -2,13 +2,10 @@ import Gateway from '../src/';
 
 describe('Gateway', () => {
   it('Sends POST to /v0/api/event/unsubscribe when unsubscribing', async () => {
-    let gw = new Gateway(
-      'testing',
-      'qWD4icUz+jAadSKJuGtn40eKgG5hbTetygimEdLRyFk=',
-      {
-        headers: new Map(),
-      }
-    );
+    const dummyApiToken = 'LPbGhl6lGxaFDHgHF5N8CNZ32a3MgE+IfmutjxEb3FWt4WwP';
+    let gw = new Gateway('testing', dummyApiToken, {
+      headers: new Map(),
+    });
 
     let _resolve: Function;
     let testCompletion: Promise<RequestPayload> = new Promise(

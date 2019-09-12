@@ -43,7 +43,7 @@ export default class GatewayBuilder {
 
   public gateway(): HttpGateway {
     let url = 'test';
-    const dummyApiToken = 'r2lJ2E3ur40sNqj2YR8qytAnPhUTLZyTRUxhVY9Fmh4=';
+    const dummyApiToken = 'LPbGhl6lGxaFDHgHF5N8CNZ32a3MgE+IfmutjxEb3FWt4WwP';
     let gateway = new HttpGateway(url, dummyApiToken, { headers: new Map() });
     let session = new MockSession(
       this.serviceResponses,
