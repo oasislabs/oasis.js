@@ -201,9 +201,10 @@ export default class Web3Gateway implements OasisGateway {
       bytes.toHex(request.address),
       'latest'
     );
-    // todo: throw cleaner error when code doesn't exist
+
+    // Note: the gateway returns '0x' for all addresses without code.
     return {
-      code: bytes.parseHex(response),
+      code: response === '0x' ? null : bytes.parseHex(response),
     };
   }
 

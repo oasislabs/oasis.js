@@ -271,7 +271,6 @@ class HttpGateway implements OasisGateway {
         address: bytes.toHex(request.address!),
       }
     );
-    // todo: throw cleaner error when code doesn't exist
     return {
       code: bytes.parseHex(response.code),
     };

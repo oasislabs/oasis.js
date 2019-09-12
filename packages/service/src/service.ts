@@ -11,6 +11,7 @@ import {
   SubscribeRequest,
   SubscribeTopic,
 } from './oasis-gateway';
+import { ServiceError, NO_CODE_ERROR_MSG } from './error';
 
 /**
  * Service is the object representation of an Oasis rpc service.
@@ -85,6 +86,11 @@ export default class Service {
 
     options = Service.setupOptions(options);
     let response = await options.gateway!.getCode({ address: _address });
+
+    if (!response.code) {
+      throw new ServiceError(_address, NO_CODE_ERROR_MSG(_address));
+    }
+
     let wasm = DeployHeaderReader.initcode(response.code);
     let idl = await fromWasm(wasm);
     return new Service(idl, address, options);
@@ -157,7 +163,10 @@ export default class Service {
   public removeEventListener(event: string, listener: Listener) {
     let subscription = this._inner.subscriptions.get(event);
     if (subscription === undefined) {
-      throw new Error(`no subscriptions found for ${event}`);
+      throw new ServiceError(
+        this._inner.address,
+        `no subscriptions found for ${event}`
+      );
     }
 
     this._inner.listeners.removeListener(event, listener);
