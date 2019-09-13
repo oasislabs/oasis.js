@@ -5,6 +5,12 @@ use serde::{Serialize, Deserialize};
 pub struct Incremented {
     #[indexed]
     pub new_counter: u64,
+    pub inner: InnerCounter,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct InnerCounter {
+    pub inner_counter: u64,
 }
 
 #[derive(Service)]
@@ -29,6 +35,9 @@ impl Counter {
         self.count += 1;
         Event::emit(&Incremented {
             new_counter: self.count,
+            inner: InnerCounter {
+                inner_counter: self.count,
+            },
         });
         Ok(())
     }

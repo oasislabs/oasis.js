@@ -1,3 +1,4 @@
+import camelCaseKeys from 'camelcase-keys';
 import { keccak256 } from 'js-sha3';
 import { AeadKeys } from '@oasislabs/confidential';
 import { bytes, cbor } from '@oasislabs/common';
@@ -42,7 +43,8 @@ export class OasisCoder implements RpcCoder {
   }
 
   public async decodeSubscriptionEvent(e: any, idl: Idl): Promise<any> {
-    return cbor.decode(bytes.parseHex(e.data));
+    const event = cbor.decode(bytes.parseHex(e.data));
+    return camelCaseKeys(event, { deep: true });
   }
 
   public async initcode(
