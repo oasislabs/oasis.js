@@ -120,6 +120,11 @@ To listen to events emitted by the service, use the ``addEventListener`` method.
 
 An event is emitted only after the block containing it has been finalized by the Oasis network.
 
+.. note::
+
+   In the same way rpc method names are camelCase, event object keys are camelCase, even if the
+   corresponding service is snake_case.
+
 Parameters
 ----------
 1. ``event`` - ``String``: The name of the event.

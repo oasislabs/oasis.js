@@ -47,10 +47,13 @@ describe('Counter', () => {
       expect(count).toBe(startCount + 1);
     });
 
+    // Save the logs for next few tests.
+    let logs: any[];
+
     it(`${c.label}: adds an event listener for multiple events`, async () => {
       const eventName = 'Incremented';
 
-      let logs: any[] = await new Promise(async resolve => {
+      logs = await new Promise(async resolve => {
         const logs: any[] = [];
         service.addEventListener(eventName, function listener(event: any) {
           logs.push(event);
@@ -67,11 +70,20 @@ describe('Counter', () => {
       for (let k = 1; k < logs.length; k += 1) {
         // Depending upon the gateway's view, we might get the log for the previous test,
         // so just ensure the logs received are monotonically increasing.
-        let currentCounter = logs[k].new_counter;
-        let lastCounter = logs[k - 1].new_counter;
+        let currentCounter = logs[k].newCounter;
+        let lastCounter = logs[k - 1].newCounter;
 
         expect(currentCounter - lastCounter).toEqual(1);
       }
+    });
+
+    it(`${c.label}: translates event object keys to camelCase`, () => {
+      logs.forEach(l => {
+        // The value of newCounter is valid because we check it in the test case
+        // above. So just ensure we have translated the nested event object keys
+        // in addition.
+        expect(l.newCounter).toEqual(l.inner.innerCounter);
+      });
     });
   });
 
