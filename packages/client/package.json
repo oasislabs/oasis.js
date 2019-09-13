@@ -34,6 +34,7 @@
     "test": "yarn test:unit && yarn test:integration && yarn test:browser",
     "test:unit": "jest test/unit",
     "test:integration": "jest test/integration",
+    "test:e2e": "jest test/e2e",
     "test:browser": "scripts/test-browser.sh",
     "coverage": "jest --coverage test/integration"
   },

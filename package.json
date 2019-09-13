@@ -16,6 +16,7 @@
     "lint:fix": "lerna run lint:fix --concurrency 1 && prettier --write 'packages/*/{src,test}/**/*.ts'",
     "prebuild": "rimraf dist",
     "test": "lerna run test --concurrency 1 --stream",
+    "test:e2e": "cd packages/client && yarn test:e2e && cd ../",
     "precommit": "lint-staged",
     "coverage": "lerna run coverage --concurrency 1 -- stream",
     "coveralls": "cat ./coverage/lcov.info | coveralls"
