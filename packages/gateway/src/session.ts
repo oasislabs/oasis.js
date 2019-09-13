@@ -3,16 +3,19 @@ import { AxiosClient, HttpClient, HttpHeaders, Http } from './http';
 import * as _uuid from 'uuid';
 
 let uuid: any = undefined;
+let URL: any = undefined;
 
 // Browser.
 /* tslint:disable */
 if (typeof window !== 'undefined') {
   // @ts-ignore
   uuid = _uuid.default;
+  URL = window.URL;
 }
 // Node.
 else {
   uuid = require('uuid');
+  URL = require('url').URL;
 }
 
 export class HttpSession implements Http {
@@ -34,6 +37,7 @@ export class HttpSession implements Http {
 
   public constructor(
     public url: string,
+    public apiToken: string,
     headers: HttpHeaders,
     client?: HttpClient
   ) {
@@ -51,8 +55,10 @@ export class HttpSession implements Http {
     api: string,
     body: Object
   ): Promise<any> {
-    const uri = `${this.url}/${api}`;
+    const url = new URL(api, this.url).href;
     const headers: HttpHeaders = { headers: new Map() };
+    headers.headers.set('X-OASIS-INSECURE-AUTH', '1');
+    headers.headers.set('X-OASIS-LOGIN-TOKEN', this.apiToken);
     headers.headers.set('X-OASIS-SESSION-KEY', this.sessionKey);
     headers.headers.set('Content-type', 'application/json');
 
@@ -60,7 +66,7 @@ export class HttpSession implements Http {
       headers.headers.set(key, value)
     );
 
-    let response = await this.client.request(method, uri, body, headers);
+    let response = await this.client.request(method, url, body, headers);
     return response.data;
   }
 }

@@ -115,7 +115,7 @@ class HttpGateway implements OasisGateway {
     private apiToken: string,
     private headers: HttpHeaders
   ) {
-    this.session = new HttpSession(url, headers);
+    this.session = new HttpSession(url, apiToken, headers);
     this.polling = PollingService.instance({
       url: url,
       session: this.session,

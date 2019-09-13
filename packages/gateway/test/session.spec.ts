@@ -28,7 +28,13 @@ describe('SessionService', () => {
     const headers = { headers: map };
     const client = new HttpMockClient();
 
-    const session = new HttpSession('http://myurl', headers, client);
+    const dummyApiToken = 'LPbGhl6lGxaFDHgHF5N8CNZ32a3MgE+IfmutjxEb3FWt4WwP';
+    const session = new HttpSession(
+      'http://myurl',
+      dummyApiToken,
+      headers,
+      client
+    );
     let res = await session.request('method', 'myapi', { data: 'data' });
 
     expect(res).toEqual('response');
