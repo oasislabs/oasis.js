@@ -1,8 +1,15 @@
 {
   "name": "@oasislabs/test",
   "version": "1.0.0-rc.15",
-  "description": "Defines common utilities for testing Oasis packages.",
-  "keywords": [],
+  "description": "Tools used in Oasis tests",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oasislabs/oasis.js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/oasislabs/oasis.js/issues"
+  },
+  "homepage": "https://github.com/oasislabs/oasis.js#readme",
   "main": "dist/index.umd.js",
   "module": "dist/index.es5.js",
   "typings": "dist/lib/index.d.ts",

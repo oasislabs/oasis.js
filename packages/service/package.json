@@ -1,8 +1,21 @@
 {
   "name": "@oasislabs/service",
   "version": "1.0.0-rc.15",
-  "description": "",
-  "keywords": [],
+  "description": "Connects to and deploys IDL defined services",
+  "keywords": [
+    "oasis",
+    "oasis-protocol",
+    "web3",
+    "ekiden"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oasislabs/oasis.js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/oasislabs/oasis.js/issues"
+  },
+  "homepage": "https://github.com/oasislabs/oasis.js#readme",
   "main": "dist/index.umd.js",
   "module": "dist/index.es5.js",
   "typings": "dist/lib/src/index.d.ts",
