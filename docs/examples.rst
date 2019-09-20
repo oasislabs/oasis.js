@@ -94,7 +94,7 @@ will allow the client to sign and send raw transactions.
 	// Wallet for signing and paying for transactions.
 	const wallet = new oasis.Wallet(privateKey);
 
-	// Etheruem gateway responsible for signing transactions.
+	// Ethereum gateway responsible for signing transactions.
 	const gateway = new oasis.gateways.Web3Gateway('wss://web3.devnet.oasiscloud.io/ws', wallet);
 
 	// Configure the gateway to use.
