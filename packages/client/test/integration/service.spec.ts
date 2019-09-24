@@ -21,6 +21,7 @@ describe('Service', () => {
       idl,
       bytecode: bytecode,
       db: new DummyStorage(),
+      gasLimit: '0xffff',
     });
 
     // Invoke the Rpc.
@@ -45,6 +46,7 @@ describe('Service', () => {
       idl,
       bytecode: bytecode,
       db: new DummyStorage(),
+      gasLimit: '0xffff',
     });
 
     // Three listeners listening to the same event. Each should be notified

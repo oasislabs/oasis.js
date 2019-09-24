@@ -89,7 +89,11 @@ async function extractOptions(args: any[]): Promise<DeployOptions> {
   // TODO: would be nice if the client used the IDL to validate the inputs so that
   //       we dont' have to rely on the runtime to throw an error.
   //       See https://github.com/oasislabs/oasis.js/issues/14.
-  return toDeployOptions(args, options);
+  const deployOptions = await toDeployOptions(args, options);
+
+  validateDeployOptions(deployOptions, args);
+
+  return deployOptions;
 }
 
 /**
@@ -102,9 +106,6 @@ async function toDeployOptions(
 ): Promise<DeployOptions> {
   const idl = options.idl || (await fromWasm(options.bytecode));
   const rpcOptions = (() => {
-    if (!options.options) {
-      return {};
-    }
     return {
       gasLimit: options.gasLimit,
       gasPrice: options.gasPrice,
@@ -160,6 +161,21 @@ async function initcode(options: DeployOptions): Promise<Uint8Array> {
  */
 function oasisGateway(options: DeployOptions): OasisGateway {
   return options.gateway || defaultOasisGateway();
+}
+
+/**
+ * @throws if the given deployOptions are malformed.
+ */
+function validateDeployOptions(deployOptions: DeployOptions, args: any[]) {
+  if (
+    deployOptions!.header!.confidential &&
+    (!deployOptions!.options || !deployOptions!.options!.gasLimit)
+  ) {
+    throw new DeployError(
+      args,
+      'gasLimit must be provided for confidential deploys'
+    );
+  }
 }
 
 /**
