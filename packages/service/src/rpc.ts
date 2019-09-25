@@ -111,7 +111,6 @@ export class RpcFactory {
   /**
    * Transforms the given `idlName` into a properly formatted
    * snakeCase rpc name to be exposed on the service client.
-   *
    */
   private static rpcName(idlName: string): string {
     return camelCase(idlName);

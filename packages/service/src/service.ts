@@ -24,7 +24,7 @@ export default class Service {
 
   /**
    * The inner variables required to implement the Service object. We reserve
-   * the `_inner`` namespace so that service methods defined by an IDL don't
+   * the `_inner` namespace so that service methods defined by an IDL don't
    * override/clash with the internal variables. This is required so that we
    * can support the convenient `service.myMethod()` syntax in JavaScript.
    * It's expected no IDL used will have an _inner rpc method.
@@ -39,7 +39,7 @@ export default class Service {
    *
    * @param idl is the Idl definition generated for the Oasis service.
    * @param address? is the address of the currently deployed service.
-   * @param options? are the optinos configuring the Service client.
+   * @param options? are the options configuring the Service client.
    */
   public constructor(
     idl: Idl,
@@ -189,7 +189,7 @@ type ServiceInner = {
   address: Uint8Array;
 
   /**
-   * Configureable options for the Service.
+   * Configurable options for the Service.
    */
   options: ServiceOptions;
 

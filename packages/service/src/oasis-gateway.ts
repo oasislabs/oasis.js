@@ -93,7 +93,7 @@ let _defaultGateway: OasisGateway | undefined = undefined;
 
 /**
  * setGateway sets the default oasis gateway so that all services use it
- * unless explicity overriden upon construction of the service.
+ * unless explicitly overridden upon construction of the service.
  */
 export function setGateway(gw: OasisGateway) {
   _defaultGateway = gw;

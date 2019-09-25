@@ -8,7 +8,7 @@ import { RpcCoder, RpcEncoder, RpcDecoder, RpcRequest } from './';
 import { RpcOptions } from '../oasis-gateway';
 
 /**
- * RpcCoder encodes and decodes serivce rpc requests. Use the static factory methods to
+ * RpcCoder encodes and decodes service rpc requests. Use the static factory methods to
  * construct an instance.
  */
 export class OasisCoder implements RpcCoder {
@@ -67,7 +67,7 @@ export class OasisCoder implements RpcCoder {
   }
 
   /**
-   * Facotry method returning a confidential RpcCoder.
+   * Factory method returning a confidential RpcCoder.
    */
   public static confidential(keys: AeadKeys): RpcCoder {
     return new ConfidentialCoder(keys, OasisCoder.plaintext());

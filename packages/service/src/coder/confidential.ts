@@ -12,7 +12,7 @@ import { RpcCoder } from './';
 import { RpcOptions } from '../oasis-gateway';
 
 /**
- * Wraps a coder to decrypt/decrypt encoded messages in addition to coding.
+ * Wraps a coder to encrypt/decrypt encoded messages in addition to coding.
  */
 export default class ConfidentialCoder {
   constructor(private keys: AeadKeys, private internalCoder: RpcCoder) {}
