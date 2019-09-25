@@ -60,7 +60,7 @@ export const SubscribeApi: DeveloperGatewayApi = {
 };
 
 /**
- * Polls for an event on a subcription.
+ * Polls for an event on a subscription.
  */
 export const SubscribePollApi: DeveloperGatewayApi = {
   url: 'v0/api/event/poll',
@@ -94,7 +94,7 @@ export type Event =
 
 /**
  * ExecuteServiceResponse is an asynchronous response that will be obtained
- * using the polling mechanims.
+ * using the polling mechanisms.
  */
 export type ExecuteServiceResponse = {
   id: number;

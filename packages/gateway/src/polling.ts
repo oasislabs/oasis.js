@@ -241,7 +241,7 @@ class Window<T> {
   }
 
   /**
-   * Slide accrues the given item inito the cache and advances the window start
+   * Slide accrues the given item into the cache and advances the window start
    * if it's the next contiguous item.
    */
   public slide(id: number, item: T) {

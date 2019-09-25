@@ -99,7 +99,7 @@ class HttpGateway implements OasisGateway {
   private session: Http;
 
   /**
-   * polling collects all non-subscribe fresponses from the developer gateway.
+   * polling collects all non-subscribe responses from the developer gateway.
    */
   private polling: PollingService;
 
