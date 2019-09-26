@@ -1,4 +1,5 @@
 import * as deoxysii from 'deoxysii';
+import { bytes } from '@oasislabs/common';
 import { Nonce, PublicKey, PrivateKey } from '..';
 import nacl from '../tweetnacl';
 
@@ -33,7 +34,7 @@ export async function ecdhTweak(
 }
 
 async function makeHmacKey() {
-  const boxKDFTweak = new TextEncoder().encode('MRAE_Box_Deoxys-II-256-128');
+  const boxKDFTweak = bytes.textEncoder().encode('MRAE_Box_Deoxys-II-256-128');
   // @ts-ignore
   return window.crypto.subtle.importKey(
     'raw',

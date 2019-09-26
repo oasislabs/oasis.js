@@ -47,6 +47,7 @@
     ]
   },
   "dependencies": {
+    "@exodus/text-encoding-utf8": "^1.0.2",
     "cbor-js": "^0.1.0"
   }
 }

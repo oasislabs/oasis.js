@@ -18,6 +18,7 @@ for all your Oasis client needs, for which there is extensive documentation.
 | Package                                                           | Version                                                                                                                        | Description                                                        |
 | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------ |
 | [`@oasislabs/client`](/packages/client)                           | [![npm](https://img.shields.io/npm/v/@oasislabs/client.svg)](https://www.npmjs.com/package/@oasislabs/client)                  | Client SDK for interacting with services on Oasis              |
+| [`@oasislabs/react-native-client`](/packages/react-native-client)                           | [![npm](https://img.shields.io/npm/v/@oasislabs/react-native-client.svg)](https://www.npmjs.com/package/@oasislabs/react-native-client)                  | React Native Client SDK for interacting with services on Oasis              |
 
 ### Internal Packages
 

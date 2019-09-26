@@ -87,28 +87,14 @@ export function concat(arrays: Array<Uint8Array>): Uint8Array {
  * decodeUtf8 is a string decoding utility for both node and browsers.
  */
 export function decodeUtf8(array: Uint8Array): string {
-  let decoder =
-    // tslint:disable-next-line
-    typeof TextDecoder === 'undefined'
-      ? // @ts-ignore
-        new (require('util')).TextDecoder('utf-8') // Node.
-      : new TextDecoder('utf-8'); // Browser.
-  // @ts-ignore
-  return decoder.decode(array);
+  return textDecoder().decode(array);
 }
 
 /**
  * encodeUtf8 is a string encoding utility for both node and browsers.
  */
 export function encodeUtf8(input: string): Uint8Array {
-  let encoder =
-    // tslint:disable-next-line
-    typeof TextEncoder === 'undefined'
-      ? // @ts-ignore
-        new (require('util')).TextEncoder('utf-8') // Node.
-      : new TextEncoder(); // Browser.
-  // @ts-ignore
-  return encoder.encode(input);
+  return new Uint8Array(textEncoder().encode(input));
 }
 
 /**
@@ -151,6 +137,24 @@ export function assertLength(
     );
   }
   return bytes;
+}
+
+export function textEncoder(): TextEncoder {
+  // Browser.
+  // tslint:disable-next-line
+  if (typeof TextEncoder !== 'undefined') {
+    return new TextEncoder();
+  }
+  return new (require('@exodus/text-encoding-utf8')).TextEncoder();
+}
+
+export function textDecoder(): TextDecoder {
+  // Browser.
+  // tslint:disable-next-line
+  if (typeof TextDecoder !== 'undefined') {
+    return new TextDecoder();
+  }
+  return new (require('@exodus/text-encoding-utf8')).TextDecoder();
 }
 
 export class InvalidBytesError extends Error {
