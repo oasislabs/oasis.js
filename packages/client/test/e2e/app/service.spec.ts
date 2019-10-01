@@ -19,7 +19,7 @@ describe('Counter', () => {
     {
       label: 'non-confidential',
       header: { confidential: false },
-      options: undefined,
+      options: {},
     },
   ];
 
@@ -29,6 +29,7 @@ describe('Counter', () => {
     it(`${c.label}: deploys a contract`, async () => {
       service = await oasis.workspace.Counter.deploy(startCount, {
         header: c.header,
+        ...c.options,
       });
 
       expect(service).toBeTruthy();
