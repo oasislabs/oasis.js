@@ -5,7 +5,7 @@ describe('JsonRpcWebSocket', () => {
     // We expect the test to take ~30000 ms.
     jest.setTimeout(31000);
 
-    // Given a JsonRpcWebSocet.
+    // Given a JsonRpcWebSocket.
     let ws = new JsonRpcWebSocket('', [], new MockWebSocketFactory());
 
     try {

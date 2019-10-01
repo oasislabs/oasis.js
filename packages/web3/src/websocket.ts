@@ -14,7 +14,7 @@ const ERROR_FORWARD_THRESHOLD = 2;
  * expires.
  *
  * Some RPCs like oasis_invoke are synchronous at the gateway and so this is
- * a bit high. We should bring this down once we remove all synchrous rpcs.
+ * a bit high. We should bring this down once we remove all synchronous rpcs.
  */
 const REQUEST_TIMEOUT_DURATION = 30000;
 
@@ -127,8 +127,8 @@ export class JsonRpcWebSocket implements JsonRpc {
   private open(event: any) {
     this.lifecycle.emit('open');
 
-    // We were asked to close this websocket while connecting,
-    // so finish the jobn.
+    // we were asked to close this websocket while connecting,
+    // so finish the job.
     if (this.closeOnOpen) {
       this.websocket.close(CloseEvent.NORMAL);
       return;
