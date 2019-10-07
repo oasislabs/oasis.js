@@ -99,7 +99,7 @@ export default class PollingService {
    *
    *          For the ServicePollApi, there is a single queue for all responses
    *          related to service apis. For subscriptions, however, there is a
-   *          unique queue for each individudual subscription--hence the use of
+   *          unique queue for each individual subscription--hence the use of
    *          queueId to form the id.
    */
   private static id(options: PollingServiceOptions): string {

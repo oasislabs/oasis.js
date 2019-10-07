@@ -125,7 +125,7 @@ describe('Service', () => {
 
     let request = await txDataPromise;
 
-    // Then the receipient should be able to decrypt it.
+    // Then the recipient should be able to decrypt it.
     let decoder = new ConfidentialGatewayRequestDecoder(keys.privateKey);
     let plaintext = await decoder.decode(request.data);
 
