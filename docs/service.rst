@@ -4,7 +4,8 @@
 Service
 ===================
 
-``oasis.Service`` objects represent deployed services running on the Oasis cloud.
+``oasis.Service`` represents a service deployed on the Oasis network.
+Services deployed to the local chain can only interact with other locally-deployed services; integration tests will want to mock third-party services.
 
 To construct a service:
 
