@@ -4,7 +4,7 @@
 deploy
 ===================
 
-The ``oasis.deploy`` method deploys a service to the Oasis cloud.
+The ``oasis.deploy`` method deploys a service via an Oasis gateway.
 
 deploy
 ==================
