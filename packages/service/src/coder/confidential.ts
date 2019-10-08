@@ -1,10 +1,4 @@
-import {
-  AeadKeys,
-  KeyStore,
-  nonce,
-  encrypt,
-  decrypt,
-} from '@oasislabs/confidential';
+import { AeadKeys, nonce, encrypt, decrypt } from '@oasislabs/confidential';
 import { bytes } from '@oasislabs/common';
 
 import { Idl, RpcFn } from '../idl';
@@ -22,8 +16,8 @@ export default class ConfidentialCoder {
     args: any[],
     options?: RpcOptions
   ): Promise<Uint8Array> {
-    let aad = !options || !options.aad ? '' : options.aad;
-    let data = await this.internalCoder.encode(fn, args, options);
+    const aad = !options || !options.aad ? '' : options.aad;
+    const data = await this.internalCoder.encode(fn, args, options);
     return encrypt(
       nonce(),
       data,
@@ -43,12 +37,12 @@ export default class ConfidentialCoder {
       // Constructor rpcs aren't encrypted.
       return this.internalCoder.decode(fn, encrypted, constructor);
     }
-    let decryption = await decrypt(encrypted, this.keys.privateKey);
+    const decryption = await decrypt(encrypted, this.keys.privateKey);
     return this.internalCoder.decode(fn, decryption.plaintext, constructor);
   }
 
   public async decodeError(error: Uint8Array): Promise<string> {
-    let decryption = await decrypt(error, this.keys.privateKey);
+    const decryption = await decrypt(error, this.keys.privateKey);
     return this.internalCoder.decodeError(decryption.plaintext);
   }
 

@@ -6,7 +6,7 @@ describe('JsonRpcWebSocket', () => {
     jest.setTimeout(31000);
 
     // Given a JsonRpcWebSocet.
-    let ws = new JsonRpcWebSocket('', [], new MockWebSocketFactory());
+    const ws = new JsonRpcWebSocket('', [], new MockWebSocketFactory());
 
     try {
       // When I make a request that never resolves.
@@ -23,13 +23,15 @@ describe('JsonRpcWebSocket', () => {
 });
 
 class MockWebSocketFactory implements WebSocketFactory {
-  make(url: string): WebSocket {
+  make(_url: string): WebSocket {
     return new NeverResolveWebSocket() as WebSocket;
   }
 }
 
 class NeverResolveWebSocket {
-  addEventListener(event: string, fn: Function) {}
-  close(code: number) {}
-  send(data: string) {}
+  /* eslint-disable @typescript-eslint/no-empty-function */
+  addEventListener(_event: string, _fn: Function) {}
+  close(_code: number) {}
+  send(_data: string) {}
+  /* eslint-enable @typescript-eslint/no-empty-function */
 }

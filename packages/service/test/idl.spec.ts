@@ -2,17 +2,18 @@ import { fromWasm } from '../src/idl';
 
 describe('Idl', () => {
   it('Parses the idl from .wasm', async () => {
-    let path = 'test/wasm/mantle-counter.wasm';
+    const path = 'test/wasm/mantle-counter.wasm';
     // Given.
     const bin = new Uint8Array(require('fs').readFileSync(path));
 
     // When.
-    let idl = await fromWasm(bin);
+    const idl = await fromWasm(bin);
     // Then.
     expect(idl).toEqual({
       name: 'MantleCounter',
       namespace: 'mantle_counter',
       version: '0.1.0',
+      // eslint-disable-next-line @typescript-eslint/camelcase
       type_defs: [
         {
           type: 'event',
@@ -60,7 +61,7 @@ describe('Idl', () => {
           },
         },
       ],
-      oasis_build_version: '0.2.0',
+      oasis_build_version: '0.2.0', // eslint-disable-line @typescript-eslint/camelcase
     });
   });
 });

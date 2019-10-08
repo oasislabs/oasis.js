@@ -72,7 +72,7 @@ export function concat(arrays: Array<Uint8Array>): Uint8Array {
   let size = 0;
   arrays.forEach(a => (size += a.length));
 
-  let concatenated = new Uint8Array(size);
+  const concatenated = new Uint8Array(size);
 
   let start = 0;
   arrays.forEach(a => {
@@ -87,13 +87,10 @@ export function concat(arrays: Array<Uint8Array>): Uint8Array {
  * decodeUtf8 is a string decoding utility for both node and browsers.
  */
 export function decodeUtf8(array: Uint8Array): string {
-  let decoder =
-    // tslint:disable-next-line
+  const decoder =
     typeof TextDecoder === 'undefined'
-      ? // @ts-ignore
-        new (require('util')).TextDecoder('utf-8') // Node.
+      ? new (require('util')).TextDecoder('utf-8') // Node.
       : new TextDecoder('utf-8'); // Browser.
-  // @ts-ignore
   return decoder.decode(array);
 }
 
@@ -101,13 +98,10 @@ export function decodeUtf8(array: Uint8Array): string {
  * encodeUtf8 is a string encoding utility for both node and browsers.
  */
 export function encodeUtf8(input: string): Uint8Array {
-  let encoder =
-    // tslint:disable-next-line
+  const encoder =
     typeof TextEncoder === 'undefined'
-      ? // @ts-ignore
-        new (require('util')).TextEncoder('utf-8') // Node.
+      ? new (require('util')).TextEncoder('utf-8') // Node.
       : new TextEncoder(); // Browser.
-  // @ts-ignore
   return encoder.encode(input);
 }
 
@@ -121,12 +115,12 @@ export function toNumber(bytes: Uint8Array, le = false): number {
   }
   let b = toHex(bytes).substr(2);
   if (le) {
-    let match = b.match(/../g);
+    const match = b.match(/../g);
     if (match !== null) {
       b = match.reverse().join('');
     }
   }
-  let result = parseInt(b, 16);
+  const result = parseInt(b, 16);
   if (result >= Number.MAX_SAFE_INTEGER) {
     throw new Error(`Overflowed when converting to number: ${bytes}`);
   }

@@ -7,7 +7,6 @@ import * as _nacl from 'tweetnacl';
 let nacl: any = undefined;
 
 // Browser.
-/* tslint:disable */
 if (typeof window !== 'undefined') {
   // @ts-ignore
   nacl = _nacl.default;

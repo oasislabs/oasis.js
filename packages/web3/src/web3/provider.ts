@@ -1,9 +1,5 @@
 import { EventEmitter } from 'eventemitter3';
-import {
-  JsonRpcWebSocket,
-  JsonRpcRequest,
-  JsonRpcResponse,
-} from '../websocket';
+import { JsonRpcWebSocket, JsonRpcResponse } from '../websocket';
 import { Subscriptions } from '../subscriptions';
 import { Web3Error } from '../error';
 import { Wallet } from '../gateway';
@@ -49,7 +45,7 @@ export default class Web3Provider {
    * Assumes all params are properly formatted at this point.
    */
   public async send(method: string, params: any[]): Promise<any> {
-    let response = await this._send(method, params);
+    const response = await this._send(method, params);
     if (response.result === undefined) {
       throw new Web3Error(
         method,
@@ -75,6 +71,7 @@ export default class Web3Provider {
    * Transforms all calls to eth_sendTransaction to signed calls to
    * eth_sendRawTransaction.
    */
+  // eslint-disable-next-line @typescript-eslint/camelcase
   private async eth_sendTransaction(
     method: string,
     params: any[]
@@ -109,7 +106,7 @@ export default class Web3Provider {
   }
 
   private subscribeResponse(subscriptionId: string) {
-    let subscription = new Subscription(subscriptionId);
+    const subscription = new Subscription(subscriptionId);
 
     this.subscriptions.add(subscriptionId, (event: any) => {
       subscription.emit('data', event.params.result);

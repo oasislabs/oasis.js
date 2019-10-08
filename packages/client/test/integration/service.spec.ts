@@ -7,9 +7,9 @@ const bytecode = bytes.parseHex('0x1234');
 
 describe('Service', () => {
   it('deploys a service and executes an rpc', async () => {
-    let expectedOutput = 'rpc success!';
+    const expectedOutput = 'rpc success!';
 
-    let gateway = new GatewayBuilder()
+    const gateway = new GatewayBuilder()
       .deploy('0x372FF3aeA1fc69B9C440A5fE0B4c23c38226Da68')
       .rpc(expectedOutput)
       .gateway();
@@ -17,7 +17,7 @@ describe('Service', () => {
     oasis.setGateway(gateway);
 
     // Deploy the service.
-    let service = await oasis.deploy('constructor-arg', {
+    const service = await oasis.deploy('constructor-arg', {
       idl,
       bytecode: bytecode,
       db: new DummyStorage(),
@@ -25,14 +25,14 @@ describe('Service', () => {
     });
 
     // Invoke the Rpc.
-    let result = await service.rpc.the(defType(), bytes.parseHex('1234'));
+    const result = await service.rpc.the(defType(), bytes.parseHex('1234'));
 
     expect(result).toEqual(expectedOutput);
   });
 
   it(`listens for a service event with listeners`, async () => {
     // Build the gateway with the mocked network responses.
-    let gateway = new GatewayBuilder()
+    const gateway = new GatewayBuilder()
       .deploy('0x372FF3aeA1fc69B9C440A5fE0B4c23c38226Da68')
       .subscribe({ indexed1: 1, indexed2: 1 })
       .subscribe({ indexed1: 2, indexed2: 2 })
@@ -42,7 +42,7 @@ describe('Service', () => {
     oasis.setGateway(gateway);
 
     // Deploy the service.
-    let service = await oasis.deploy('constructor-arg', {
+    const service = await oasis.deploy('constructor-arg', {
       idl,
       bytecode: bytecode,
       db: new DummyStorage(),
@@ -51,14 +51,14 @@ describe('Service', () => {
 
     // Three listeners listening to the same event. Each should be notified
     // separately.
-    let listenerCount = 3;
+    const listenerCount = 3;
 
     // Wait for three logs to be emitted for each listener.
-    let promises: Promise<any[]>[] = [];
+    const promises: Promise<any[]>[] = [];
     for (let k = 0; k < listenerCount; k += 1) {
       promises.push(
         new Promise(resolve => {
-          let logs: any[] = [];
+          const logs: any[] = [];
 
           service.addEventListener('TestEvent2', function listener(event) {
             logs.push(event);
@@ -71,9 +71,9 @@ describe('Service', () => {
       );
     }
 
-    let logListeners = await Promise.all(promises);
+    const logListeners = await Promise.all(promises);
     // Check all the logs.
-    let expected = [
+    const expected = [
       { indexed1: 1, indexed2: 1 },
       { indexed1: 2, indexed2: 2 },
       { indexed1: 3, indexed2: 3 },

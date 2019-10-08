@@ -1,8 +1,0 @@
-{
-  "extends": ["tslint-config-standard", "tslint-config-prettier"],
-  "rules": {
-    "semicolon": [true, "always"],
-    "quotemark": [true, "single"],
-    "no-trailing-whitespace": true
-  }
-}

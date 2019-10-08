@@ -7,6 +7,7 @@ const idl = {
       version: '0.1.0',
     },
   ],
+  // eslint-disable-next-line @typescript-eslint/camelcase
   type_defs: [
     {
       type: 'enum',
@@ -219,6 +220,6 @@ const idl = {
       },
     },
   ],
-  idl_gen_version: '0.1.0',
+  idl_gen_version: '0.1.0', // eslint-disable-line @typescript-eslint/camelcase
 };
 export { idl };

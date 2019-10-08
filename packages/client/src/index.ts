@@ -29,6 +29,7 @@ const oasis = {
   utils: {
     bytes,
     cbor,
+    Deoxysii,
     encrypt,
     decrypt,
     OasisCoder,
@@ -44,7 +45,6 @@ const oasis = {
     try {
       defaultOasisGateway().disconnect();
     } catch (_e) {
-      // tslint:disable-line no-empty
       // `defaultOasisGateway` will throw if there's no default gateway.
       // Disconnecting from a nonexistent gateway is a no-op.
     }

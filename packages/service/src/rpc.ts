@@ -4,7 +4,7 @@ import { KeyStore } from '@oasislabs/confidential';
 import { bytes } from '@oasislabs/common';
 
 import { RpcError, ServiceError, NO_CODE_ERROR_MSG } from './error';
-import { Idl, IdlError, RpcFn, RpcInput } from './idl';
+import { Idl, IdlError, RpcFn } from './idl';
 import { ServiceOptions } from './service';
 import { OasisGateway, RpcOptions } from './oasis-gateway';
 import { RpcCoder } from './coder';
@@ -43,16 +43,16 @@ export class RpcFactory {
     address: Uint8Array,
     options: ServiceOptions
   ): [Rpcs, Promise<RpcCoder>] {
-    let functions = options.coder
+    const functions = options.coder
       ? options.coder.functions(idl)
       : OasisCoder.plaintext().functions(idl);
-    let rpcCoder: Promise<RpcCoder> = new Promise(resolve => {
+    const rpcCoder: Promise<RpcCoder> = new Promise(resolve => {
       options.coder
         ? resolve(options.coder)
         : RpcFactory.discover(address, options).then(resolve);
     });
 
-    let rpcs: Rpcs = {};
+    const rpcs: Rpcs = {};
 
     functions.forEach((fn: RpcFn) => {
       const rpcDef = RpcFactory.buildRpc(
@@ -80,22 +80,22 @@ export class RpcFactory {
     const name = RpcFactory.rpcName(fn.name);
 
     const rpc = async (...args: any[]) => {
-      let coder = await rpcCoder;
-      let [rpcArgs, rpcOptions] = RpcFactory.parseOptions(
+      const coder = await rpcCoder;
+      const [rpcArgs, rpcOptions] = RpcFactory.parseOptions(
         fn,
         args,
         gateway,
         coder
       );
-      let txData = await coder.encode(fn, rpcArgs, rpcOptions);
-      let response = await gateway.rpc({
+      const txData = await coder.encode(fn, rpcArgs, rpcOptions);
+      const response = await gateway.rpc({
         data: txData,
         address: address,
         options: rpcOptions,
       });
 
       if (response.error) {
-        let errorStr = await coder.decodeError(response.error);
+        const errorStr = await coder.decodeError(response.error);
         throw new Error(errorStr);
       }
 
@@ -122,7 +122,7 @@ export class RpcFactory {
     gateway: OasisGateway,
     rpcCoder: RpcCoder
   ): [any[], RpcOptions | undefined] {
-    let [rpcArgs, rpcOptions] = RpcFactory.splitArgsAndOptions(fn, args);
+    const [rpcArgs, rpcOptions] = RpcFactory.splitArgsAndOptions(fn, args);
     RpcFactory.validateRpcOptions(gateway, rpcCoder, rpcArgs, rpcOptions);
     return [rpcArgs, rpcOptions];
   }
@@ -133,7 +133,7 @@ export class RpcFactory {
   ): [any[], RpcOptions | undefined] {
     let options = undefined;
 
-    let inputLen = fn.inputs ? fn.inputs.length : 0;
+    const inputLen = fn.inputs ? fn.inputs.length : 0;
     if (args.length > inputLen) {
       if (args.length !== inputLen + 1) {
         throw new Error('provided too many arguments ${args}');
@@ -181,21 +181,21 @@ export class RpcFactory {
     options: ServiceOptions
   ): Promise<RpcCoder> {
     // Check the contract's deploy header to see if it's confidential.
-    let response = await options.gateway!.getCode({ address });
+    const response = await options.gateway!.getCode({ address });
 
     if (!response.code) {
       throw new ServiceError(address, NO_CODE_ERROR_MSG(address));
     }
 
-    let deployHeader = header.parseFromCode(response.code);
+    const deployHeader = header.parseFromCode(response.code);
 
     if (!deployHeader || !deployHeader.body.confidential) {
       return OasisCoder.plaintext();
     }
 
-    let keyStore = new KeyStore(options.db!, options.gateway!);
-    let serviceKey = await keyStore.publicKey(address);
-    let myKeyPair = keyStore.localKeys();
+    const keyStore = new KeyStore(options.db!, options.gateway!);
+    const serviceKey = await keyStore.publicKey(address);
+    const myKeyPair = keyStore.localKeys();
     return OasisCoder.confidential({
       peerPublicKey: serviceKey,
       publicKey: myKeyPair.publicKey,

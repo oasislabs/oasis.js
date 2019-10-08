@@ -1,4 +1,3 @@
-import { keccak256 } from 'js-sha3';
 import {
   ServicePollApi,
   SubscribePollApi,
@@ -32,8 +31,8 @@ export default class GatewayBuilder {
     return this;
   }
 
-  public subscribe(event: Object): GatewayBuilder {
-    let data = bytes.toHex(cbor.encode(event));
+  public subscribe(event: Record<string, any>): GatewayBuilder {
+    const data = bytes.toHex(cbor.encode(event));
     this.addSubscribeResponse({
       event: { data },
     });
@@ -42,10 +41,10 @@ export default class GatewayBuilder {
   }
 
   public gateway(): HttpGateway {
-    let url = 'test';
+    const url = 'test';
     const dummyApiToken = 'LPbGhl6lGxaFDHgHF5N8CNZ32a3MgE+IfmutjxEb3FWt4WwP';
-    let gateway = new HttpGateway(url, dummyApiToken, { headers: new Map() });
-    let session = new MockSession(
+    const gateway = new HttpGateway(url, dummyApiToken, { headers: new Map() });
+    const session = new MockSession(
       this.serviceResponses,
       this.subscribeResponses
     );
@@ -58,7 +57,7 @@ export default class GatewayBuilder {
 
     // One subscription is allowed for this mock gateway, so preset it's polling
     // parameters.
-    let subscriptionPoll = PollingService.instance({
+    const subscriptionPoll = PollingService.instance({
       url: url,
       queueId: 0,
       session: session,
@@ -97,7 +96,7 @@ class MockSession implements Http {
   // For more organized logging.
   private loggingLine = '--------------------------------';
 
-  private count: number = 0;
+  private count = 0;
 
   public constructor(
     private serviceResponses: any[],
@@ -111,7 +110,7 @@ class MockSession implements Http {
       );
     }
 
-    let response = await this._request(method, api, body);
+    const response = await this._request(method, api, body);
 
     if (this.logging) {
       console.debug(

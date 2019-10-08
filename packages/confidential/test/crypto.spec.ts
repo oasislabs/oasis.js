@@ -6,11 +6,11 @@ import nacl from '../src/tweetnacl';
 
 describe('Crypto', () => {
   it('Decrypts the encrypted data', async () => {
-    let plaintext = new Uint8Array([1, 2, 3, 4]);
+    const plaintext = new Uint8Array([1, 2, 3, 4]);
 
-    let [nonce, peer, me, aad] = aeadInput();
+    const [nonce, peer, me, aad] = aeadInput();
 
-    let encryption = await encrypt(
+    const encryption = await encrypt(
       nonce,
       plaintext,
       me.publicKey,
@@ -19,7 +19,7 @@ describe('Crypto', () => {
       aad
     );
 
-    let decryption = await decrypt(encryption, me.privateKey);
+    const decryption = await decrypt(encryption, me.privateKey);
 
     expect(decryption.nonce).toEqual(nonce);
     expect(decryption.peerPublicKey).toEqual(peer.publicKey);
@@ -28,7 +28,7 @@ describe('Crypto', () => {
   });
 
   it('Encrypts the data to the wire format', async () => {
-    let plaintext = new Uint8Array([
+    const plaintext = new Uint8Array([
       162,
       102,
       109,
@@ -57,7 +57,7 @@ describe('Crypto', () => {
       100,
       128,
     ]);
-    let nonce = new Uint8Array([
+    const nonce = new Uint8Array([
       14,
       165,
       160,
@@ -74,7 +74,7 @@ describe('Crypto', () => {
       84,
       170,
     ]);
-    let peerPublicKey = new Uint8Array([
+    const peerPublicKey = new Uint8Array([
       116,
       62,
       180,
@@ -108,7 +108,7 @@ describe('Crypto', () => {
       55,
       109,
     ]);
-    let publicKey = new Uint8Array([
+    const publicKey = new Uint8Array([
       83,
       125,
       217,
@@ -142,7 +142,7 @@ describe('Crypto', () => {
       207,
       27,
     ]);
-    let secretKey = new Uint8Array([
+    const secretKey = new Uint8Array([
       157,
       82,
       192,
@@ -176,9 +176,9 @@ describe('Crypto', () => {
       237,
       54,
     ]);
-    let aad = new Uint8Array([]);
+    const aad = new Uint8Array([]);
 
-    let encryption = await encrypt(
+    const encryption = await encrypt(
       new Nonce(nonce),
       plaintext,
       new PublicKey(peerPublicKey),
@@ -186,7 +186,7 @@ describe('Crypto', () => {
       new PrivateKey(secretKey),
       aad
     );
-    let [splitPublicKey, cipher, splitAad, splitNonce] = splitEncryptedPayload(
+    const [splitPublicKey, , splitAad, splitNonce] = splitEncryptedPayload(
       encryption
     );
 
@@ -197,21 +197,21 @@ describe('Crypto', () => {
 });
 
 function aeadInput(): [Nonce, KeyPair, KeyPair, Uint8Array] {
-  let keyPair = nacl.box.keyPair();
-  let me = {
+  const keyPair = nacl.box.keyPair();
+  const me = {
     publicKey: new PublicKey(keyPair.publicKey),
     privateKey: new PrivateKey(keyPair.secretKey),
   };
 
-  let peerKeyPair = nacl.box.keyPair();
-  let peer = {
+  const peerKeyPair = nacl.box.keyPair();
+  const peer = {
     publicKey: new PublicKey(peerKeyPair.publicKey),
     privateKey: new PrivateKey(peerKeyPair.secretKey),
   };
 
-  let nonce = new Nonce(nacl.randomBytes(15));
+  const nonce = new Nonce(nacl.randomBytes(15));
 
-  let aad = bytes.encodeUtf8('some_aad');
+  const aad = bytes.encodeUtf8('some_aad');
 
   return [nonce, peer, me, aad];
 }

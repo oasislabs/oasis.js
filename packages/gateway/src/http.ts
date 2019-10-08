@@ -11,7 +11,7 @@ export type HttpHeaders = {
  * Http interface for making http requests to the developer gateway.
  */
 export interface Http {
-  request(method: string, api: string, body: Object): Promise<any>;
+  request(method: string, api: string, body: Record<string, any>): Promise<any>;
 }
 
 /**
@@ -21,7 +21,7 @@ export interface HttpClient {
   request(
     method: string,
     url: string,
-    data: Object,
+    data: Record<string, any>,
     headers: HttpHeaders
   ): Promise<any>;
 }
@@ -34,10 +34,10 @@ export class AxiosClient implements HttpClient {
   public request(
     method: string,
     url: string,
-    data: Object,
+    data: Record<string, any>,
     httpHeaders: HttpHeaders
   ): Promise<any> {
-    const headers: Object = {};
+    const headers: Record<string, any> = {};
     httpHeaders.headers.forEach(
       (value, key) => ((headers as any)[key] = value)
     );

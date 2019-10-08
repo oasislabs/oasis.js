@@ -29,7 +29,7 @@ async function encrypt(
   privateKey: PrivateKey,
   aad: Uint8Array
 ): Promise<Uint8Array> {
-  let ciphertext = await aead.seal(
+  const ciphertext = await aead.seal(
     nonce,
     plaintext,
     aad,
@@ -70,7 +70,7 @@ async function decrypt(
   encryption: Uint8Array,
   secretKey: PrivateKey
 ): Promise<Decryption> {
-  let [peerPublicKey, ciphertext, aad, nonce] = splitEncryptedPayload(
+  const [peerPublicKey, ciphertext, aad, nonce] = splitEncryptedPayload(
     encryption
   );
 
@@ -89,7 +89,7 @@ async function decrypt(
     );
   }
 
-  let plaintext = await aead.open(
+  const plaintext = await aead.open(
     nonce,
     ciphertext,
     aad,
@@ -121,18 +121,18 @@ export function splitEncryptedPayload(
   if (encryption.length < ciphertextSize(0, 0)) {
     throw new Error(`ciphertext is too short: ${encryption}`);
   }
-  let nonce = new Uint8Array(aead.nonceSize());
-  let publicKey = new Uint8Array(aead.keySize());
-  let cipherLengthOffset = aead.keySize();
-  let aadLengthOffset = cipherLengthOffset + CIPHER_LEN_SIZE;
-  let cipherOffset = aadLengthOffset + AAD_LEN_SIZE;
+  const nonce = new Uint8Array(aead.nonceSize());
+  const publicKey = new Uint8Array(aead.keySize());
+  const cipherLengthOffset = aead.keySize();
+  const aadLengthOffset = cipherLengthOffset + CIPHER_LEN_SIZE;
+  const cipherOffset = aadLengthOffset + AAD_LEN_SIZE;
 
   publicKey.set(encryption.slice(0, publicKey.length));
-  let cipherLength = bytes.toNumber(
+  const cipherLength = bytes.toNumber(
     encryption.slice(cipherLengthOffset, cipherLengthOffset + CIPHER_LEN_SIZE),
     true
   );
-  let aadLength = bytes.toNumber(
+  const aadLength = bytes.toNumber(
     encryption.slice(aadLengthOffset, aadLengthOffset + AAD_LEN_SIZE),
     true
   );
@@ -141,10 +141,10 @@ export function splitEncryptedPayload(
     throw new Error(`invalid ciphertext lenghth: ${encryption}`);
   }
 
-  let ciphertext = new Uint8Array(cipherLength);
+  const ciphertext = new Uint8Array(cipherLength);
 
   ciphertext.set(encryption.slice(cipherOffset, cipherOffset + cipherLength));
-  let aad = encryption.slice(
+  const aad = encryption.slice(
     cipherOffset + cipherLength,
     cipherOffset + cipherLength + aadLength
   );

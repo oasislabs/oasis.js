@@ -5,7 +5,7 @@ import { Web3, Web3Provider } from '../src/web3';
 describe('Web3', () => {
   // Mock out the websocket json rpc requester for all testing.
   // @ts-ignore
-  Web3Provider.makeWs = (url, sub) => {
+  Web3Provider.makeWs = (_url, _sub) => {
     return new MockJsonRpc();
   };
 
@@ -25,7 +25,6 @@ describe('Web3', () => {
     const wallet = new ethers.Wallet(
       '0x0d0b8fb7d60f37b370731f4de70dc1837997ea5e16023792c3573e8b3238bc0e'
     );
-    const jsonRpc = new MockJsonRpc();
     const web3 = new Web3(new Web3Provider('', wallet));
 
     const response = await web3.eth.sendTransaction({

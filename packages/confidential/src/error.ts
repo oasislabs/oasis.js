@@ -1,4 +1,4 @@
-import { Nonce, PublicKey, PrivateKey } from '.';
+import { Nonce, PublicKey } from '.';
 
 export class EncryptError extends Error {
   constructor(readonly encParams: EncryptionParams, ...params: any[]) {

@@ -70,7 +70,7 @@ export default class PollingService {
    * @returns the instance of PollingService for the given url.
    */
   public static instance(options: PollingServiceOptions): PollingService {
-    let id = PollingService.id(options);
+    const id = PollingService.id(options);
 
     if (!PollingService.SERVICES.get(id)) {
       PollingService.SERVICES.set(
@@ -118,7 +118,7 @@ export default class PollingService {
    */
   public async response(requestId: number): Promise<any> {
     return new Promise(resolve => {
-      let cached = this.responseWindow.item(requestId);
+      const cached = this.responseWindow.item(requestId);
       if (cached) {
         return resolve(cached);
       }
@@ -247,7 +247,7 @@ class Window<T> {
   public slide(id: number, item: T) {
     this.collected.set(id, item);
     if (id === this.start) {
-      let start = this.start;
+      const start = this.start;
       for (let k = start; k < this.end; k += 1) {
         if (this.collected.get(k)) {
           this.start += 1;

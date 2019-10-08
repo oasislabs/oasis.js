@@ -19,8 +19,6 @@
   },
   "author": "Oasis Labs Inc. <feedback@oasislabs.com>",
   "scripts": {
-    "lint": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
-    "lint:fix": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts' --fix",
     "build": "tsc --module commonjs && rollup -c rollup.config.ts"
   },
   "dependencies": {

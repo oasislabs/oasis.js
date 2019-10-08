@@ -8,9 +8,9 @@ export class Subscriptions implements Middleware {
   private subscriptionCallbacks: Map<string, Function> = new Map();
 
   handle(message: any): any | undefined {
-    let data = JSON.parse(message.data);
+    const data = JSON.parse(message.data);
     if (data.params && data.params.subscription) {
-      let callback = this.subscriptionCallbacks.get(
+      const callback = this.subscriptionCallbacks.get(
         `${data.params.subscription}`
       );
       if (callback) {
