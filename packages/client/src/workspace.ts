@@ -186,7 +186,7 @@ class Config {
     }
 
     if (gatewayType === GatewayType.Web3) {
-      return new Web3Gateway(gatewayUrl, credential.wallet!);
+      return new Web3Gateway(gatewayUrl, credential.wallet);
     }
     return new Gateway(gatewayUrl, credential.credential, {
       headers: new Map(),

@@ -168,8 +168,8 @@ function oasisGateway(options: DeployOptions): OasisGateway {
  */
 function validateDeployOptions(deployOptions: DeployOptions, args: any[]) {
   if (
-    deployOptions!.header!.confidential &&
-    (!deployOptions!.options || !deployOptions!.options!.gasLimit)
+    deployOptions.header!.confidential &&
+    (!deployOptions.options || !deployOptions.options.gasLimit)
   ) {
     throw new DeployError(
       args,

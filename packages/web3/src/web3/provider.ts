@@ -34,7 +34,7 @@ export default class Web3Provider {
     this.subscriptions = new Subscriptions();
     this.ws = Web3Provider.makeWs(url, this.subscriptions);
     if (wallet) {
-      this.transactions = new TransactionFactory(wallet!.address, this.ws);
+      this.transactions = new TransactionFactory(wallet.address, this.ws);
     }
   }
 
@@ -89,7 +89,7 @@ export default class Web3Provider {
     const tx = await this.transactions!.create(
       params[0] as UnpreparedTransaction
     );
-    const rawTx = await this.wallet!.sign(tx);
+    const rawTx = await this.wallet.sign(tx);
     return this.ws.request({
       method: 'eth_sendRawTransaction',
       params: [rawTx],

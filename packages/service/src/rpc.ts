@@ -88,7 +88,7 @@ export class RpcFactory {
         coder
       );
       let txData = await coder.encode(fn, rpcArgs, rpcOptions);
-      let response = await gateway!.rpc({
+      let response = await gateway.rpc({
         data: txData,
         address: address,
         options: rpcOptions,
@@ -187,7 +187,7 @@ export class RpcFactory {
       throw new ServiceError(address, NO_CODE_ERROR_MSG(address));
     }
 
-    let deployHeader = header.parseFromCode(response.code!);
+    let deployHeader = header.parseFromCode(response.code);
 
     if (!deployHeader || !deployHeader.body.confidential) {
       return OasisCoder.plaintext();

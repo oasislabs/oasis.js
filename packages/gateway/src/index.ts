@@ -232,7 +232,7 @@ class HttpGateway implements OasisGateway {
       PublicKeyApi.method,
       PublicKeyApi.url,
       {
-        address: bytes.toHex(request.address!),
+        address: bytes.toHex(request.address),
       }
     );
 
@@ -268,7 +268,7 @@ class HttpGateway implements OasisGateway {
       GetCodeApi.method,
       GetCodeApi.url,
       {
-        address: bytes.toHex(request.address!),
+        address: bytes.toHex(request.address),
       }
     );
     return {
