@@ -1,5 +1,6 @@
 import { ethers } from 'ethers';
 import { JsonRpcRequest, JsonRpcResponse } from '../src/websocket';
+import { OASIS_CHAIN_ID } from '../src/transaction';
 import { Web3, Web3Provider } from '../src/web3';
 
 describe('Web3', () => {
@@ -31,6 +32,7 @@ describe('Web3', () => {
       to: '0xf31a68b6a781e265f40c111abf24dc59d12928ef',
       value: '0x100',
       nonce: '0x20',
+      chainId: OASIS_CHAIN_ID,
     });
 
     // Expect our provider to transform all `eth_sendTransaction` rpcs into

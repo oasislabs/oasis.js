@@ -23,7 +23,7 @@ commands:
           command: |
             apt-get -qq update
             apt-get -qq install python curl git gcc
-            curl --proto '=https' --tlsv1.2 -sSL https://get.oasis.dev | python - --toolchain 19.37
+            curl --proto '=https' --tlsv1.2 -sSL https://get.oasis.dev | python - --toolchain 19.41
             npm install -g lerna
             npm install -g yarn
 

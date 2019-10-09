@@ -1,6 +1,6 @@
 import { JsonRpc } from './websocket';
 
-const OASIS_CHAIN_ID = 42261;
+export const OASIS_CHAIN_ID = 42261;
 
 export class TransactionFactory {
   constructor(private address: string, private rpc: JsonRpc) {}
