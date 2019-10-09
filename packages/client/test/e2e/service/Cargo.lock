@@ -63,7 +63,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 name = "counter"
 version = "0.1.0"
 dependencies = [
- "oasis-std 0.2.5 (registry+https://github.com/rust-lang/crates.io-index)",
+ "oasis-std 0.2.6 (registry+https://github.com/rust-lang/crates.io-index)",
  "oasis-test 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde 1.0.101 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
@@ -153,7 +153,7 @@ dependencies = [
 
 [[package]]
 name = "oasis-std"
-version = "0.2.5"
+version = "0.2.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "base64 0.10.1 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -369,7 +369,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum memchain 0.2.3 (registry+https://github.com/rust-lang/crates.io-index)" = "43f2685473e848a08bb277b9d8afb0d7f47400763b428f2f267de6f41d49f417"
 "checksum memchr 2.2.1 (registry+https://github.com/rust-lang/crates.io-index)" = "88579771288728879b57485cc7d6b07d648c9f0141eb955f8ab7f9d45394468e"
 "checksum oasis-macros 0.2.2 (registry+https://github.com/rust-lang/crates.io-index)" = "216d8626ba4ac3aeff960eebc777e54091ceba844f28111d81dd6d7b2f08889a"
-"checksum oasis-std 0.2.5 (registry+https://github.com/rust-lang/crates.io-index)" = "327c9ef44a4e64b0ee56c2d8c02a185b6e054e3cb61fc488ac75e4bc4a2bc347"
+"checksum oasis-std 0.2.6 (registry+https://github.com/rust-lang/crates.io-index)" = "6c70622467b16c17a95b866050b2300390c39db99dbd89da2341b6b727fde7ff"
 "checksum oasis-test 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)" = "559bd9c8e14989d51228fd58b98d5e610d0257c3662dc8421cec761128e6ad7c"
 "checksum oasis-types 0.2.2 (registry+https://github.com/rust-lang/crates.io-index)" = "751b6eebe5f32bb7fbd26224bdfc071c9a06047fe1469fe85503c11e12002555"
 "checksum proc-macro2 0.4.30 (registry+https://github.com/rust-lang/crates.io-index)" = "cf3d2011ab5c909338f7887f4fc896d35932e29146c12c8d01da6b22a80ba759"
