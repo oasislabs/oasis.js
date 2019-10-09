@@ -69,6 +69,7 @@ describe('Counter', () => {
             return service.incrementCounter(c.options);
           });
         }
+        return incr;
       });
 
       for (let k = 1; k < logs.length; k += 1) {

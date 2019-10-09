@@ -16,7 +16,6 @@ export class TransactionFactory {
     if (!tx.gasPrice) {
       tx.gasPrice = '0x3b9aca00';
     }
-    tx.chainId = OASIS_CHAIN_ID;
 
     const promises: Promise<any>[] = [];
     if (!tx.gasLimit) {
