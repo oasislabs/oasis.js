@@ -2,9 +2,7 @@
   "extends": "../../tsconfig.json",
   "include": ["src"],
   "compilerOptions": {
-    "outDir": "dist/lib",
-    "allowJs": true,
-    "declaration": false
+    "outDir": "dist/lib"
   },
   "references": [
     { "path": "../common" },
