@@ -8,7 +8,6 @@ import { ecdhTweak as browser } from './browser';
  * This module supplies two different versions, depending upon whether we're
  * in browser or node.
  */
-// tslint:disable-next-line
 const ecdhTweak = typeof window !== 'undefined' ? browser : node;
 
 export { ecdhTweak };

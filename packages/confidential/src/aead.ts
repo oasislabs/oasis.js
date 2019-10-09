@@ -32,8 +32,8 @@ export class Deoxysii implements Aead {
     peerPublicKey: PublicKey,
     privateKey: PrivateKey
   ): Promise<Uint8Array> {
-    let aesKey = await ecdhTweak(peerPublicKey, privateKey);
-    let aead = new deoxysii.AEAD(aesKey);
+    const aesKey = await ecdhTweak(peerPublicKey, privateKey);
+    const aead = new deoxysii.AEAD(aesKey);
     return aead.encrypt(nonce.bytes(), plaintext, additionalData);
   }
 
@@ -44,8 +44,8 @@ export class Deoxysii implements Aead {
     peerPublicKey: PublicKey,
     privateKey: PrivateKey
   ): Promise<Uint8Array> {
-    let aesKey = await ecdhTweak(peerPublicKey, privateKey);
-    let aead = new deoxysii.AEAD(aesKey);
+    const aesKey = await ecdhTweak(peerPublicKey, privateKey);
+    const aead = new deoxysii.AEAD(aesKey);
     return aead.decrypt(nonce.bytes(), ciphertext, additionalData);
   }
 

@@ -1,7 +1,7 @@
 import { JsonRpcRequest } from './websocket';
 
 export class TransactionReverted extends Error {
-  constructor(readonly receipt: Object, ...params: any[]) {
+  constructor(readonly receipt: Record<string, any>, ...params: any[]) {
     super(...params);
   }
 }

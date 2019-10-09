@@ -1,16 +1,10 @@
 import { EventEmitter } from 'eventemitter3';
-import { keccak256 } from 'js-sha3';
 import { Db, LocalStorage, bytes } from '@oasislabs/common';
-import { Idl, RpcFn, fromWasm } from './idl';
+import { Idl, fromWasm } from './idl';
 import { Rpcs, RpcFactory } from './rpc';
 import { RpcCoder } from './coder';
 import { DeployHeaderReader } from './deploy/header';
-import {
-  OasisGateway,
-  defaultOasisGateway,
-  SubscribeRequest,
-  SubscribeTopic,
-} from './oasis-gateway';
+import { OasisGateway, defaultOasisGateway } from './oasis-gateway';
 import { ServiceError, NO_CODE_ERROR_MSG } from './error';
 
 /**
@@ -21,6 +15,11 @@ export default class Service {
    * The generated rpcs for this service, defined by a given IDL.
    */
   public rpc: Rpcs;
+
+  /**
+   * The address of the deployed service.
+   */
+  public address: Uint8Array;
 
   /**
    * The inner variables required to implement the Service object. We reserve
@@ -47,7 +46,7 @@ export default class Service {
     options?: ServiceOptions
   ) {
     // Convert to Uint8Array.
-    let _address: Uint8Array =
+    const _address: Uint8Array =
       typeof address === 'string' ? bytes.parseHex(address) : address;
 
     // Fill in any options not provided by the arguments.
@@ -56,18 +55,18 @@ export default class Service {
     // Attach the rpcs onto the rpc interface so that we can generate dynamic
     // rpc methods while keeping the compiler happy. Without this, we need
     // to use a types file when using a service within TypeScript.
-    let [rpc, coder] = RpcFactory.build(idl, _address, options);
+    const [rpc, coder] = RpcFactory.build(idl, _address, options);
     this.rpc = rpc;
 
     // Attach the rpcs directly onto the Service object so that we can have
     // the nice service.myMethod() syntax in JavaScript.
     Object.assign(this, rpc);
 
+    this.address = _address;
     this._inner = {
       idl,
       options,
       coder,
-      address: _address,
       listeners: new EventEmitter(),
       subscriptions: new Map(),
     };
@@ -85,14 +84,14 @@ export default class Service {
       typeof address === 'string' ? bytes.parseHex(address) : address;
 
     options = Service.setupOptions(options);
-    let response = await options.gateway!.getCode({ address: _address });
+    const response = await options.gateway!.getCode({ address: _address });
 
     if (!response.code) {
       throw new ServiceError(_address, NO_CODE_ERROR_MSG(_address));
     }
 
-    let wasm = DeployHeaderReader.initcode(response.code);
-    let idl = await fromWasm(wasm);
+    const wasm = DeployHeaderReader.initcode(response.code);
+    const idl = await fromWasm(wasm);
     return new Service(idl, address, options);
   }
 
@@ -141,7 +140,7 @@ export default class Service {
         subscription = this._inner.options.gateway!.subscribe({
           event,
           filter: {
-            address: this._inner.address,
+            address: this.address,
             topics: [coder.topic(event, this._inner.idl)],
           },
         });
@@ -150,7 +149,10 @@ export default class Service {
 
         // Decode the gateway's response and return it to the listener.
         subscription.addListener(event, async (e: any) => {
-          let decoded = await coder.decodeSubscriptionEvent(e, this._inner.idl);
+          const decoded = await coder.decodeSubscriptionEvent(
+            e,
+            this._inner.idl
+          );
 
           this._inner.listeners.emit(event, decoded);
         });
@@ -161,10 +163,10 @@ export default class Service {
   }
 
   public removeEventListener(event: string, listener: Listener) {
-    let subscription = this._inner.subscriptions.get(event);
+    const subscription = this._inner.subscriptions.get(event);
     if (subscription === undefined) {
       throw new ServiceError(
-        this._inner.address,
+        this.address,
         `no subscriptions found for ${event}`
       );
     }
@@ -183,11 +185,6 @@ export default class Service {
  * The private state variables used by the `Service` object.
  */
 type ServiceInner = {
-  /**
-   * Uint8Array of the service.
-   */
-  address: Uint8Array;
-
   /**
    * Configurable options for the Service.
    */
@@ -225,7 +222,7 @@ type ServiceInner = {
  * Options for adding a a service event listener.
  */
 type ListenerOptions = {
-  filter?: Object;
+  filter?: Record<string, any>;
 };
 
 /**

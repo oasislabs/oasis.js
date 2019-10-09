@@ -5,7 +5,6 @@ import {
   deploy,
   fromWasmSync,
   setGateway,
-  RpcOptions,
   OasisGateway,
   defaultOasisGateway,
 } from '@oasislabs/service';
@@ -28,7 +27,6 @@ export default new Proxy(
       const fs = require('fs');
       const process = require('process');
 
-      // tslint:disable-next-line strict-type-predicates
       if (typeof window !== 'undefined') {
         throw new Error(
           '`oasis.workspace` is not (yet) available in the browser'
@@ -42,7 +40,7 @@ export default new Proxy(
 
           projectRoot = process.cwd();
           while (!fs.existsSync(path.join(projectRoot, '.git'))) {
-            let parentDir = path.dirname(projectRoot);
+            const parentDir = path.dirname(projectRoot);
             if (parentDir === projectRoot) {
               projectRoot = undefined;
             }
@@ -59,8 +57,8 @@ export default new Proxy(
         find
           .fileSync(/target\/service\/.*\.wasm/, projectRoot)
           .reduce((services: any, wasmPath: string) => {
-            let bytecode = fs.readFileSync(wasmPath);
-            let idl = fromWasmSync(bytecode);
+            const bytecode = fs.readFileSync(wasmPath);
+            const idl = fromWasmSync(bytecode);
             services[idl.name] = new ServiceDefinition(bytecode, idl);
             return services;
           }, workspaceCache);
@@ -131,12 +129,11 @@ export class ServiceDefinition {
 }
 
 async function configGateway(): Promise<OasisGateway> {
-  // tslint:disable-next-line strict-type-predicates
   if (typeof window !== 'undefined') {
     throw new WorkspaceError('Cannot use oasis.workspace in the browser');
   }
 
-  let config = await Config.read();
+  const config = await Config.read();
   setGateway(config.gateway());
 
   return defaultOasisGateway();
@@ -186,7 +183,7 @@ class Config {
     }
 
     if (gatewayType === GatewayType.Web3) {
-      return new Web3Gateway(gatewayUrl, credential.wallet!);
+      return new Web3Gateway(gatewayUrl, credential.wallet);
     }
     return new Gateway(gatewayUrl, credential.credential, {
       headers: new Map(),
@@ -209,8 +206,8 @@ function inferGatewayType(
   gatewayUrl: string,
   credential: Credential
 ): GatewayType {
-  let url = require('url').parse(gatewayUrl.toLowerCase());
-  let port = parseInt(url.port, 10);
+  const url = require('url').parse(gatewayUrl.toLowerCase());
+  const port = parseInt(url.port, 10);
   if (
     url.hostname.match(/web3/gi) ||
     port in [8545, 8546] ||

@@ -6,7 +6,6 @@ import {
   SubscribeRequest,
   SubscribeFilter,
   UnsubscribeRequest,
-  SubscribeTopic,
   DeployRequest,
   DeployResponse,
   PublicKeyRequest,
@@ -127,13 +126,16 @@ class HttpGateway implements OasisGateway {
    * Sanity check that the gateway is constructed with the correct url.
    */
   private assertGatewayIsResponsive(url: string): Promise<undefined> {
-    return new Promise(async (resolve, reject) => {
-      let timeout = setTimeout(() => {
+    return new Promise((resolve, reject) => {
+      const timeout = setTimeout(() => {
         reject(new Error(`Couldn't connect to gateway ${url}`));
       }, 3000);
 
       try {
-        await this.session.request(HealthApi.method, HealthApi.url, {});
+        this.session
+          .request(HealthApi.method, HealthApi.url, {})
+          .then(resolve)
+          .catch(reject);
       } catch (e) {
         if (e.message !== 'Request failed with status code 404') {
           reject(e);
@@ -146,11 +148,11 @@ class HttpGateway implements OasisGateway {
   }
 
   public async deploy(request: DeployRequest): Promise<DeployResponse> {
-    let e = await this.postAndPoll(DeployApi, {
+    const e = await this.postAndPoll(DeployApi, {
       data: bytes.toHex(request.data),
     });
-    let event = e as DeployEvent;
-    let address = bytes.parseHex(event.address);
+    const event = e as DeployEvent;
+    const address = bytes.parseHex(event.address);
     return { address };
   }
 
@@ -160,7 +162,7 @@ class HttpGateway implements OasisGateway {
         'transaction options are not allowed by the developer gateway'
       );
     }
-    let event = await this.postAndPoll(RpcApi, {
+    const event = await this.postAndPoll(RpcApi, {
       data: bytes.toHex(request.data),
       address: bytes.toHex(request.address!),
     });
@@ -174,7 +176,7 @@ class HttpGateway implements OasisGateway {
   // TODO: this should be typed to return an event emitter once we address
   //       https://github.com/oasislabs/oasis-client/issues/25
   public subscribe(request: SubscribeRequest): any {
-    let events = new EventEmitter();
+    const events = new EventEmitter();
     this.session
       .request(SubscribeApi.method, SubscribeApi.url, {
         events: ['logs'],
@@ -202,7 +204,7 @@ class HttpGateway implements OasisGateway {
   }
 
   public unsubscribe(request: UnsubscribeRequest) {
-    let queueId = this.subscriptions.get(request.event);
+    const queueId = this.subscriptions.get(request.event);
     if (queueId === undefined) {
       throw new Error(`no subscriptions exist for ${JSON.stringify(request)}`);
     }
@@ -232,16 +234,16 @@ class HttpGateway implements OasisGateway {
       PublicKeyApi.method,
       PublicKeyApi.url,
       {
-        address: bytes.toHex(request.address!),
+        address: bytes.toHex(request.address),
       }
     );
 
-    let event: PublicKeyEvent = response as PublicKeyEvent;
+    const event: PublicKeyEvent = response as PublicKeyEvent;
 
     // TODO: validate signature
     //       https://github.com/oasislabs/oasis-client/issues/39
 
-    let publicKey = event.publicKey
+    const publicKey = event.publicKey
       ? bytes.parseHex(event.publicKey)
       : undefined;
     return { publicKey };
@@ -253,10 +255,10 @@ class HttpGateway implements OasisGateway {
    */
   private async postAndPoll(
     api: DeveloperGatewayApi,
-    body: Object
+    body: Record<string, any>
   ): Promise<Event> {
     const response = await this.session.request(api.method, api.url, body);
-    let event = await this.polling.response(response.id);
+    const event = await this.polling.response(response.id);
     if ((event as ErrorEvent).cause) {
       throw new Error(`poll error: ${JSON.stringify(event)}`);
     }
@@ -264,11 +266,11 @@ class HttpGateway implements OasisGateway {
   }
 
   public async getCode(request: GetCodeRequest): Promise<GetCodeResponse> {
-    let response = await this.session.request(
+    const response = await this.session.request(
       GetCodeApi.method,
       GetCodeApi.url,
       {
-        address: bytes.toHex(request.address!),
+        address: bytes.toHex(request.address),
       }
     );
     return {

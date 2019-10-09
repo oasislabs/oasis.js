@@ -76,7 +76,7 @@
           }
 
           // 3) Listen to events.
-          let logs = await new Promise(async resolve => {
+          let logs = await new Promise(resolve => {
             let logs = [];
             service.addEventListener('Incremented', function listener(event) {
               logs.push(event);
@@ -86,7 +86,7 @@
               }
             });
             for (let k = 0; k < 3; k += 1) {
-              await service.incrementCounter();
+              service.incrementCounter();
             }
           });
 

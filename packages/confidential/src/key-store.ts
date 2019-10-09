@@ -17,7 +17,7 @@ export class KeyStore {
   /**
    * LOCAL_KEYS is the db key where the local keypair is stored.
    */
-  private static LOCAL_KEYPAIR_KEY: string = '@oasislabs/client/me';
+  private static LOCAL_KEYPAIR_KEY = '@oasislabs/client/me';
 
   public constructor(db: Db, keyProvider: KeyProvider) {
     this.db = db;
@@ -49,7 +49,7 @@ export class KeyStore {
     service: Uint8Array | string
   ): PublicKey | undefined {
     service = typeof service === 'string' ? service : bytes.toHex(service);
-    let key = this.db.get(service);
+    const key = this.db.get(service);
     if (!key) {
       return undefined;
     }
@@ -66,7 +66,7 @@ export class KeyStore {
     publicKey: PublicKey
   ) {
     service = typeof service === 'string' ? service : bytes.toHex(service);
-    let value = bytes.toHex(publicKey.bytes());
+    const value = bytes.toHex(publicKey.bytes());
     this.db.set(service, value);
   }
 
@@ -78,7 +78,7 @@ export class KeyStore {
   ): Promise<PublicKey> {
     // Ensure we are using Uint8Array.
     service = typeof service !== 'string' ? service : bytes.parseHex(service);
-    let response = await this.keyProvider.publicKey({ address: service });
+    const response = await this.keyProvider.publicKey({ address: service });
     if (!response.publicKey) {
       throw new KeyStoreError(
         `KeyProvider did not return a public key: ${response}`
@@ -92,17 +92,17 @@ export class KeyStore {
    *          create them.
    */
   public localKeys(): KeyPair {
-    let serializedKeys = this.db.get(KeyStore.LOCAL_KEYPAIR_KEY);
+    const serializedKeys = this.db.get(KeyStore.LOCAL_KEYPAIR_KEY);
     if (serializedKeys) {
       return KeyStore.deserializeKeyPair(serializedKeys);
     }
-    let keyPair = this.newKeyPair();
+    const keyPair = this.newKeyPair();
     this.db.set(KeyStore.LOCAL_KEYPAIR_KEY, KeyStore.serializeKeyPair(keyPair));
     return keyPair;
   }
 
   public newKeyPair(): KeyPair {
-    let kp = nacl.box.keyPair();
+    const kp = nacl.box.keyPair();
     return {
       publicKey: new PublicKey(kp.publicKey),
       privateKey: new PrivateKey(kp.secretKey),
@@ -117,7 +117,7 @@ export class KeyStore {
   }
 
   private static deserializeKeyPair(keyPair: string): KeyPair {
-    let kp = JSON.parse(keyPair);
+    const kp = JSON.parse(keyPair);
     return {
       publicKey: new PublicKey(bytes.parseHex(kp.publicKey)),
       privateKey: new PrivateKey(bytes.parseHex(kp.privateKey)),

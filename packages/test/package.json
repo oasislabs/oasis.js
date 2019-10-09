@@ -12,15 +12,13 @@
   "homepage": "https://github.com/oasislabs/oasis.js#readme",
   "main": "dist/index.umd.js",
   "module": "dist/index.es5.js",
-  "typings": "dist/lib/index.d.ts",
+  "types": "dist/lib/index.d.ts",
   "license": "Apache-2.0",
   "publishConfig": {
     "access": "public"
   },
-  "author": "Oasis Labs Inc. <info@oasislabs.com>",
+  "author": "Oasis Labs Inc. <feedback@oasislabs.com>",
   "scripts": {
-    "lint": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
-    "lint:fix": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts' --fix",
     "build": "tsc --module commonjs && rollup -c rollup.config.ts"
   },
   "dependencies": {

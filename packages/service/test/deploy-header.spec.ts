@@ -1,10 +1,10 @@
 import { bytes } from '@oasislabs/common';
-import { DeployHeader, DeployHeaderWriter } from '../src/deploy/header';
+import { DeployHeader } from '../src/deploy/header';
 import { makeExpectedBytecode } from './utils';
 
 describe('DeployHeader', () => {
   describe('deployCode', () => {
-    let failTests = [
+    const failTests = [
       {
         description: 'errors when writing a deploy header to empty bytecode',
         bytecode: new Uint8Array(),
@@ -38,7 +38,7 @@ describe('DeployHeader', () => {
       });
     });
 
-    let successTests = [
+    const successTests = [
       {
         description: 'does not change the bytecode if the header is empty',
         bytecode: bytes.parseHex('0x1234'),
@@ -85,7 +85,7 @@ describe('DeployHeader', () => {
 
     successTests.forEach(test => {
       it(test.description, function() {
-        let data = DeployHeader.deployCode(
+        const data = DeployHeader.deployCode(
           test.header,
           test.bytecode
         ) as Uint8Array;

@@ -8,7 +8,6 @@ export class LocalStorage implements Db {
 
   constructor() {
     // Node.
-    // tslint:disable-next-line
     if (typeof window === 'undefined') {
       this.storage = require('node-localstorage').LocalStorage('.oasis');
     }

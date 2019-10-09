@@ -9,7 +9,6 @@ import * as _cborJs from 'cbor-js';
 let cborJs: any = undefined;
 
 // Browser.
-/* tslint:disable */
 if (typeof window !== 'undefined') {
   cborJs = _cborJs.default;
 }

@@ -41,11 +41,11 @@ export default async function deploy(...args: any[]): Promise<Service> {
   // Convert from the unstructured api arguments to the typed DeployOptions.
   const options = await extractOptions(args);
 
-  let data = await deployCode(options);
+  const data = await deployCode(options);
 
-  let gateway = oasisGateway(options);
+  const gateway = oasisGateway(options);
 
-  let response = await gateway.deploy({ data, options: options.options });
+  const response = await gateway.deploy({ data, options: options.options });
 
   if (!response.address) {
     throw new DeployError(args, `Invalid gateway response: ${response}`);
@@ -130,7 +130,7 @@ async function toDeployOptions(
  *          filling in any left out options with the default header.
  */
 function deployHeader(options: DeployOptions): DeployHeaderOptions {
-  let defaultHeader = { confidential: true };
+  const defaultHeader = { confidential: true };
   return Object.assign(defaultHeader, options.header);
 }
 
@@ -139,8 +139,8 @@ function deployHeader(options: DeployOptions): DeployHeaderOptions {
  *          OASIS_HEADER || INITCODE.
  */
 async function deployCode(options: DeployOptions): Promise<Uint8Array> {
-  let code = await initcode(options);
-  let header = deployHeader(options);
+  const code = await initcode(options);
+  const header = deployHeader(options);
   return DeployHeader.deployCode(header, code);
 }
 
@@ -148,7 +148,7 @@ async function deployCode(options: DeployOptions): Promise<Uint8Array> {
  * @returns the initcode, i.e., BYTECODE || ABI_ENCODED(args).
  */
 async function initcode(options: DeployOptions): Promise<Uint8Array> {
-  let encoder = options.coder ? options.coder : OasisCoder.plaintext();
+  const encoder = options.coder ? options.coder : OasisCoder.plaintext();
   return encoder.initcode(
     options.idl!,
     options.arguments || [],
@@ -168,8 +168,8 @@ function oasisGateway(options: DeployOptions): OasisGateway {
  */
 function validateDeployOptions(deployOptions: DeployOptions, args: any[]) {
   if (
-    deployOptions!.header!.confidential &&
-    (!deployOptions!.options || !deployOptions!.options!.gasLimit)
+    deployOptions.header!.confidential &&
+    (!deployOptions.options || !deployOptions.options.gasLimit)
   ) {
     throw new DeployError(
       args,

@@ -1,10 +1,5 @@
 import * as EventEmitter from 'eventemitter3';
-import {
-  PublicKey,
-  PrivateKey,
-  encrypt,
-  decrypt,
-} from '@oasislabs/confidential';
+import { PublicKey, PrivateKey, decrypt } from '@oasislabs/confidential';
 import { bytes, cbor } from '@oasislabs/common';
 import {
   OasisGateway,
@@ -18,26 +13,29 @@ import {
   GetCodeRequest,
   GetCodeResponse,
 } from '../src/oasis-gateway';
-import { RpcFn } from '../src/idl';
 import { RpcRequest as FnRequest } from '../src/coder';
 import { DeployHeader, DeployHeaderWriter } from '../src/deploy/header';
 
 export class EmptyOasisGateway implements OasisGateway {
   private connectionStateDummy = new EventEmitter();
-  public async rpc(request: RpcRequest): Promise<any> {}
-  public subscribe(request: SubscribeRequest): EventEmitter {
+  public async rpc(_request: RpcRequest): Promise<any> {
+    return Promise.resolve();
+  }
+  public subscribe(_request: SubscribeRequest): EventEmitter {
     return new EventEmitter();
   }
-  public unsubscribe(request: UnsubscribeRequest) {}
+  public unsubscribe(_request: UnsubscribeRequest) {
+    return Promise.resolve();
+  }
   public async publicKey(
-    request: PublicKeyRequest
+    _request: PublicKeyRequest
   ): Promise<PublicKeyResponse> {
     return {};
   }
-  public async deploy(request: DeployRequest): Promise<DeployResponse> {
+  public async deploy(_request: DeployRequest): Promise<DeployResponse> {
     throw new Error('cannot deploy from an empty gateway');
   }
-  public async getCode(request: GetCodeRequest): Promise<GetCodeResponse> {
+  public async getCode(_request: GetCodeRequest): Promise<GetCodeResponse> {
     return {
       code: new Uint8Array([0]),
     };
@@ -104,7 +102,7 @@ export class ConfidentialMockOasisGateway extends RpcRequestMockOasisGateway {
     this._publicKey = publicKey;
   }
 
-  async publicKey(request: PublicKeyRequest): Promise<PublicKeyResponse> {
+  async publicKey(_request: PublicKeyRequest): Promise<PublicKeyResponse> {
     return { publicKey: this._publicKey.bytes() };
   }
 }
@@ -118,13 +116,13 @@ export class EventEmitterMockOasisGateway extends EmptyOasisGateway {
     super();
   }
 
-  public subscribe(request: SubscribeRequest): EventEmitter {
+  public subscribe(_request: SubscribeRequest): EventEmitter {
     return this.remote;
   }
 }
 
 export class GatewayRequestDecoder {
-  async decode(data: Uint8Array, constructor?: boolean): Promise<FnRequest> {
+  async decode(data: Uint8Array, _constructor?: boolean): Promise<FnRequest> {
     if (typeof data === 'string') {
       data = bytes.parseHex(data);
     }
@@ -149,7 +147,7 @@ export class ConfidentialGatewayRequestDecoder extends GatewayRequestDecoder {
     if (typeof encrypted === 'string') {
       encrypted = bytes.parseHex(encrypted);
     }
-    let decryption = await decrypt(encrypted, this.privateKey);
+    const decryption = await decrypt(encrypted, this.privateKey);
     return super.decode(decryption.plaintext, constructor);
   }
 }
@@ -310,9 +308,11 @@ export function makeExpectedBytecode(
   headerBody: any,
   bytecode: string
 ): Uint8Array {
-  let body = DeployHeaderWriter.body(headerBody);
-  let version = DeployHeaderWriter.shortToBytes(DeployHeader.currentVersion());
-  let size = DeployHeaderWriter.shortToBytes(body.length);
+  const body = DeployHeaderWriter.body(headerBody);
+  const version = DeployHeaderWriter.shortToBytes(
+    DeployHeader.currentVersion()
+  );
+  const size = DeployHeaderWriter.shortToBytes(body.length);
   return new Uint8Array(
     Buffer.concat([
       DeployHeader.prefix(),

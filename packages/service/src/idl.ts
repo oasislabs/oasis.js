@@ -31,7 +31,7 @@ export function fromWasmSync(bytecode: Uint8Array): Idl {
 
 function extractIdl(wasmModule: WebAssembly.Module): Idl {
   // @ts-ignore
-  let sections = WebAssembly.Module.customSections(
+  const sections = WebAssembly.Module.customSections(
     wasmModule,
     'oasis-interface'
   );
@@ -40,8 +40,8 @@ function extractIdl(wasmModule: WebAssembly.Module): Idl {
     throw new IdlError('wasm bytecode must have one oasis-interface section');
   }
 
-  let deflatedIdl = new Uint8Array(sections[0]);
-  let inflatedIdl = new Uint8Array(inflateRaw(deflatedIdl));
+  const deflatedIdl = new Uint8Array(sections[0]);
+  const inflatedIdl = new Uint8Array(inflateRaw(deflatedIdl));
 
   return JSON.parse(bytes.decodeUtf8(inflatedIdl));
 }
@@ -53,8 +53,6 @@ type RpcImport = {};
 type RpcTypeDef = {};
 
 type RpcField = {};
-
-enum RpcType {}
 
 type RpcConstructor = any;
 

@@ -120,11 +120,11 @@ export class JsonRpcWebSocket implements JsonRpc {
   }
 
   private handler(m: any) {
-    let data = JSON.parse(m.data);
+    const data = JSON.parse(m.data);
     this.responses.emit(`${data.id}`, data);
   }
 
-  private open(event: any) {
+  private open(_event: any) {
     this.lifecycle.emit('open');
 
     // We were asked to close this websocket while connecting,
@@ -142,7 +142,7 @@ export class JsonRpcWebSocket implements JsonRpc {
     this.consecutiveErrors = 0;
   }
 
-  private error(event: any) {
+  private error(_event: any) {
     this.consecutiveErrors++;
     if (this.consecutiveErrors === ERROR_FORWARD_THRESHOLD) {
       // This is when we've crossed the threshold for forwarding the connection
@@ -192,22 +192,10 @@ export class JsonRpcWebSocket implements JsonRpc {
       }
 
       // Websocket is open so proceed.
-      let id = this.nextId();
+      const id = this.nextId();
 
       // Function invoked when a response event on topic `id` is emitted.
-      let responseListener: any;
-
-      // Set timeout for this request.
-      const timeout = setTimeout(() => {
-        this.responses.removeListener(responseListener);
-        const error = new JsonRpcWebSocketError(
-          request,
-          `request timeout ${REQUEST_TIMEOUT_DURATION} ms have passed`
-        );
-        reject(error);
-      }, REQUEST_TIMEOUT_DURATION);
-
-      responseListener = (jsonResponse: any) => {
+      const responseListener = (jsonResponse: any) => {
         clearTimeout(timeout);
 
         if (jsonResponse.error) {
@@ -216,6 +204,16 @@ export class JsonRpcWebSocket implements JsonRpc {
           resolve(jsonResponse);
         }
       };
+
+      // Set timeout for this request.
+      const timeout = setTimeout(() => {
+        this.responses.removeListener(responseListener as any);
+        const error = new JsonRpcWebSocketError(
+          request,
+          `request timeout ${REQUEST_TIMEOUT_DURATION} ms have passed`
+        );
+        reject(error);
+      }, REQUEST_TIMEOUT_DURATION);
 
       this.responses.once(`${id}`, responseListener);
 
@@ -267,7 +265,6 @@ export interface WebSocketFactory {
  */
 class EnvWebSocketFactory implements WebSocketFactory {
   make(url: string): WebSocket {
-    // tslint:disable-next-line
     return typeof WebSocket !== 'undefined'
       ? // Browser.
         new WebSocket(url)

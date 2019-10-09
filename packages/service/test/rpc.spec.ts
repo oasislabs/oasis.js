@@ -10,7 +10,7 @@ describe('RpcFactory', () => {
   it('Throws exception when gasLimit is not given to a confidential rpc', async () => {
     // Given.
     const rpcDef = (() => {
-      let fn = {
+      const fn = {
         name: 'myMethod',
       };
       // @ts-ignore

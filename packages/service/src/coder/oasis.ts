@@ -4,7 +4,7 @@ import { AeadKeys } from '@oasislabs/confidential';
 import { bytes, cbor } from '@oasislabs/common';
 import { Idl, RpcFn } from '../idl';
 import ConfidentialCoder from './confidential';
-import { RpcCoder, RpcEncoder, RpcDecoder, RpcRequest } from './';
+import { RpcCoder, RpcEncoder, RpcDecoder } from './';
 import { RpcOptions } from '../oasis-gateway';
 
 /**
@@ -38,11 +38,11 @@ export class OasisCoder implements RpcCoder {
     return idl.functions;
   }
 
-  public topic(event: string, idl: Idl): string {
+  public topic(event: string, _idl: Idl): string {
     return '0x' + keccak256(event);
   }
 
-  public async decodeSubscriptionEvent(e: any, idl: Idl): Promise<any> {
+  public async decodeSubscriptionEvent(e: any, _idl: Idl): Promise<any> {
     const event = cbor.decode(bytes.parseHex(e.data));
     return camelCaseKeys(event, { deep: true });
   }
@@ -52,17 +52,17 @@ export class OasisCoder implements RpcCoder {
     params: any[],
     bytecode: Uint8Array
   ): Promise<Uint8Array> {
-    let constructorArgs = idl.constructor.inputs;
+    const constructorArgs = idl.constructor.inputs;
 
     if (constructorArgs.length === 0) {
       return bytecode;
     }
 
-    let args = await this.encode(
+    const args = await this.encode(
       { name: 'constructor', inputs: constructorArgs },
       params || []
     );
-    let b = bytecode;
+    const b = bytecode;
     return bytes.concat([b, args]);
   }
 
@@ -83,7 +83,7 @@ export class OasisCoder implements RpcCoder {
 
 export class PlaintextRpcEncoder implements RpcEncoder {
   public async encode(fn: RpcFn, args: any[]): Promise<Uint8Array> {
-    let expectedLen = fn.inputs ? fn.inputs.length : 0;
+    const expectedLen = fn.inputs ? fn.inputs.length : 0;
     if (expectedLen !== args.length) {
       throw new Error(`Invalid arguments ${JSON.stringify(args)}`);
     }
@@ -105,7 +105,7 @@ export class PlaintextRpcDecoder {
   async decode(
     fn: RpcFn,
     data: Uint8Array,
-    constructor?: boolean
+    _constructor?: boolean
   ): Promise<any> {
     return cbor.decode(data);
   }

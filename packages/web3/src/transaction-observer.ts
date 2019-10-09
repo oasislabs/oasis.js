@@ -49,7 +49,7 @@ export default class TransactionObserver {
    *          once the transaction completes.
    */
   public static async outcome(txHash: string): Promise<any> {
-    let tx = TransactionObserver.cache.get(txHash);
+    const tx = TransactionObserver.cache.get(txHash);
     if (tx) {
       return tx;
     }

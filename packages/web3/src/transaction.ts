@@ -1,6 +1,6 @@
 import { JsonRpc } from './websocket';
 
-const OASIS_CHAIN_ID = 42261;
+export const OASIS_CHAIN_ID = 42261;
 
 export class TransactionFactory {
   constructor(private address: string, private rpc: JsonRpc) {}
@@ -13,8 +13,11 @@ export class TransactionFactory {
     if (!tx.value) {
       tx.value = '0x00';
     }
+    if (!tx.gasPrice) {
+      tx.gasPrice = '0x3b9aca00';
+    }
 
-    let promises: Promise<any>[] = [];
+    const promises: Promise<any>[] = [];
     if (!tx.gasLimit) {
       promises.push(this.estimateGas(tx));
     }
@@ -25,16 +28,10 @@ export class TransactionFactory {
       (tx as any)[r.key] = r.value;
     });
 
-    if (!tx.gasPrice) {
-      tx.gasPrice = '0x3b9aca00';
-    }
-
-    tx.chainId = OASIS_CHAIN_ID;
-
     return tx as Transaction;
   }
 
-  async estimateGas(tx: Object): Promise<any> {
+  async estimateGas(tx: Record<string, any>): Promise<any> {
     return {
       key: 'gasLimit',
       value: (await this.rpc.request({

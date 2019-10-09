@@ -1,5 +1,4 @@
 import { bytes, DummyStorage } from '@oasislabs/common';
-import { PublicKey } from '../src/';
 import {
   KeyStore,
   KeyProvider,
@@ -10,13 +9,13 @@ import {
 describe('KeyStore', () => {
   describe('publicKey', () => {
     it('gets the public key for an uncached service and then caches it', async () => {
-      let keyStore = new KeyStore(
+      const keyStore = new KeyStore(
         new DummyStorage(),
         new PublicKeyMockProvider()
       );
 
-      let service = PublicKeyMockProvider.address;
-      let key = await keyStore.publicKey(service);
+      const service = PublicKeyMockProvider.address;
+      const key = await keyStore.publicKey(service);
       expect(key!.bytes()).toEqual(PublicKeyMockProvider._publicKey);
       // @ts-ignore
       expect(keyStore.db.get(PublicKeyMockProvider.address)).toEqual(
@@ -25,14 +24,14 @@ describe('KeyStore', () => {
     });
 
     it('generates local keys and then caches it', () => {
-      let keyStore = new KeyStore(
+      const keyStore = new KeyStore(
         new DummyStorage(),
         new PublicKeyMockProvider()
       );
-      let local = keyStore.localKeys();
+      const local = keyStore.localKeys();
       expect(local.publicKey.bytes().length).toEqual(32);
       // @ts-ignore
-      let cachedLocal = keyStore.db.get(KeyStore.LOCAL_KEYPAIR_KEY);
+      const cachedLocal = keyStore.db.get(KeyStore.LOCAL_KEYPAIR_KEY);
       // @ts-ignore
       expect(cachedLocal).toEqual(KeyStore.serializeKeyPair(local));
     });
@@ -78,7 +77,7 @@ export class PublicKeyMockProvider implements KeyProvider {
   public static address = '0x5c7b817e80680fec250a6f638c504d39ad353b26';
 
   async publicKey(request: PublicKeyRequest): Promise<PublicKeyResponse> {
-    let givenBytes = bytes.toHex(request.address as Uint8Array);
+    const givenBytes = bytes.toHex(request.address as Uint8Array);
     if (givenBytes !== PublicKeyMockProvider.address) {
       throw new Error(
         `Unexpected data. Expected ${PublicKeyMockProvider.address} got ${givenBytes}`

@@ -2,22 +2,22 @@ import { HttpSession } from '../src/session';
 import { HttpClient, HttpHeaders } from '../src/http';
 
 class HttpMockClient implements HttpClient {
-  public method: string = '';
-  public uri: string = '';
-  public body: Object = {};
+  public method = '';
+  public uri = '';
+  public body: Record<string, any> = {};
   public headers: HttpHeaders = { headers: new Map() };
 
   public request(
     method: string,
     uri: string,
-    body: Object,
+    body: Record<string, any>,
     headers: HttpHeaders
   ): Promise<any> {
     this.method = method;
     this.uri = uri;
     this.body = body;
     this.headers = headers;
-    return new Promise((resolve, _) => resolve({ data: 'response' }));
+    return new Promise(resolve => resolve({ data: 'response' }));
   }
 }
 
@@ -35,7 +35,7 @@ describe('SessionService', () => {
       headers,
       client
     );
-    let res = await session.request('method', 'myapi', { data: 'data' });
+    const res = await session.request('method', 'myapi', { data: 'data' });
 
     expect(res).toEqual('response');
     expect(client.method).toEqual('method');

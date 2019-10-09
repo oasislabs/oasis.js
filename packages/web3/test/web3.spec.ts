@@ -1,11 +1,12 @@
 import { ethers } from 'ethers';
 import { JsonRpcRequest, JsonRpcResponse } from '../src/websocket';
+import { OASIS_CHAIN_ID } from '../src/transaction';
 import { Web3, Web3Provider } from '../src/web3';
 
 describe('Web3', () => {
   // Mock out the websocket json rpc requester for all testing.
   // @ts-ignore
-  Web3Provider.makeWs = (url, sub) => {
+  Web3Provider.makeWs = (_url, _sub) => {
     return new MockJsonRpc();
   };
 
@@ -25,13 +26,13 @@ describe('Web3', () => {
     const wallet = new ethers.Wallet(
       '0x0d0b8fb7d60f37b370731f4de70dc1837997ea5e16023792c3573e8b3238bc0e'
     );
-    const jsonRpc = new MockJsonRpc();
     const web3 = new Web3(new Web3Provider('', wallet));
 
     const response = await web3.eth.sendTransaction({
       to: '0xf31a68b6a781e265f40c111abf24dc59d12928ef',
       value: '0x100',
       nonce: '0x20',
+      chainId: OASIS_CHAIN_ID,
     });
 
     // Expect our provider to transform all `eth_sendTransaction` rpcs into

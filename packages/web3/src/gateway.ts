@@ -1,5 +1,4 @@
 import { EventEmitter } from 'eventemitter3';
-import { keccak256 } from 'js-sha3';
 import { bytes, sleep } from '@oasislabs/common';
 import {
   OasisGateway,
@@ -14,8 +13,7 @@ import {
   GetCodeRequest,
   GetCodeResponse,
 } from '@oasislabs/service';
-import { JsonRpcWebSocket } from './websocket';
-import { TransactionFactory, Transaction } from './transaction';
+import { Transaction } from './transaction';
 import { Web3GatewayError, TransactionReverted, RpcFailure } from './error';
 import { Web3, Web3Provider, Web3Namespace } from './web3';
 
@@ -62,20 +60,18 @@ export default class Web3Gateway implements OasisGateway {
    * Sanity check that the gateway is constructed with the correct url.
    */
   private assertGatewayIsResponsive(url: string): Promise<undefined> {
-    return new Promise(async (resolve, reject) => {
-      let timeout = setTimeout(() => {
+    return new Promise((resolve, reject) => {
+      const timeout = setTimeout(() => {
         reject(new Error(`Couldn't connect to gateway ${url}`));
       }, 3000);
 
-      let response = await this.net.version();
-
-      if (parseInt(response, 10) <= 0) {
-        reject(new Error(`Invalid gateway response ${response}`));
-      }
-
-      clearTimeout(timeout);
-
-      resolve();
+      return this.net.version().then((response: any) => {
+        if (parseInt(response, 10) <= 0) {
+          reject(new Error(`Invalid gateway response ${response}`));
+        }
+        clearTimeout(timeout);
+        resolve();
+      });
     });
   }
 
@@ -86,12 +82,12 @@ export default class Web3Gateway implements OasisGateway {
       );
     }
 
-    let txParams = Object.assign(request.options || {}, {
+    const txParams = Object.assign(request.options || {}, {
       data: bytes.toHex(request.data),
     });
-    let tx = await this._inner.web3.provider.transactions!.create(txParams);
-    let rawTx = await this._inner.wallet!.sign(tx);
-    let txHash = await this.eth.sendRawTransaction(rawTx);
+    const tx = await this._inner.web3.provider.transactions!.create(txParams);
+    const rawTx = await this._inner.wallet.sign(tx);
+    const txHash = await this.eth.sendRawTransaction(rawTx);
     let receipt = await this.eth.getTransactionReceipt(txHash);
 
     // TODO: https://github.com/oasislabs/oasis-client/issues/103
@@ -124,13 +120,13 @@ export default class Web3Gateway implements OasisGateway {
       );
     }
 
-    let txParams = Object.assign(request.options || {}, {
+    const txParams = Object.assign(request.options || {}, {
       data: bytes.toHex(request.data),
       to: bytes.toHex(request.address!),
     });
-    let tx = await this._inner.web3.provider.transactions!.create(txParams);
-    let rawTx = await this._inner.wallet!.sign(tx);
-    let executionPayload = await this.oasis.invoke(rawTx);
+    const tx = await this._inner.web3.provider.transactions!.create(txParams);
+    const rawTx = await this._inner.wallet.sign(tx);
+    const executionPayload = await this.oasis.invoke(rawTx);
 
     let error = undefined;
 
@@ -157,7 +153,7 @@ export default class Web3Gateway implements OasisGateway {
   }
 
   web3Subscribe(eventName: string, params: any[]): any {
-    let events = new EventEmitter();
+    const events = new EventEmitter();
 
     this.eth
       .subscribe(...params)
@@ -185,7 +181,9 @@ export default class Web3Gateway implements OasisGateway {
   }
 
   async publicKey(request: PublicKeyRequest): Promise<PublicKeyResponse> {
-    let response = await this.oasis.getPublicKey(bytes.toHex(request.address));
+    const response = await this.oasis.getPublicKey(
+      bytes.toHex(request.address)
+    );
     // TODO: signature validation. https://github.com/oasislabs/oasis-client/issues/39
     return {
       publicKey: bytes.parseHex(response.public_key),
@@ -197,7 +195,7 @@ export default class Web3Gateway implements OasisGateway {
   }
 
   public async getCode(request: GetCodeRequest): Promise<GetCodeResponse> {
-    let response = await this.eth.getCode(
+    const response = await this.eth.getCode(
       bytes.toHex(request.address),
       'latest'
     );

@@ -54,7 +54,7 @@ describe('Counter', () => {
     it(`${c.label}: adds an event listener for multiple events`, async () => {
       const eventName = 'Incremented';
 
-      logs = await new Promise(async resolve => {
+      logs = await new Promise(resolve => {
         const logs: any[] = [];
         service.addEventListener(eventName, function listener(event: any) {
           logs.push(event);
@@ -63,16 +63,20 @@ describe('Counter', () => {
             resolve(logs);
           }
         });
+        let incr = Promise.resolve();
         for (let k = 0; k < 3; k += 1) {
-          await service.incrementCounter(c.options);
+          incr = incr.then(() => {
+            return service.incrementCounter(c.options);
+          });
         }
+        return incr;
       });
 
       for (let k = 1; k < logs.length; k += 1) {
         // Depending upon the gateway's view, we might get the log for the previous test,
         // so just ensure the logs received are monotonically increasing.
-        let currentCounter = logs[k].newCounter;
-        let lastCounter = logs[k - 1].newCounter;
+        const currentCounter = logs[k].newCounter;
+        const lastCounter = logs[k - 1].newCounter;
 
         expect(currentCounter - lastCounter).toEqual(1);
       }

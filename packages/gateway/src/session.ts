@@ -6,7 +6,6 @@ let uuid: any = undefined;
 let URL: any = undefined;
 
 // Browser.
-/* tslint:disable */
 if (typeof window !== 'undefined') {
   // @ts-ignore
   uuid = _uuid.default;
@@ -53,7 +52,7 @@ export class HttpSession implements Http {
   public async request(
     method: string,
     api: string,
-    body: Object
+    body: Record<string, any>
   ): Promise<any> {
     const url = new URL(api, this.url).href;
     const headers: HttpHeaders = { headers: new Map() };
@@ -66,7 +65,7 @@ export class HttpSession implements Http {
       headers.headers.set(key, value)
     );
 
-    let response = await this.client.request(method, url, body, headers);
+    const response = await this.client.request(method, url, body, headers);
     return response.data;
   }
 }

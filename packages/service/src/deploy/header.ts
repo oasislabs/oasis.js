@@ -18,7 +18,7 @@ export class DeployHeader {
   constructor(public version: number, public body: DeployHeaderOptions) {}
 
   data(): Uint8Array {
-    let bodyBytes = DeployHeaderWriter.body(this.body);
+    const bodyBytes = DeployHeaderWriter.body(this.body);
     return new Uint8Array(
       bytes.concat([
         DeployHeader.prefix(),
@@ -63,8 +63,8 @@ export class DeployHeader {
       Object.assign(currentHeader.body, headerBody);
     }
 
-    let headerData = currentHeader.data();
-    let code = new Uint8Array(headerData.length + initcode.length);
+    const headerData = currentHeader.data();
+    const code = new Uint8Array(headerData.length + initcode.length);
     code.set(headerData);
     code.set(initcode, headerData.length);
 
@@ -90,9 +90,9 @@ export class DeployHeader {
    * @returns true iff the keys in the headerBody are part of the valid set.
    */
   public static isValidBody(headerBody: DeployHeaderOptions): boolean {
-    let validKeys = ['expiry', 'confidential'];
+    const validKeys = ['expiry', 'confidential'];
 
-    let keys = Object.keys(headerBody);
+    const keys = Object.keys(headerBody);
     for (let k = 0; k < keys.length; k += 1) {
       if (!validKeys.includes(keys[k])) {
         return false;
@@ -126,8 +126,8 @@ export class DeployHeaderReader {
     if (!DeployHeaderReader.codeHasPrefixPrefix(deploycode)) {
       return null;
     }
-    let version = DeployHeaderReader.version(deploycode);
-    let body = DeployHeaderReader.body(deploycode);
+    const version = DeployHeaderReader.version(deploycode);
+    const body = DeployHeaderReader.body(deploycode);
 
     if (!DeployHeader.isValidBody(body)) {
       throw Error(`Invalid body ${JSON.stringify(body)}`);
@@ -143,8 +143,8 @@ export class DeployHeaderReader {
       throw new DeployHeaderError('code must have the header prefiix');
     }
 
-    let length = DeployHeaderReader.size(deploycode);
-    let serializedBody = deploycode.subarray(
+    const length = DeployHeaderReader.size(deploycode);
+    const serializedBody = deploycode.subarray(
       DeployHeaderReader.bodyStart(),
       DeployHeaderReader.bodyStart() + length
     );
@@ -160,8 +160,8 @@ export class DeployHeaderReader {
       throw new DeployHeaderError('code must have the header prefix');
     }
 
-    let start = DeployHeaderReader.sizeStart();
-    let lengthBytes = deploycode.subarray(
+    const start = DeployHeaderReader.sizeStart();
+    const lengthBytes = deploycode.subarray(
       start,
       start + DeployHeaderReader.sizeLength()
     );
@@ -177,8 +177,8 @@ export class DeployHeaderReader {
       throw new DeployHeaderError('code must have the header prefix');
     }
 
-    let start = DeployHeaderReader.versionStart();
-    let versionBytes = deploycode.subarray(
+    const start = DeployHeaderReader.versionStart();
+    const versionBytes = deploycode.subarray(
       start,
       start + DeployHeaderReader.versionLength()
     );
@@ -215,7 +215,7 @@ export class DeployHeaderReader {
   }
 
   public static codeHasPrefixPrefix(code: Uint8Array): boolean {
-    let prefix = DeployHeader.prefix();
+    const prefix = DeployHeader.prefix();
     for (let i = 0; i < prefix.length; i++) {
       if (code[i] !== prefix[i]) {
         return false;
@@ -272,7 +272,7 @@ export class DeployHeaderWriter {
    * @returns {Uint8Array} the 2-byte representation of the input.
    */
   public static shortToBytes(num: number): Uint8Array {
-    let arr = new Uint8Array(2);
+    const arr = new Uint8Array(2);
     new DataView(arr.buffer).setUint16(
       0 /* offset */,
       num,
@@ -284,7 +284,7 @@ export class DeployHeaderWriter {
 
 // Alias.
 function parseFromCode(deploycode: Uint8Array | string): DeployHeader | null {
-  let _deploycode: Uint8Array =
+  const _deploycode: Uint8Array =
     typeof deploycode === 'string' ? bytes.parseHex(deploycode) : deploycode;
 
   return DeployHeaderReader.header(_deploycode);

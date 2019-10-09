@@ -6,24 +6,24 @@ const assert = require('assert');
 
 describe('PollingService', () => {
   it('Polls for a single request id immediately', async () => {
-    let id = 0;
-    let responses: PollServiceResponse[] = [successPollResponse(id)];
-    let service = pollingService(responses);
-    let response = await service.response(id);
+    const id = 0;
+    const responses: PollServiceResponse[] = [successPollResponse(id)];
+    const service = pollingService(responses);
+    const response = await service.response(id);
     expect(response).toEqual(successEvent(id));
   });
 
   it('Polls for a single request id after receiving no events', async () => {
-    let id = 0;
-    let responses: PollServiceResponse[] = [
+    const id = 0;
+    const responses: PollServiceResponse[] = [
       emptyPollResponse(),
       emptyPollResponse(),
       emptyPollResponse(),
       emptyPollResponse(),
       successPollResponse(id),
     ];
-    let service = pollingService(responses);
-    let response = await service.response(id);
+    const service = pollingService(responses);
+    const response = await service.response(id);
 
     expect(response).toEqual(successEvent(id));
   });
@@ -79,20 +79,20 @@ describe('PollingService', () => {
 
   testCases.forEach(async t => {
     it(t.label, async () => {
-      let startId = t.startId ? t.startId : 0;
-      let endId = t.endId ? t.endId : 10;
+      const startId = t.startId ? t.startId : 0;
+      const endId = t.endId ? t.endId : 10;
 
       // Setup the service so that the http requests returns these responses.
-      let service = pollingService(t.orderedResponses());
+      const service = pollingService(t.orderedResponses());
 
       // Block http requests until the setup is complete.
       // @ts-ignore
       service.session.isBlocked = true;
 
       // Queue up requests for all the responses.
-      let promises: Promise<Event>[] = [];
+      const promises: Promise<Event>[] = [];
       for (let k = startId; k < endId; k += 1) {
-        let responseRequest = service.response(k);
+        const responseRequest = service.response(k);
         promises.push(responseRequest);
       }
 
@@ -100,7 +100,7 @@ describe('PollingService', () => {
       // @ts-ignore
       service.session.isBlocked = false;
 
-      let results = await Promise.all(promises);
+      const results = await Promise.all(promises);
 
       let k = startId;
       results.forEach(r => {
@@ -115,7 +115,7 @@ describe('PollingService', () => {
  * MockHttp mocks out the http response from the developer gateway.
  */
 class MockSession implements Http {
-  public isBlocked: boolean = false;
+  public isBlocked = false;
 
   private responseCounter: number;
 
@@ -124,9 +124,9 @@ class MockSession implements Http {
   }
 
   public async request(
-    method: string,
-    api: string,
-    body: Object
+    _method: string,
+    _api: string,
+    _body: Record<string, any>
   ): Promise<any> {
     if (this.isBlocked) {
       return emptyPollResponse();
@@ -134,7 +134,7 @@ class MockSession implements Http {
 
     assert.equal(this.responseCounter < this.responses.length, true);
 
-    let response = this.responses[this.responseCounter];
+    const response = this.responses[this.responseCounter];
     this.responseCounter += 1;
 
     return response;
@@ -169,7 +169,7 @@ function pollingService(responses: PollServiceResponse[]): PollingService {
   // @ts-ignore
   PollingService.SERVICES = new Map();
 
-  let session = new MockSession(responses);
+  const session = new MockSession(responses);
 
   return PollingService.instance({
     url: 'test',
