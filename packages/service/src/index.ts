@@ -1,10 +1,11 @@
-import Service from './service';
-import deploy from './deploy';
-import { header } from './deploy/header';
-import { OasisCoder } from './coder/oasis';
-import { RpcCoder } from './coder';
-import { Idl, RpcFn, fromWasmSync, fromWasm } from './idl';
-import {
+export { Address, Balance } from '@oasislabs/common';
+export { Service } from './service';
+export { default as deploy } from './deploy';
+export { header } from './deploy/header';
+export { OasisCoder } from './coder/oasis';
+export { RpcCoder } from './coder';
+export { Idl, RpcFn, fromWasmSync, fromWasm } from './idl';
+export {
   DeployRequest,
   DeployResponse,
   GetCodeRequest,
@@ -22,31 +23,3 @@ import {
   defaultOasisGateway,
   setGateway,
 } from './oasis-gateway';
-
-export {
-  DeployRequest,
-  DeployResponse,
-  GetCodeRequest,
-  GetCodeResponse,
-  Idl,
-  OasisCoder,
-  OasisGateway,
-  PublicKeyRequest,
-  PublicKeyResponse,
-  RpcCoder,
-  RpcFn,
-  RpcOptions,
-  RpcRequest,
-  RpcResponse,
-  Service,
-  SubscribeFilter,
-  SubscribeRequest,
-  SubscribeTopic,
-  UnsubscribeRequest,
-  defaultOasisGateway,
-  deploy,
-  fromWasm,
-  fromWasmSync,
-  header,
-  setGateway,
-};

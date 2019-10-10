@@ -4,6 +4,8 @@ import { KeyStore } from './key-store';
 import nacl from './tweetnacl';
 import { EncryptError } from './error';
 
+export { Deoxysii, KeyStore };
+
 const aead = new Deoxysii();
 
 /**
@@ -21,7 +23,7 @@ const AAD_LEN_SIZE = 8;
  * PUBLIC_KEY || CIPHER_LENGTH || AAD_LENGTH || CIPHER || AAD || NONCE
  * where CIPHER_LENGTH and AAD_LENGTH are encoded big endian uint64
  */
-async function encrypt(
+export async function encrypt(
   nonce: Nonce,
   plaintext: Uint8Array,
   peerPublicKey: PublicKey,
@@ -66,7 +68,7 @@ async function encrypt(
  *
  * @param ciphertext is of the form NONCE || PUBLIC_KEY || CIPHER.
  */
-async function decrypt(
+export async function decrypt(
   encryption: Uint8Array,
   secretKey: PrivateKey
 ): Promise<Decryption> {
@@ -104,7 +106,7 @@ async function decrypt(
   };
 }
 
-function nonce(): Nonce {
+export function nonce(): Nonce {
   return new Nonce(nacl.randomBytes(aead.nonceSize()));
 }
 
@@ -212,5 +214,3 @@ export class Nonce {
     return this.inner;
   }
 }
-
-export { encrypt, decrypt, nonce, Deoxysii, KeyStore };

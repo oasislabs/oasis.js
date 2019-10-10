@@ -1,6 +1,6 @@
 import { bytes, DummyStorage } from '@oasislabs/common';
 import { idl } from '@oasislabs/test';
-import Service from '../src/service';
+import { Service } from '../src/service';
 import { RpcRequest, setGateway } from '../src/oasis-gateway';
 import {
   EmptyOasisGateway,

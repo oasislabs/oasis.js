@@ -1,5 +1,5 @@
 import { EventEmitter } from 'eventemitter3';
-import { Db, LocalStorage, bytes } from '@oasislabs/common';
+import { Address, Db, LocalStorage, bytes } from '@oasislabs/common';
 import { Idl, fromWasm } from './idl';
 import { Rpcs, RpcFactory } from './rpc';
 import { RpcCoder } from './coder';
@@ -10,7 +10,7 @@ import { ServiceError, NO_CODE_ERROR_MSG } from './error';
 /**
  * Service is the object representation of an Oasis rpc service.
  */
-export default class Service {
+export class Service {
   /**
    * The generated rpcs for this service, defined by a given IDL.
    */
@@ -40,11 +40,7 @@ export default class Service {
    * @param address? is the address of the currently deployed service.
    * @param options? are the options configuring the Service client.
    */
-  public constructor(
-    idl: Idl,
-    address: Uint8Array | string,
-    options?: ServiceOptions
-  ) {
+  public constructor(idl: Idl, address: Address, options?: ServiceOptions) {
     // Convert to Uint8Array.
     const _address: Uint8Array =
       typeof address === 'string' ? bytes.parseHex(address) : address;
@@ -77,7 +73,7 @@ export default class Service {
    * chain wasm and extracting the idl.
    */
   public static async at(
-    address: Uint8Array | string,
+    address: Address,
     options?: ServiceOptions
   ): Promise<Service> {
     const _address: Uint8Array =

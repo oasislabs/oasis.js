@@ -1,4 +1,4 @@
-import { bytes, Db } from '@oasislabs/common';
+import { Address, bytes, Db } from '@oasislabs/common';
 import nacl from './tweetnacl';
 import { PublicKey, PrivateKey } from './';
 import { KeyStoreError } from './error';
@@ -27,7 +27,7 @@ export class KeyStore {
   /**
    * @returns the public key for the given service.
    */
-  public async publicKey(service: Uint8Array | string): Promise<PublicKey> {
+  public async publicKey(service: Address): Promise<PublicKey> {
     // First check the cache.
     let key = this.getCachedPublicKey(service);
     if (key) {
