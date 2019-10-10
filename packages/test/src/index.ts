@@ -1,5 +1,3 @@
-import { defType } from './idls';
-import { idl } from './idls/test-contract';
-import { abi, bytecode } from './idls/counter-ethereum';
-
-export { defType, idl, abi, bytecode };
+export { defType } from './idls';
+export { idl } from './idls/test-contract';
+export { abi, bytecode } from './idls/counter-ethereum';

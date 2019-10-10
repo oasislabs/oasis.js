@@ -1,6 +1,6 @@
 import { Db, bytes } from '@oasislabs/common';
 
-import Service from '../service';
+import { Service } from '../service';
 import { Idl, fromWasm } from '../idl';
 import {
   OasisGateway,

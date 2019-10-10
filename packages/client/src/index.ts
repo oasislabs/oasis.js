@@ -16,7 +16,7 @@ import { Web3Gateway } from '@oasislabs/web3';
 import workspace from './workspace';
 import Wallet from './wallet';
 
-const oasis = {
+export default {
   Service,
   deploy,
   Wallet,
@@ -50,5 +50,3 @@ const oasis = {
     }
   },
 };
-
-export default oasis;

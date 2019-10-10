@@ -1,6 +1,18 @@
 import cbor from './cbor';
 import * as bytes from './bytes';
-import { Db, LocalStorage, DummyStorage } from './db';
-import { sleep } from './utils';
+export { Db, LocalStorage, DummyStorage } from './db';
+export { sleep } from './utils';
 
-export { bytes, cbor, sleep, Db, DummyStorage, LocalStorage };
+export { bytes, cbor };
+
+/**
+ * A 20-byte Oasis account address. May be hex-encoded.
+ */
+export type Address = string | Uint8Array;
+
+/**
+ * A 16-byte Oasis account balance.
+ * JS `Number`s do not have enough precision to hold a 128-bit integer
+ * so you should prefer to encode as hex or pass a Uint8Array directly.
+ */
+export type Balance = string | Uint8Array | number;
