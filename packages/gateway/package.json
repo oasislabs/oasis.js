@@ -47,7 +47,6 @@
   "dependencies": {
     "@oasislabs/common": "^1.0.0-rc.11",
     "@oasislabs/service": "^1.0.0-rc.17",
-    "@oasislabs/types": "^1.0.0-rc.2",
     "@types/uuid": "^3.4.5",
     "axios": "^0.18.0"
   },
