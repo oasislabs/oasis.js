@@ -124,6 +124,11 @@ export class ServiceDefinition {
         bytecode: this.bytecode,
       };
       args.push(options);
+    } else {
+      throw new WorkspaceError(
+        'The first arguments of the deploy command must be ' +
+          "the service's constructor arguments"
+      );
     }
   }
 }
