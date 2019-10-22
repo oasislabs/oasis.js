@@ -18,7 +18,7 @@
   "homepage": "https://github.com/oasislabs/oasis.js#readme",
   "main": "dist/index.umd.js",
   "module": "dist/index.es5.js",
-  "types": "dist/lib/src/index.d.ts",
+  "types": "dist/lib/index.d.ts",
   "license": "Apache-2.0",
   "publishConfig": {
     "access": "public"
