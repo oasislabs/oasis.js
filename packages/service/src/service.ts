@@ -1,5 +1,5 @@
 import { EventEmitter } from 'eventemitter3';
-import { Address, Db, LocalStorage, bytes } from '@oasislabs/common';
+import { Address, Db, LocalStorage } from '@oasislabs/common';
 import { Idl, fromWasm } from './idl';
 import { Rpcs, RpcFactory } from './rpc';
 import { RpcCoder } from './coder';
@@ -19,7 +19,7 @@ export class Service {
   /**
    * The address of the deployed service.
    */
-  public address: Uint8Array;
+  public address: Address;
 
   /**
    * The inner variables required to implement the Service object. We reserve
@@ -41,24 +41,20 @@ export class Service {
    * @param options? are the options configuring the Service client.
    */
   public constructor(idl: Idl, address: Address, options?: ServiceOptions) {
-    // Convert to Uint8Array.
-    const _address: Uint8Array =
-      typeof address === 'string' ? bytes.parseHex(address) : address;
-
     // Fill in any options not provided by the arguments.
     options = Service.setupOptions(options);
 
     // Attach the rpcs onto the rpc interface so that we can generate dynamic
     // rpc methods while keeping the compiler happy. Without this, we need
     // to use a types file when using a service within TypeScript.
-    const [rpc, coder] = RpcFactory.build(idl, _address, options);
+    const [rpc, coder] = RpcFactory.build(idl, address, options);
     this.rpc = rpc;
 
     // Attach the rpcs directly onto the Service object so that we can have
     // the nice service.myMethod() syntax in JavaScript.
     Object.assign(this, rpc);
 
-    this.address = _address;
+    this.address = address;
     this._inner = {
       idl,
       options,
@@ -76,14 +72,11 @@ export class Service {
     address: Address,
     options?: ServiceOptions
   ): Promise<Service> {
-    const _address: Uint8Array =
-      typeof address === 'string' ? bytes.parseHex(address) : address;
-
     options = Service.setupOptions(options);
-    const response = await options.gateway!.getCode({ address: _address });
+    const response = await options.gateway!.getCode({ address: address.bytes });
 
     if (!response.code) {
-      throw new ServiceError(_address, NO_CODE_ERROR_MSG(_address));
+      throw new ServiceError(address, NO_CODE_ERROR_MSG(address));
     }
 
     const wasm = DeployHeaderReader.initcode(response.code);
@@ -136,7 +129,7 @@ export class Service {
         subscription = this._inner.options.gateway!.subscribe({
           event,
           filter: {
-            address: this.address,
+            address: this.address.bytes,
             topics: [coder.topic(event, this._inner.idl)],
           },
         });

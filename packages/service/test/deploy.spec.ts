@@ -50,7 +50,7 @@ describe('Service deploys', () => {
           gateway: new DeployMockOasisGateway(resolve),
           gasLimit: test.gasLimit,
         }).then(service => {
-          expect(service!.address).toEqual(
+          expect(service!.address.bytes).toEqual(
             new Uint8Array(
               bytes.parseHex(DeployMockOasisGateway.address.substr(2))
             )
@@ -115,7 +115,7 @@ describe('Service deploys', () => {
         gateway: new DeployMockOasisGateway(resolve),
         gasLimit: '0xfff',
       }).then(service => {
-        expect(service!.address).toEqual(
+        expect(service!.address.bytes).toEqual(
           new Uint8Array(
             bytes.parseHex(DeployMockOasisGateway.address.substr(2))
           )

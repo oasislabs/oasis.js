@@ -27,17 +27,17 @@ export class KeyStore {
   /**
    * @returns the public key for the given service.
    */
-  public async publicKey(service: Address): Promise<PublicKey> {
+  public async publicKey(serviceAddr: Address): Promise<PublicKey> {
     // First check the cache.
-    let key = this.getCachedPublicKey(service);
+    let key = this.getCachedPublicKey(serviceAddr);
     if (key) {
       return key;
     }
     // Make a request to the keyProvider for the key.
-    key = await this.getRequestPublicKey(service);
+    key = await this.getRequestPublicKey(serviceAddr);
 
     // Cache the key.
-    this.setCachedPublicKey(service, key);
+    this.setCachedPublicKey(serviceAddr, key);
 
     return key;
   }
@@ -45,11 +45,8 @@ export class KeyStore {
   /**
    * @returns the cached public key if it exists.
    */
-  private getCachedPublicKey(
-    service: Uint8Array | string
-  ): PublicKey | undefined {
-    service = typeof service === 'string' ? service : bytes.toHex(service);
-    const key = this.db.get(service);
+  private getCachedPublicKey(serviceAddr: Address): PublicKey | undefined {
+    const key = this.db.get(serviceAddr.hex);
     if (!key) {
       return undefined;
     }
@@ -61,24 +58,19 @@ export class KeyStore {
   /**
    * Saves the public key in the cache.
    */
-  private setCachedPublicKey(
-    service: Uint8Array | string,
-    publicKey: PublicKey
-  ) {
-    service = typeof service === 'string' ? service : bytes.toHex(service);
+  private setCachedPublicKey(serviceAddr: Address, publicKey: PublicKey) {
     const value = bytes.toHex(publicKey.bytes());
-    this.db.set(service, value);
+    this.db.set(serviceAddr.hex, value);
   }
 
   /**
    * Makes a request to the keyProvider for the public key for the given service.
    */
-  private async getRequestPublicKey(
-    service: Uint8Array | string
-  ): Promise<PublicKey> {
+  private async getRequestPublicKey(serviceAddr: Address): Promise<PublicKey> {
     // Ensure we are using Uint8Array.
-    service = typeof service !== 'string' ? service : bytes.parseHex(service);
-    const response = await this.keyProvider.publicKey({ address: service });
+    const response = await this.keyProvider.publicKey({
+      address: serviceAddr.hex,
+    });
     if (!response.publicKey) {
       throw new KeyStoreError(
         `KeyProvider did not return a public key: ${response}`

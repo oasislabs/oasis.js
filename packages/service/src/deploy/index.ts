@@ -1,4 +1,4 @@
-import { Db, bytes } from '@oasislabs/common';
+import { Address, Db, bytes } from '@oasislabs/common';
 
 import { Service } from '../service';
 import { Idl, fromWasm } from '../idl';
@@ -50,7 +50,7 @@ export default async function deploy(...args: any[]): Promise<Service> {
   if (!response.address) {
     throw new DeployError(args, `Invalid gateway response: ${response}`);
   }
-  return new Service(options.idl!, response.address, {
+  return new Service(options.idl!, new Address(response.address), {
     gateway,
     db: options.db,
     coder: options.coder,

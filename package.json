@@ -14,10 +14,8 @@
     "build": "lerna run build",
     "lint": "eslint 'packages/*/{src,test}/**/*.ts' && prettier -c 'packages/*/{src,test}/**/*.ts'",
     "lint:fix": "eslint --fix 'packages/*/{src,test}/**/*.ts' && prettier --write 'packages/*/{src,test}/**/*.ts'",
-    "prebuild": "rimraf dist",
     "test": "lerna run test --concurrency 1 --stream",
     "test:e2e": "cd packages/client && yarn test:e2e && cd ../",
-    "precommit": "lint-staged",
     "coverage": "lerna run coverage --concurrency 1 -- stream",
     "coveralls": "cat ./coverage/lcov.info | coveralls"
   },
@@ -26,6 +24,11 @@
       "prettier --write",
       "git add"
     ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   },
   "prettier": {
     "semi": true,

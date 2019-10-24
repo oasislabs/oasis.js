@@ -1,4 +1,4 @@
-import { bytes, DummyStorage } from '@oasislabs/common';
+import { Address, bytes, DummyStorage } from '@oasislabs/common';
 import { idl } from '@oasislabs/test';
 import { Service } from '../src/service';
 import { RpcRequest, setGateway } from '../src/oasis-gateway';
@@ -17,23 +17,7 @@ import { NO_CODE_ERROR_MSG } from '../src/error';
 setGateway(new EmptyOasisGateway());
 
 describe('Service', () => {
-  const address = bytes.parseHex('0x372FF3aeA1fc69B9C440A5fE0B4c23c38226Da68');
-  it('constructs a service with a hex string address', () => {
-    const service = new Service(idl, address, {
-      gateway: new EmptyOasisGateway(),
-    });
-    // @ts-ignore
-    expect(service.address).toEqual(address);
-  });
-
-  it('constructs a service with a buffer address', () => {
-    const service = new Service(idl, address, {
-      gateway: new EmptyOasisGateway(),
-    });
-
-    // @ts-ignore
-    expect(service.address).toEqual(address);
-  });
+  const address = new Address('0x372FF3aeA1fc69B9C440A5fE0B4c23c38226Da68');
 
   it('dynamically generates rpcs for a given IDL on the service object', () => {
     // Given an idl.
@@ -151,13 +135,11 @@ describe('Service', () => {
       db: new DummyStorage(),
     });
 
-    expect(bytes.parseHex(address)).toEqual(s.address);
+    expect(s.address).toEqual(address);
   });
 
   it('Service.at should give an informative error when an invalid address is used', async () => {
-    const address = bytes.parseHex(
-      '0x288e7e1cc60962f40d4d782950470e3705c5acf4'
-    );
+    const address = new Address('0x288e7e1cc60962f40d4d782950470e3705c5acf4');
     const gateway = {
       // Null getCode response means the service doesn't exist at the address.
       getCode: () => {

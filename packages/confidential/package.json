@@ -25,7 +25,6 @@
   },
   "author": "Oasis Labs Inc. <feedback@oasislabs.com>",
   "scripts": {
-    "prebuild": "rimraf dist",
     "build": "yarn build:node && yarn build:browser",
     "build:node": "tsc -b && rollup -c rollup/rollup.config.ts",
     "build:browser": "tsc -b && rollup -c rollup/rollup.config.browser.ts",
