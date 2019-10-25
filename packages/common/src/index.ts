@@ -6,7 +6,7 @@ export { sleep } from './utils';
 /**
  * Lighteweight wrapper for bytes with an easy hex conversion.
  */
-abstract class Bytes {
+export abstract class Bytes {
   private _bytes: Uint8Array;
   private _hex: string | undefined;
 

@@ -59,8 +59,7 @@ export class KeyStore {
    * Saves the public key in the cache.
    */
   private setCachedPublicKey(serviceAddr: Address, publicKey: PublicKey) {
-    const value = bytes.toHex(publicKey.bytes());
-    this.db.set(serviceAddr.hex, value);
+    this.db.set(serviceAddr.hex, publicKey.hex);
   }
 
   /**
@@ -103,16 +102,16 @@ export class KeyStore {
 
   private static serializeKeyPair(keyPair: KeyPair): string {
     return JSON.stringify({
-      publicKey: bytes.toHex(keyPair.publicKey.bytes()),
-      privateKey: bytes.toHex(keyPair.privateKey.bytes()),
+      publicKey: keyPair.publicKey.hex,
+      privateKey: keyPair.privateKey.hex,
     });
   }
 
   private static deserializeKeyPair(keyPair: string): KeyPair {
     const kp = JSON.parse(keyPair);
     return {
-      publicKey: new PublicKey(bytes.parseHex(kp.publicKey)),
-      privateKey: new PrivateKey(bytes.parseHex(kp.privateKey)),
+      publicKey: new PublicKey(kp.publicKey),
+      privateKey: new PrivateKey(kp.privateKey),
     };
   }
 }

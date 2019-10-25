@@ -15,7 +15,7 @@ describe('KeyStore', () => {
       );
 
       const key = await keyStore.publicKey(PublicKeyMockProvider.address);
-      expect(key!.bytes()).toEqual(PublicKeyMockProvider._publicKey);
+      expect(key!.bytes).toEqual(PublicKeyMockProvider._publicKey);
       // @ts-ignore
       expect(keyStore.db.get(PublicKeyMockProvider.address.hex)).toEqual(
         bytes.toHex(PublicKeyMockProvider._publicKey)
@@ -28,7 +28,7 @@ describe('KeyStore', () => {
         new PublicKeyMockProvider()
       );
       const local = keyStore.localKeys();
-      expect(local.publicKey.bytes().length).toEqual(32);
+      expect(local.publicKey.bytes.length).toEqual(32);
       // @ts-ignore
       const cachedLocal = keyStore.db.get(KeyStore.LOCAL_KEYPAIR_KEY);
       // @ts-ignore

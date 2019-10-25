@@ -1,4 +1,4 @@
-import { bytes } from '@oasislabs/common';
+import { Bytes, bytes } from '@oasislabs/common';
 import { Deoxysii } from './aead';
 import { KeyStore } from './key-store';
 import nacl from './tweetnacl';
@@ -54,12 +54,12 @@ export async function encrypt(
     );
   }
   return bytes.concat([
-    publicKey.bytes(),
+    publicKey.bytes,
     bytes.parseNumber(ciphertext.length, CIPHER_LEN_SIZE, true),
     bytes.parseNumber(aad.length, AAD_LEN_SIZE, true),
     ciphertext,
     aad,
-    nonce.bytes(),
+    nonce.bytes,
   ]);
 }
 
@@ -179,38 +179,20 @@ export type AeadKeys = {
   privateKey: PrivateKey;
 };
 
-export class PublicKey {
-  private inner: Uint8Array;
-
-  constructor(inner: string | Uint8Array) {
-    this.inner = bytes.assertLength(inner, aead.keySize());
-  }
-
-  public bytes(): Uint8Array {
-    return this.inner;
+export class PublicKey extends Bytes {
+  constructor(repr: string | Uint8Array) {
+    super(aead.keySize(), repr);
   }
 }
 
-export class PrivateKey {
-  private inner: Uint8Array;
-
-  constructor(inner: string | Uint8Array) {
-    this.inner = bytes.assertLength(inner, aead.keySize());
-  }
-
-  public bytes(): Uint8Array {
-    return this.inner;
+export class PrivateKey extends Bytes {
+  constructor(repr: string | Uint8Array) {
+    super(aead.keySize(), repr);
   }
 }
 
-export class Nonce {
-  private inner: Uint8Array;
-
-  constructor(inner: string | Uint8Array) {
-    this.inner = bytes.assertLength(inner, aead.nonceSize());
-  }
-
-  public bytes(): Uint8Array {
-    return this.inner;
+export class Nonce extends Bytes {
+  constructor(repr: string | Uint8Array) {
+    super(aead.nonceSize(), repr);
   }
 }

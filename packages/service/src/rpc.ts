@@ -43,8 +43,7 @@ export class RpcFactory {
     address: Address,
     options: ServiceOptions
   ): [Rpcs, Promise<RpcCoder>] {
-    const functions =
-      (options.coder || OasisCoder.plaintext()).functions(idl) || [];
+    const functions = (options.coder || OasisCoder.plaintext()).functions(idl);
     const rpcCoder: Promise<RpcCoder> = new Promise(resolve => {
       options.coder
         ? resolve(options.coder)
