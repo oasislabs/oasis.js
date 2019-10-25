@@ -103,7 +103,7 @@ export class ConfidentialMockOasisGateway extends RpcRequestMockOasisGateway {
   }
 
   async publicKey(_request: PublicKeyRequest): Promise<PublicKeyResponse> {
-    return { publicKey: this._publicKey.bytes() };
+    return { publicKey: this._publicKey.bytes };
   }
 }
 

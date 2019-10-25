@@ -1,4 +1,4 @@
-import { Address, bytes, Db } from '@oasislabs/common';
+import { Address, Db } from '@oasislabs/common';
 import nacl from './tweetnacl';
 import { PublicKey, PrivateKey } from './';
 import { KeyStoreError } from './error';
@@ -72,7 +72,7 @@ export class KeyStore {
     });
     if (!response.publicKey) {
       throw new KeyStoreError(
-        `KeyProvider did not return a public key: ${response}`
+        `KeyProvider did not return a public key: ${JSON.stringify(response)}`
       );
     }
     return new PublicKey(response.publicKey);

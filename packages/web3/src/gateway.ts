@@ -1,5 +1,5 @@
 import { EventEmitter } from 'eventemitter3';
-import { Address, bytes, sleep } from '@oasislabs/common';
+import { bytes, sleep } from '@oasislabs/common';
 import {
   OasisGateway,
   DeployRequest,
@@ -181,9 +181,7 @@ export default class Web3Gateway implements OasisGateway {
   }
 
   async publicKey(request: PublicKeyRequest): Promise<PublicKeyResponse> {
-    const response = await this.oasis.getPublicKey(
-      new Address(request.address)
-    );
+    const response = await this.oasis.getPublicKey(request.address);
     // TODO: signature validation. https://github.com/oasislabs/oasis-client/issues/39
     return {
       publicKey: bytes.parseHex(response.public_key),
