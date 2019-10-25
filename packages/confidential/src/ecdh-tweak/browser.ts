@@ -11,7 +11,7 @@ export async function ecdhTweak(
     hmacKeySingleton = makeHmacKey();
   }
   const hmacKey = await hmacKeySingleton;
-  let preMasterKey = nacl.scalarMult(privateKey.bytes(), peerPublicKey.bytes());
+  let preMasterKey = nacl.scalarMult(privateKey.bytes, peerPublicKey.bytes);
 
   let aesKey = await window.crypto.subtle.sign(
     // @ts-ignore

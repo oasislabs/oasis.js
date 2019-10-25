@@ -34,7 +34,7 @@ export class Deoxysii implements Aead {
   ): Promise<Uint8Array> {
     const aesKey = await ecdhTweak(peerPublicKey, privateKey);
     const aead = new deoxysii.AEAD(aesKey);
-    return aead.encrypt(nonce.bytes(), plaintext, additionalData);
+    return aead.encrypt(nonce.bytes, plaintext, additionalData);
   }
 
   public async open(
@@ -46,7 +46,7 @@ export class Deoxysii implements Aead {
   ): Promise<Uint8Array> {
     const aesKey = await ecdhTweak(peerPublicKey, privateKey);
     const aead = new deoxysii.AEAD(aesKey);
-    return aead.decrypt(nonce.bytes(), ciphertext, additionalData);
+    return aead.decrypt(nonce.bytes, ciphertext, additionalData);
   }
 
   public nonceSize(): number {

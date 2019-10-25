@@ -190,9 +190,9 @@ describe('Crypto', () => {
       encryption
     );
 
-    expect(splitPublicKey.bytes()).toEqual(publicKey);
+    expect(splitPublicKey.bytes).toEqual(publicKey);
     expect(splitAad).toEqual(aad);
-    expect(splitNonce.bytes()).toEqual(nonce);
+    expect(splitNonce.bytes).toEqual(nonce);
   });
 });
 

@@ -1,9 +1,9 @@
-import { bytes } from '@oasislabs/common';
+import { Address } from '@oasislabs/common';
 import { RpcOptions } from './oasis-gateway';
 
-export function NO_CODE_ERROR_MSG(address: Uint8Array): string {
+export function NO_CODE_ERROR_MSG(address: Address): string {
   return `
-    No code exists for address ${bytes.toHex(address)}.
+    No code exists for address ${address.hex}.
     Either your address is incorrect or the deploy failed.
   `;
 }
@@ -25,7 +25,7 @@ export class DeployError extends Error {
 }
 
 export class ServiceError extends Error {
-  constructor(readonly address: Uint8Array, ...params: any[]) {
+  constructor(readonly address: Address, ...params: any[]) {
     super(...params);
   }
 }

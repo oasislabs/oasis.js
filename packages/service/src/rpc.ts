@@ -1,7 +1,7 @@
 import camelCase from 'camelcase';
 
 import { KeyStore } from '@oasislabs/confidential';
-import { bytes } from '@oasislabs/common';
+import { Address, bytes } from '@oasislabs/common';
 
 import { RpcError, ServiceError, NO_CODE_ERROR_MSG } from './error';
 import { Idl, IdlError, RpcFn } from './idl';
@@ -40,12 +40,10 @@ export class RpcFactory {
    */
   public static build(
     idl: Idl,
-    address: Uint8Array,
+    address: Address,
     options: ServiceOptions
   ): [Rpcs, Promise<RpcCoder>] {
-    const functions = options.coder
-      ? options.coder.functions(idl)
-      : OasisCoder.plaintext().functions(idl);
+    const functions = (options.coder || OasisCoder.plaintext()).functions(idl);
     const rpcCoder: Promise<RpcCoder> = new Promise(resolve => {
       options.coder
         ? resolve(options.coder)
@@ -69,7 +67,7 @@ export class RpcFactory {
 
   private static buildRpc(
     fn: RpcFn,
-    address: Uint8Array,
+    address: Address,
     gateway: OasisGateway,
     rpcCoder: Promise<RpcCoder>
   ): RpcDefinition {
@@ -90,7 +88,7 @@ export class RpcFactory {
       const txData = await coder.encode(fn, rpcArgs, rpcOptions);
       const response = await gateway.rpc({
         data: txData,
-        address: address,
+        address: address.bytes,
         options: rpcOptions,
       });
 
@@ -177,11 +175,11 @@ export class RpcFactory {
    * @returns the OasisCoder to use based upon whether it's confidential.
    */
   private static async discover(
-    address: Uint8Array,
+    address: Address,
     options: ServiceOptions
   ): Promise<RpcCoder> {
     // Check the contract's deploy header to see if it's confidential.
-    const response = await options.gateway!.getCode({ address });
+    const response = await options.gateway!.getCode({ address: address.bytes });
 
     if (!response.code) {
       throw new ServiceError(address, NO_CODE_ERROR_MSG(address));

@@ -181,9 +181,7 @@ export default class Web3Gateway implements OasisGateway {
   }
 
   async publicKey(request: PublicKeyRequest): Promise<PublicKeyResponse> {
-    const response = await this.oasis.getPublicKey(
-      bytes.toHex(request.address)
-    );
+    const response = await this.oasis.getPublicKey(request.address);
     // TODO: signature validation. https://github.com/oasislabs/oasis-client/issues/39
     return {
       publicKey: bytes.parseHex(response.public_key),

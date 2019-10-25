@@ -11,10 +11,7 @@ export async function ecdhTweak(
     boxKDFTweak[i] = boxKDFTweakStr.charCodeAt(i);
   }
 
-  const preMasterKey = nacl.scalarMult(
-    privateKey.bytes(),
-    peerPublicKey.bytes()
-  );
+  const preMasterKey = nacl.scalarMult(privateKey.bytes, peerPublicKey.bytes);
   const hash = require('crypto').createHmac('sha256', boxKDFTweak);
   hash.update(preMasterKey);
   return new Uint8Array(hash.digest());

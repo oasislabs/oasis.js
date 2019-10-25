@@ -11,7 +11,14 @@ import {
   fromWasm,
   fromWasmSync,
 } from '@oasislabs/service';
-import { Deoxysii, encrypt, decrypt } from '@oasislabs/confidential';
+import {
+  Nonce,
+  PublicKey,
+  PrivateKey,
+  Deoxysii,
+  encrypt,
+  decrypt,
+} from '@oasislabs/confidential';
 import { Web3Gateway } from '@oasislabs/web3';
 import workspace from './workspace';
 import Wallet from './wallet';
@@ -27,12 +34,15 @@ export default {
     Web3Gateway,
   },
   utils: {
+    Deoxysii,
+    OasisCoder,
+    Nonce,
+    PrivateKey,
+    PublicKey,
     bytes,
     cbor,
-    Deoxysii,
-    encrypt,
     decrypt,
-    OasisCoder,
+    encrypt,
     header,
     keccak256,
     idl: {

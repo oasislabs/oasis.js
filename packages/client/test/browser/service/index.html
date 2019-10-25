@@ -2,7 +2,6 @@
   <head>
     <script src="/dist/index.browser.umd.js"></script>
     <script src="/test/browser/idls/test-contract.js"></script>
-    <script src="/test/browser/utils.js"></script>
     <script>
       window.onload = function() {
         /**
@@ -13,10 +12,10 @@
          */
         async function runTest() {
           let nonConf = await runCase(nonConfidentialTest);
-          let conf = await runCase(confidentialTest);
-
-          // Place the results in the html for consumption by the test runner.
           document.getElementById('plaintext-test').innerHTML = JSON.stringify(nonConf);
+          // ^ Place the results in the html for consumption by the test runner.
+
+          let conf = await runCase(confidentialTest);
           document.getElementById('confidential-test').innerHTML = JSON.stringify(conf);
         }
 
@@ -100,7 +99,7 @@
             return { output: oasis.utils.bytes.parseHex("0x8f4f6346d2dafe2a6a0cb664d4fa17130284e2e123459471e1f0863fb78ad4a45b110d15bcb3dbfe956ebcb14947324c76ec5f571b1a42643cb03bce81aae3f38e68a3") }
           }
           async publicKey(address) {
-            return { publicKey: keys.peerPublicKey.inner };
+            return { publicKey: keys.peerPublicKey.bytes };
           }
           async getCode(request) {
             // Just return any bytecode with the deploy header with confidential === true.
@@ -136,16 +135,16 @@
         const [input1, input2] = serviceInputs();
         // Keys used for encryption.
         const keys = {
-          publicKey: new Bytes(new Uint8Array(
+          publicKey: new oasis.utils.PublicKey(new Uint8Array(
             [76, 194, 101, 195, 41, 86, 188, 68, 20, 196, 45, 88, 50, 28, 101, 65, 169, 62, 20, 86, 188, 169, 250, 131, 121, 184, 83, 198, 108, 127, 191, 59]
           )),
-          privateKey:  new Bytes(new Uint8Array(
+          privateKey:  new oasis.utils.PrivateKey(new Uint8Array(
             [77, 65, 100, 57, 158, 249, 115, 170, 228, 223, 8, 122, 34, 16, 7, 109, 121, 80, 221, 98, 147, 57, 33, 10, 117, 181, 183, 181, 119, 248, 6, 97]
           )),
-          peerPublicKey: new Bytes(new Uint8Array(
+          peerPublicKey: new oasis.utils.PublicKey(new Uint8Array(
             [11, 22, 95, 106, 208, 178, 217, 236, 126, 30, 21, 232, 31, 89, 61, 20, 62, 53, 45, 10, 43, 25, 109, 77, 213, 84, 134, 55, 254, 242, 21, 87]
           )),
-          peerPrivateKey: new Bytes(new Uint8Array(
+          peerPrivateKey: new oasis.utils.PrivateKey(new Uint8Array(
             [102, 213, 202, 145, 129, 99, 154, 30, 39, 120, 107, 223, 154, 170, 91, 51, 180, 126, 147, 208, 28, 232, 221, 65, 142, 189, 187, 37, 158, 134, 218, 171]
           )),
         };
@@ -158,14 +157,14 @@
         };
         // Confidential test case.
         let confidentialTest = {
-          gateway: (resolve) => new ConfidentialMockOasisGateway(resolve),
+          gateway: (resolve) => new ConfidentialMockOasisGateway(resolve, keys.publicKey),
           db: () => {
             // Create a db with the local keys preset, so that we can
             // always decrypt on the receiving end.
             let db = new DummyStorage();
             db.set('me', JSON.stringify({
-              publicKey: oasis.utils.bytes.toHex(keys.publicKey.bytes()),
-              privateKey: oasis.utils.bytes.toHex(keys.privateKey.bytes()),
+              publicKey: keys.publicKey.hex,
+              privateKey: keys.privateKey.hex,
             }));
             return db;
           },
