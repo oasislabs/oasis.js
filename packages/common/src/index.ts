@@ -51,8 +51,14 @@ export class Address extends Bytes {
  * so you should prefer to encode as hex or pass a Uint8Array directly.
  */
 export class Balance extends Bytes {
-  constructor(repr: string | Uint8Array) {
-    super(16, repr);
+  constructor(repr: string | Uint8Array | bigint | number) {
+    let balanceBytes;
+    if (typeof repr === 'bigint' || typeof repr === 'number') {
+      balanceBytes = new Uint8Array(new BigInt64Array([BigInt(repr)]).buffer);
+    } else {
+      balanceBytes = repr;
+    }
+    super(16, balanceBytes);
   }
 }
 
