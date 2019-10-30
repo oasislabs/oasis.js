@@ -5,7 +5,7 @@ import {
   OasisCoder,
   Service,
   deploy,
-  header,
+  DeployHeader,
   setGateway,
   defaultOasisGateway,
   fromWasm,
@@ -34,6 +34,7 @@ export default {
     Web3Gateway,
   },
   utils: {
+    DeployHeader,
     Deoxysii,
     OasisCoder,
     Nonce,
@@ -43,7 +44,6 @@ export default {
     cbor,
     decrypt,
     encrypt,
-    header,
     keccak256,
     idl: {
       fromWasm,

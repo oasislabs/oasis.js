@@ -10,7 +10,7 @@ import { OasisGateway, RpcOptions } from './oasis-gateway';
 import { RpcCoder } from './coder';
 import ConfidentialCoder from './coder/confidential';
 import { OasisCoder } from './coder/oasis';
-import { header } from './deploy/header';
+import { DeployHeader } from './deploy/header';
 
 /**
  * Rpcs is a dynamically generated object with rpc methods attached.
@@ -185,7 +185,7 @@ export class RpcFactory {
       throw new ServiceError(address, NO_CODE_ERROR_MSG(address));
     }
 
-    const deployHeader = header.parseFromCode(response.code);
+    const deployHeader = DeployHeader.parseFromCode(response.code);
 
     if (!deployHeader || !deployHeader.body.confidential) {
       return OasisCoder.plaintext();

@@ -54,7 +54,9 @@ export class Balance extends Bytes {
   constructor(repr: string | Uint8Array | bigint | number) {
     let balanceBytes;
     if (typeof repr === 'bigint' || typeof repr === 'number') {
-      balanceBytes = new Uint8Array(new BigInt64Array([BigInt(repr)]).buffer);
+      balanceBytes = new Uint8Array(
+        new BigInt64Array([BigInt(repr), BigInt(0)]).buffer
+      );
     } else {
       balanceBytes = repr;
     }
