@@ -1,7 +1,12 @@
 export { Address, Balance } from '@oasislabs/common';
 export { Service } from './service';
 export { default as deploy } from './deploy';
-export { header } from './deploy/header';
+export {
+  DeployHeader,
+  DeployHeaderError,
+  DeployHeaderReader,
+  DeployHeaderWriter,
+} from './deploy/header';
 export { OasisCoder } from './coder/oasis';
 export { RpcCoder } from './coder';
 export { Idl, RpcFn, fromWasmSync, fromWasm } from './idl';

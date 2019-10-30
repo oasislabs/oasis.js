@@ -17,6 +17,14 @@ export class DeployHeader {
    */
   constructor(public version: number, public body: DeployHeaderOptions) {}
 
+  public static parseFromCode(
+    deploycode: Uint8Array | string
+  ): DeployHeader | null {
+    const _deploycode: Uint8Array =
+      typeof deploycode === 'string' ? bytes.parseHex(deploycode) : deploycode;
+    return DeployHeaderReader.header(_deploycode);
+  }
+
   data(): Uint8Array {
     const bodyBytes = DeployHeaderWriter.body(this.body);
     return new Uint8Array(
@@ -281,17 +289,3 @@ export class DeployHeaderWriter {
     return arr;
   }
 }
-
-// Alias.
-function parseFromCode(deploycode: Uint8Array | string): DeployHeader | null {
-  const _deploycode: Uint8Array =
-    typeof deploycode === 'string' ? bytes.parseHex(deploycode) : deploycode;
-
-  return DeployHeaderReader.header(_deploycode);
-}
-
-// Convenience api export.
-export const header = {
-  parseFromCode,
-  deployCode: DeployHeader.deployCode,
-};
