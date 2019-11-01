@@ -66,9 +66,8 @@ export class KeyStore {
    * Makes a request to the keyProvider for the public key for the given service.
    */
   private async getRequestPublicKey(serviceAddr: Address): Promise<PublicKey> {
-    // Ensure we are using Uint8Array.
     const response = await this.keyProvider.publicKey({
-      address: serviceAddr.hex,
+      address: serviceAddr.bytes, // Ensure we are using Uint8Array.
     });
     if (!response.publicKey) {
       throw new KeyStoreError(
