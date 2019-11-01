@@ -1,6 +1,6 @@
 {
   "name": "@oasislabs/test",
-  "version": "1.0.0-rc.20",
+  "version": "1.0.0-rc.21",
   "description": "Tools used in Oasis tests",
   "repository": {
     "type": "git",
@@ -23,6 +23,6 @@
   },
   "dependencies": {
     "@oasislabs/common": "^1.0.0-rc.14",
-    "@oasislabs/service": "^1.0.0-rc.20"
+    "@oasislabs/service": "^1.0.0-rc.21"
   }
 }
