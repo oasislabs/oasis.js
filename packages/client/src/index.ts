@@ -4,6 +4,7 @@ import { cbor, bytes } from '@oasislabs/common';
 import {
   OasisCoder,
   Service,
+  Address,
   deploy,
   DeployHeader,
   setGateway,
@@ -25,6 +26,7 @@ import Wallet from './wallet';
 
 export default {
   Service,
+  Address,
   deploy,
   Wallet,
   setGateway,
