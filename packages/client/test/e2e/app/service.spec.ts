@@ -78,7 +78,7 @@ describe('Counter', () => {
         const currentCounter = logs[k].newCounter;
         const lastCounter = logs[k - 1].newCounter;
 
-        expect(currentCounter - lastCounter).toEqual(1);
+        expect(currentCounter - lastCounter).toBeGreaterThan(0);
       }
     });
 
