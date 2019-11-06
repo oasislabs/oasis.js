@@ -5,6 +5,7 @@ import {
   OasisCoder,
   Service,
   Address,
+  Balance,
   deploy,
   DeployHeader,
   setGateway,
@@ -27,6 +28,7 @@ import Wallet from './wallet';
 export default {
   Service,
   Address,
+  Balance,
   deploy,
   Wallet,
   setGateway,
