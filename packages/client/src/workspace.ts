@@ -57,9 +57,13 @@ export default new Proxy(
         find
           .fileSync(/target\/service\/.*\.wasm/, projectRoot)
           .reduce((services: any, wasmPath: string) => {
-            const bytecode = fs.readFileSync(wasmPath);
-            const idl = fromWasmSync(bytecode);
-            services[idl.name] = new ServiceDefinition(bytecode, idl);
+            try {
+              const bytecode = fs.readFileSync(wasmPath);
+              const idl = fromWasmSync(bytecode);
+              services[idl.name] = new ServiceDefinition(bytecode, idl);
+            } catch {
+              // ignore invalid service
+            }
             return services;
           }, workspaceCache);
 
