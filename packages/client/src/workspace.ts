@@ -61,7 +61,9 @@ export default new Proxy(
               const bytecode = fs.readFileSync(wasmPath);
               const idl = fromWasmSync(bytecode);
               services[idl.name] = new ServiceDefinition(bytecode, idl);
-            } catch {}
+            } catch {
+              // ignore invalid service
+            }
             return services;
           }, workspaceCache);
 
