@@ -46,9 +46,10 @@ Service
 Alternatively, one can connect to a previously deployed Service.
 
 .. code-block:: javascript
+   const oasis_common = require('@oasislabs/common');
 
    // On-chain address of the service (dummy address used here);.
-   const address = '0x288e7e1cc60962f40d4d782950470e3705c5acf4';
+   const address = new oasis_common.Address('0x288e7e1cc60962f40d4d782950470e3705c5acf4');
 
    // Connect to the service.
    const service = await oasis.Service.at(address);
