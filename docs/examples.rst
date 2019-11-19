@@ -48,7 +48,7 @@ Alternatively, one can connect to a previously deployed Service.
 .. code-block:: javascript
 
    // On-chain address of the service (dummy address used here);.
-   const address = '0x288e7e1cc60962f40d4d782950470e3705c5acf4';
+   const address = new oasis.Address('0x288e7e1cc60962f40d4d782950470e3705c5acf4');
 
    // Connect to the service.
    const service = await oasis.Service.at(address);
