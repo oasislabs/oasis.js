@@ -34,20 +34,24 @@ export class TransactionFactory {
   async estimateGas(tx: Record<string, any>): Promise<any> {
     return {
       key: 'gasLimit',
-      value: (await this.rpc.request({
-        method: 'eth_estimateGas',
-        params: [tx],
-      })).result,
+      value: (
+        await this.rpc.request({
+          method: 'eth_estimateGas',
+          params: [tx],
+        })
+      ).result,
     };
   }
 
   async nonce(): Promise<any> {
     return {
       key: 'nonce',
-      value: (await this.rpc.request({
-        method: 'eth_getTransactionCount',
-        params: [this.address, 'latest'],
-      })).result,
+      value: (
+        await this.rpc.request({
+          method: 'eth_getTransactionCount',
+          params: [this.address, 'latest'],
+        })
+      ).result,
     };
   }
 }

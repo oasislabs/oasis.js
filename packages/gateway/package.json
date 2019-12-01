@@ -47,7 +47,7 @@
     "@oasislabs/common": "^1.0.0-rc.14",
     "@oasislabs/service": "^1.0.0-rc.21",
     "@types/uuid": "^3.4.5",
-    "axios": "^0.18.0"
+    "axios": "^0.19.0"
   },
   "browser": {
     "./dist/index.umd.js": "./dist/index.browser.umd.js",
