@@ -47,11 +47,11 @@
     "@oasislabs/common": "^1.0.0-rc.14",
     "@oasislabs/service": "^1.0.0-rc.21",
     "@oasislabs/test": "^1.0.0-rc.21",
-    "axios": "^0.18.0",
+    "axios": "^0.19.0",
     "ethers": "^4.0.27",
-    "eventemitter3": "^3.1.2",
+    "eventemitter3": "^4.0.0",
     "js-sha3": "^0.8.0",
-    "node-localstorage": "^1.3.1",
+    "node-localstorage": "^2.1.4",
     "ws": "^7.1.0"
   },
   "browser": {

@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { Method } from 'axios';
 
 /**
  * HttpHeaders that can be sent on an http request
@@ -32,7 +32,7 @@ export interface HttpClient {
  */
 export class AxiosClient implements HttpClient {
   public request(
-    method: string,
+    method: Method,
     url: string,
     data: Record<string, any>,
     httpHeaders: HttpHeaders
