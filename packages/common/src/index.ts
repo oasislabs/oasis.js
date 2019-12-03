@@ -4,7 +4,7 @@ export { Db, LocalStorage, DummyStorage } from './db';
 export { sleep } from './utils';
 
 /**
- * Lighteweight wrapper for bytes with an easy hex conversion.
+ * Lightweight wrapper for bytes with an easy hex conversion.
  */
 export abstract class Bytes {
   private _bytes: Uint8Array;

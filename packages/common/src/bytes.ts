@@ -3,7 +3,7 @@
  * @param   keystring is the EthHex encoding of the value
  * @param   littleEndian is true if the keystring should be interpreted as
  *          little endian. Otherwise, defaults to big endian.
- * @returns the byte incoding of the value
+ * @returns the byte encoding of the value
  */
 export function parseHex(keystring: string, littleEndian = false): Uint8Array {
   if (keystring.indexOf('0x') === 0) {
@@ -107,7 +107,7 @@ export function encodeUtf8(input: string): Uint8Array {
 
 /**
  * Converts the given byte array to a number. Cannot parse a number
- * larger than u64, specifically, 2**53-1 (javascripts max number).
+ * larger than u64, specifically, 2**53-1 (javascript's max number).
  */
 export function toNumber(bytes: Uint8Array, le = false): number {
   if (bytes.length > 8) {

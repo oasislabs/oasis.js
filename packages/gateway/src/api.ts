@@ -28,7 +28,7 @@ export const RpcApi: DeveloperGatewayApi = {
 };
 
 /**
- * Retrieives the public key for a service.
+ * Retrieves the public key for a service.
  */
 export const PublicKeyApi: DeveloperGatewayApi = {
   url: 'v0/api/service/getPublicKey',

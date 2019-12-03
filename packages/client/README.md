@@ -114,7 +114,7 @@ const privateKey = '0x1ad288d73cd2fff6ecf0a5bf167f59e9944559cd70f66cb70170702a0b
 // Wallet for signing and paying for transactions.
 const wallet = new oasis.Wallet(privateKey);
 
-// Etheruem gateway responsible for signing transactions.
+// Ethereum gateway responsible for signing transactions.
 const gateway = new oasis.gateways.Web3Gateway('wss://web3.devnet.oasiscloud.io/ws', wallet);
 
 // Configure the gateway to use.
