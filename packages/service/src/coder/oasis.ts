@@ -43,9 +43,7 @@ export class OasisCoder implements RpcCoder {
   }
 
   public async decodeSubscriptionEvent(e: any, _idl: Idl): Promise<any> {
-    const eventBytes = bytes
-      .parseHex(e.data)
-      .slice(4); // remove size of event
+    const eventBytes = bytes.parseHex(e.data).slice(4); // remove size of event
     const event = cbor.decode(eventBytes);
     return camelCaseKeys(event, { deep: true });
   }
