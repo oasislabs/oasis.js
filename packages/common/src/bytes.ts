@@ -3,7 +3,7 @@
  * @param   keystring is the EthHex encoding of the value
  * @param   littleEndian is true if the keystring should be interpreted as
  *          little endian. Otherwise, defaults to big endian.
- * @returns the byte encoding of the value
+ * @returns the byte incoding of the value
  */
 export function parseHex(keystring: string, littleEndian = false): Uint8Array {
   if (keystring.indexOf('0x') === 0) {
