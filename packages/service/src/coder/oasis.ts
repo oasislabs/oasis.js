@@ -47,10 +47,7 @@ export class OasisCoder implements RpcCoder {
     const payloadSize = new Uint32Array(
       new Uint8Array(eventBytes.slice(0, 4))
     )[0];
-    if (payloadSize !== eventBytes.length - 4) {
-      throw new Error(`Invalid event bytes ${eventBytes}`);
-    }
-    const payloadBytes = eventBytes.slice(4);
+    const payloadBytes = eventBytes.slice(4, payloadSize + 4);
     const event = cbor.decode(payloadBytes);
     return camelCaseKeys(event, { deep: true });
   }
