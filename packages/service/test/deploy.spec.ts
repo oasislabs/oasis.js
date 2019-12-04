@@ -1,4 +1,4 @@
-import { cbor, bytes } from '@oasislabs/common';
+import { borsh, bytes } from '@oasislabs/common';
 import { idl } from '@oasislabs/test';
 import {
   EmptyOasisGateway,
@@ -126,11 +126,11 @@ describe('Service deploys', () => {
     // Await the request.
     const deployRequestSerialized = await deployRequestPromise;
 
-    // Bytecode || cbor.encode([...args])
+    // Bytecode || borsh.encode([...args])
     const initcode = DeployHeaderReader.initcode(deployRequestSerialized.data);
 
     // Chop off the bytecode and decode the args.
-    const deployArgs = cbor.decode(initcode.slice(bytecode.length));
+    const deployArgs = borsh.decode(initcode.slice(bytecode.length));
 
     expect(deployArgs).toEqual(args);
   });

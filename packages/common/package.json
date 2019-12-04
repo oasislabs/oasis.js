@@ -44,6 +44,6 @@
     ]
   },
   "dependencies": {
-    "cbor-js": "^0.1.0"
+    "borsh": "^0.2.6"
   }
 }

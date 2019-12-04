@@ -1,4 +1,4 @@
-declare module 'cbor-js' {
+declare module 'borsh' {
   export function encode(input: any): Uint8Array;
   export function decode(input: Uint8Array): any;
 }

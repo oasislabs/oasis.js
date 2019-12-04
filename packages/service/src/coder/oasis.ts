@@ -1,7 +1,7 @@
 import camelCaseKeys from 'camelcase-keys';
 import { keccak256 } from 'js-sha3';
 import { AeadKeys } from '@oasislabs/confidential';
-import { bytes, cbor } from '@oasislabs/common';
+import { bytes, borsh } from '@oasislabs/common';
 import { Idl, RpcFn } from '../idl';
 import ConfidentialCoder from './confidential';
 import { RpcCoder, RpcEncoder, RpcDecoder } from './';
@@ -43,7 +43,7 @@ export class OasisCoder implements RpcCoder {
   }
 
   public async decodeSubscriptionEvent(e: any, _idl: Idl): Promise<any> {
-    const event = cbor.decode(bytes.parseHex(e.data));
+    const event = borsh.decode(bytes.parseHex(e.data));
     return camelCaseKeys(event, { deep: true });
   }
 
@@ -91,10 +91,10 @@ export class PlaintextRpcEncoder implements RpcEncoder {
     // TODO: input validation. https://github.com/oasislabs/oasis-client/issues/14
 
     if (fn.name === 'constructor') {
-      return cbor.encode(args);
+      return borsh.encode(args);
     }
 
-    return cbor.encode({
+    return borsh.encode({
       method: fn.name,
       payload: args,
     });
@@ -107,7 +107,7 @@ export class PlaintextRpcDecoder {
     data: Uint8Array,
     _constructor?: boolean
   ): Promise<any> {
-    return cbor.decode(data);
+    return borsh.decode(data);
   }
 
   public async decodeError(error: Uint8Array): Promise<string> {

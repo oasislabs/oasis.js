@@ -1,6 +1,6 @@
 import { keccak256 } from 'js-sha3';
 import Gateway from '@oasislabs/gateway';
-import { cbor, bytes } from '@oasislabs/common';
+import { borsh, bytes } from '@oasislabs/common';
 import {
   OasisCoder,
   Service,
@@ -45,7 +45,7 @@ export default {
     PrivateKey,
     PublicKey,
     bytes,
-    cbor,
+    borsh,
     decrypt,
     encrypt,
     keccak256,
