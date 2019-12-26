@@ -1,6 +1,6 @@
 {
   "name": "@oasislabs/web3",
-  "version": "1.0.0-rc.10",
+  "version": "1.0.0-rc.11",
   "description": "  Web3 JSON RPC compliant Oasis Gateway",
   "keywords": [
     "oasis",
@@ -44,9 +44,9 @@
     ]
   },
   "dependencies": {
-    "@oasislabs/common": "^1.0.0-rc.14",
-    "@oasislabs/service": "^1.0.0-rc.21",
-    "@oasislabs/test": "^1.0.0-rc.21",
+    "@oasislabs/common": "^1.0.0-rc.15",
+    "@oasislabs/service": "^1.0.0-rc.22",
+    "@oasislabs/test": "^1.0.0-rc.22",
     "axios": "^0.19.0",
     "ethers": "^4.0.27",
     "eventemitter3": "^4.0.0",
