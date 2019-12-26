@@ -52,17 +52,19 @@ export class Address extends Bytes {
  */
 export class Balance extends Bytes {
   constructor(repr: string | Uint8Array | bigint | number) {
-    let balanceBytes;
+    let balanceBytes = new Uint8Array(16); // 128 bit
     if (typeof repr === 'number') {
       repr = BigInt(repr);
     }
     if (typeof repr === 'bigint') {
-      balanceBytes = new Uint8Array(16); // 128 bits
-      let i = 0;
-      while (repr !== BigInt(0)) {
-        repr >>= BigInt(i++ * 8);
-        balanceBytes[i] = Number(repr) & 0xff;
+      for (let i = 0; i < balanceBytes.length; i++) {
+        balanceBytes[balanceBytes.length - i - 1] = Number(
+          (repr >> BigInt(i * 8)) & BigInt(0xff)
+        );
       }
+    } else if (typeof repr === 'string') {
+      const parsed = bytes.parseHex(repr);
+      balanceBytes.set(parsed, balanceBytes.length - parsed.length);
     } else {
       balanceBytes = repr;
     }
