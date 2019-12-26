@@ -53,10 +53,16 @@ export class Address extends Bytes {
 export class Balance extends Bytes {
   constructor(repr: string | Uint8Array | bigint | number) {
     let balanceBytes;
-    if (typeof repr === 'bigint' || typeof repr === 'number') {
-      balanceBytes = new Uint8Array(
-        new BigInt64Array([BigInt(repr), BigInt(0)]).buffer
-      );
+    if (typeof repr === 'number') {
+      repr = BigInt(repr);
+    }
+    if (typeof repr === 'bigint') {
+      balanceBytes = new Uint8Array(16); // 128 bits
+      let i = 0;
+      while (repr !== BigInt(0)) {
+        repr >>= BigInt(i++ * 8);
+        balanceBytes[i] = Number(repr) & 0xff;
+      }
     } else {
       balanceBytes = repr;
     }
