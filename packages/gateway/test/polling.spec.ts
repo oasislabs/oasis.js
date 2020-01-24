@@ -33,45 +33,24 @@ describe('PollingService', () => {
   const testCases = [
     {
       label: 'Polls for a group of contiguously arriving request ids',
-      orderedResponses: () => {
-        const responses: PollServiceResponse[] = [];
-        for (let k = 0; k < 10; k += 1) {
-          responses.push(successPollResponse(k));
-        }
-        return responses;
-      },
+      orderedResponses: () => range(0, 10).map(k => successPollResponse(k)),
     },
     {
       label: 'Polls for a group of reverse arriving request ids',
-      orderedResponses: () => {
-        const responses: PollServiceResponse[] = [];
-        for (let k = 9; k >= 0; k -= 1) {
-          responses.push(successPollResponse(k));
-        }
-        return responses;
-      },
+      orderedResponses: () =>
+        reverse(range(0, 10).map(k => successPollResponse(k))),
     },
 
     {
       label: 'Polls for a group of randomly arriving request ids starting at 0',
-      orderedResponses: () => {
-        const responses: PollServiceResponse[] = [];
-        for (let k = 0; k < 10; k += 1) {
-          responses.push(successPollResponse(k));
-        }
-        return shuffle(responses);
-      },
+      orderedResponses: () =>
+        shuffle(range(0, 10).map(k => successPollResponse(k))),
     },
     {
       label:
         'Polls for a group of randomly arriving request ids starting at 10',
-      orderedResponses: () => {
-        const responses: PollServiceResponse[] = [];
-        for (let k = 10; k < 20; k += 1) {
-          responses.push(successPollResponse(k));
-        }
-        return shuffle(responses);
-      },
+      orderedResponses: () =>
+        shuffle(range(10, 20).map(k => successPollResponse(k))),
       startId: 10,
       endId: 20,
     },
@@ -178,10 +157,22 @@ function pollingService(responses: PollServiceResponse[]): PollingService {
   });
 }
 
-function shuffle(a: any[]) {
+function shuffle<T>(a: T[]) {
   for (let i = a.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [a[i], a[j]] = [a[j], a[i]];
   }
   return a;
+}
+
+function reverse<T>(a: T[]) {
+  return a.slice(0).reverse();
+}
+
+function range(start: number, end: number) {
+  const list: number[] = [];
+  for (let i = start; i < end; i += 1) {
+    list.push(i);
+  }
+  return list;
 }
