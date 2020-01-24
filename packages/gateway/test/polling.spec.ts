@@ -33,34 +33,41 @@ describe('PollingService', () => {
   const testCases = [
     {
       label: 'Polls for a group of contiguously arriving request ids',
+      orderedRequests: () => range(0, 10),
       orderedResponses: () => range(0, 10).map(k => successPollResponse(k)),
     },
     {
       label: 'Polls for a group of reverse arriving request ids',
+      orderedRequests: () => range(0, 10),
       orderedResponses: () =>
         reverse(range(0, 10).map(k => successPollResponse(k))),
     },
 
     {
       label: 'Polls for a group of randomly arriving request ids starting at 0',
+      orderedRequests: () => range(0, 10),
       orderedResponses: () =>
         shuffle(range(0, 10).map(k => successPollResponse(k))),
     },
     {
       label:
         'Polls for a group of randomly arriving request ids starting at 10',
+      orderedRequests: () => range(10, 20),
       orderedResponses: () =>
         shuffle(range(10, 20).map(k => successPollResponse(k))),
-      startId: 10,
-      endId: 20,
+    },
+
+    {
+      label:
+        'Polls for a group of randomly arriving request ids starting randomly',
+      orderedRequests: () => shuffle(range(10, 20)),
+      orderedResponses: () =>
+        shuffle(range(10, 20).map(k => successPollResponse(k))),
     },
   ];
 
   testCases.forEach(async t => {
     it(t.label, async () => {
-      const startId = t.startId ? t.startId : 0;
-      const endId = t.endId ? t.endId : 10;
-
       // Setup the service so that the http requests returns these responses.
       const service = pollingService(t.orderedResponses());
 
@@ -69,11 +76,10 @@ describe('PollingService', () => {
       service.session.isBlocked = true;
 
       // Queue up requests for all the responses.
-      const promises: Promise<Event>[] = [];
-      for (let k = startId; k < endId; k += 1) {
-        const responseRequest = service.response(k);
-        promises.push(responseRequest);
-      }
+      const ids = t.orderedRequests();
+      const promises: Promise<Event>[] = ids.map(k => {
+        return service.response(k);
+      });
 
       // Unblock http requests. The polling service will not start receiving responses.
       // @ts-ignore
@@ -81,10 +87,12 @@ describe('PollingService', () => {
 
       const results = await Promise.all(promises);
 
-      let k = startId;
-      results.forEach(r => {
-        expect(r).toEqual(successEvent(k));
-        k += 1;
+      const expectedResults = ids.map(k => {
+        return successEvent(k);
+      });
+
+      results.forEach((r, ix) => {
+        expect(results[ix]).toEqual(expectedResults[ix]);
       });
     });
   });
