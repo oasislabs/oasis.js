@@ -33,55 +33,41 @@ describe('PollingService', () => {
   const testCases = [
     {
       label: 'Polls for a group of contiguously arriving request ids',
-      orderedResponses: () => {
-        const responses: PollServiceResponse[] = [];
-        for (let k = 0; k < 10; k += 1) {
-          responses.push(successPollResponse(k));
-        }
-        return responses;
-      },
+      orderedRequests: () => range(0, 10),
+      orderedResponses: () => range(0, 10).map(k => successPollResponse(k)),
     },
     {
       label: 'Polls for a group of reverse arriving request ids',
-      orderedResponses: () => {
-        const responses: PollServiceResponse[] = [];
-        for (let k = 9; k >= 0; k -= 1) {
-          responses.push(successPollResponse(k));
-        }
-        return responses;
-      },
+      orderedRequests: () => range(0, 10),
+      orderedResponses: () =>
+        reverse(range(0, 10).map(k => successPollResponse(k))),
     },
 
     {
       label: 'Polls for a group of randomly arriving request ids starting at 0',
-      orderedResponses: () => {
-        const responses: PollServiceResponse[] = [];
-        for (let k = 0; k < 10; k += 1) {
-          responses.push(successPollResponse(k));
-        }
-        return shuffle(responses);
-      },
+      orderedRequests: () => range(0, 10),
+      orderedResponses: () =>
+        shuffle(range(0, 10).map(k => successPollResponse(k))),
     },
     {
       label:
         'Polls for a group of randomly arriving request ids starting at 10',
-      orderedResponses: () => {
-        const responses: PollServiceResponse[] = [];
-        for (let k = 10; k < 20; k += 1) {
-          responses.push(successPollResponse(k));
-        }
-        return shuffle(responses);
-      },
-      startId: 10,
-      endId: 20,
+      orderedRequests: () => range(10, 20),
+      orderedResponses: () =>
+        shuffle(range(10, 20).map(k => successPollResponse(k))),
+    },
+
+    {
+      label:
+        'Polls for a group of randomly arriving request ids starting randomly',
+      orderedRequests: () => shuffle(range(10, 20)),
+      orderedResponses: () =>
+        shuffle(range(10, 20).map(k => successPollResponse(k))),
     },
   ];
 
   testCases.forEach(async t => {
     it(t.label, async () => {
-      const startId = t.startId ? t.startId : 0;
-      const endId = t.endId ? t.endId : 10;
-
       // Setup the service so that the http requests returns these responses.
       const service = pollingService(t.orderedResponses());
 
@@ -90,11 +76,10 @@ describe('PollingService', () => {
       service.session.isBlocked = true;
 
       // Queue up requests for all the responses.
-      const promises: Promise<Event>[] = [];
-      for (let k = startId; k < endId; k += 1) {
-        const responseRequest = service.response(k);
-        promises.push(responseRequest);
-      }
+      const ids = t.orderedRequests();
+      const promises: Promise<Event>[] = ids.map(k => {
+        return service.response(k);
+      });
 
       // Unblock http requests. The polling service will not start receiving responses.
       // @ts-ignore
@@ -102,10 +87,12 @@ describe('PollingService', () => {
 
       const results = await Promise.all(promises);
 
-      let k = startId;
-      results.forEach(r => {
-        expect(r).toEqual(successEvent(k));
-        k += 1;
+      const expectedResults = ids.map(k => {
+        return successEvent(k);
+      });
+
+      results.forEach((r, ix) => {
+        expect(results[ix]).toEqual(expectedResults[ix]);
       });
     });
   });
@@ -178,10 +165,22 @@ function pollingService(responses: PollServiceResponse[]): PollingService {
   });
 }
 
-function shuffle(a: any[]) {
+function shuffle<T>(a: T[]) {
   for (let i = a.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [a[i], a[j]] = [a[j], a[i]];
   }
   return a;
+}
+
+function reverse<T>(a: T[]) {
+  return a.slice(0).reverse();
+}
+
+function range(start: number, end: number) {
+  const list: number[] = [];
+  for (let i = start; i < end; i += 1) {
+    list.push(i);
+  }
+  return list;
 }

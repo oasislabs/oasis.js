@@ -237,6 +237,8 @@ class Window<T> {
     // Push out the edge of the window.
     else if (id >= this.end) {
       this.end = id + 1;
+    } else if (id < this.start) {
+      this.start = id;
     }
   }
 
