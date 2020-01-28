@@ -9,7 +9,7 @@ import { TransactionFactory, UnpreparedTransaction } from '../transaction';
  * Web3Provider is the brains behind the `Web3` class' implementation, exposing
  * the `send` method, that is responsible for making the JSON RPC request to
  * the Web3 gateway server. It acts as a sort of middle man to ensure requests
- * are handled properly and signed by a wallet when needed. Specficially, it
+ * are handled properly and signed by a wallet when needed. Specifically, it
  *
  * - Transforms rpc requests to their desired behavior, e.g., converts
  *   eth_sendTransaction to eth_sendRawTransaction.

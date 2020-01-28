@@ -107,7 +107,7 @@ describe('Service', () => {
 
     const request = await txDataPromise;
 
-    // Then the receipient should be able to decrypt it.
+    // Then the recipient should be able to decrypt it.
     const decoder = new ConfidentialGatewayRequestDecoder(keys.privateKey);
     const plaintext = await decoder.decode(request.data);
 

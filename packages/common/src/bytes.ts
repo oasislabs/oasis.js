@@ -107,7 +107,7 @@ export function encodeUtf8(input: string): Uint8Array {
 
 /**
  * Converts the given byte array to a number. Cannot parse a number
- * larger than u64, specifically, 2**53-1 (javascripts max number).
+ * larger than u64, specifically, 2**53-1 (javascript's max number).
  */
 export function toNumber(bytes: Uint8Array, le = false): number {
   if (bytes.length > 8) {

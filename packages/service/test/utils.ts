@@ -77,7 +77,7 @@ export class RpcRequestMockOasisGateway extends EmptyOasisGateway {
 }
 
 /**
- * Provider that deploys a contract with a fixed adress.
+ * Provider that deploys a contract with a fixed address.
  */
 export class DeployMockOasisGateway extends RpcRequestMockOasisGateway {
   /**
