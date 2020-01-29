@@ -242,9 +242,7 @@ class HttpGateway implements OasisGateway {
         address: bytes.toHex(request.address),
       }
     );
-    return {
-      expiry: response.expiry,
-    };
+    return response as ExpiryResponse;
   }
 
   public async publicKey(
