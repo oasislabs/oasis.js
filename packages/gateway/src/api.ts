@@ -28,6 +28,14 @@ export const RpcApi: DeveloperGatewayApi = {
 };
 
 /**
+ * Retrieves the expiration timestamp for a service.
+ */
+export const ExpiryApi: DeveloperGatewayApi = {
+  url: 'v0/api/service/getExpiry',
+  method: 'POST',
+};
+
+/**
  * Retrieives the public key for a service.
  */
 export const PublicKeyApi: DeveloperGatewayApi = {

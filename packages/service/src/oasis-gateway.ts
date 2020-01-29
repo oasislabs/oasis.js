@@ -8,6 +8,7 @@ export interface OasisGateway {
   rpc(request: RpcRequest): Promise<RpcResponse>;
   subscribe(request: SubscribeRequest): EventEmitter;
   unsubscribe(request: UnsubscribeRequest): void;
+  expiry(request: ExpiryRequest): Promise<ExpiryResponse>;
   publicKey(request: PublicKeyRequest): Promise<PublicKeyResponse>;
   getCode(request: GetCodeRequest): Promise<GetCodeResponse>;
   disconnect(): void;
@@ -35,8 +36,20 @@ export type DeployResponse = {
   address: Uint8Array;
 };
 
+export type ExpiryRequest = {
+  address: Uint8Array;
+};
+
+export type ExpiryResponse = {
+  expiry: number;
+};
+
 export type PublicKeyRequest = {
   address: Uint8Array;
+};
+
+export type PublicKeyResponse = {
+  publicKey?: Uint8Array;
 };
 
 export type GetCodeRequest = {
@@ -77,10 +90,6 @@ export type SubscribeFilter = {
 
 export type UnsubscribeRequest = {
   event: string;
-};
-
-export type PublicKeyResponse = {
-  publicKey?: Uint8Array;
 };
 
 export const SubscribeTopic = 'subscription';

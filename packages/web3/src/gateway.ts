@@ -8,6 +8,8 @@ import {
   RpcResponse,
   SubscribeRequest,
   UnsubscribeRequest,
+  ExpiryRequest,
+  ExpiryResponse,
   PublicKeyRequest,
   PublicKeyResponse,
   GetCodeRequest,
@@ -190,8 +192,11 @@ export default class Web3Gateway implements OasisGateway {
     };
   }
 
-  public disconnect() {
-    this._inner.web3.provider.ws.disconnect();
+  async expiry(request: ExpiryRequest): Promise<ExpiryResponse> {
+    const response = await this.oasis.getExpiry(bytes.toHex(request.address));
+    return {
+      expiry: response.expiry,
+    };
   }
 
   public async getCode(request: GetCodeRequest): Promise<GetCodeResponse> {
@@ -204,6 +209,10 @@ export default class Web3Gateway implements OasisGateway {
     return {
       code: response === '0x' ? null : bytes.parseHex(response),
     };
+  }
+
+  public disconnect() {
+    this._inner.web3.provider.ws.disconnect();
   }
 
   // todo: https://github.com/oasislabs/oasis.js/issues/25

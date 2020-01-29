@@ -8,6 +8,8 @@ import {
   UnsubscribeRequest,
   DeployRequest,
   DeployResponse,
+  ExpiryRequest,
+  ExpiryResponse,
   PublicKeyRequest,
   PublicKeyResponse,
   GetCodeRequest,
@@ -24,11 +26,12 @@ import {
   DeployApi,
   DeveloperGatewayApi,
   RpcApi,
+  ExpiryApi,
   PublicKeyApi,
+  GetCodeApi,
   SubscribeApi,
   ServicePollApi,
   SubscribePollApi,
-  GetCodeApi,
   HealthApi,
   UnsubscribeApi,
 } from './api';
@@ -70,6 +73,10 @@ export default class Gateway implements OasisGateway {
 
   public unsubscribe(request: UnsubscribeRequest) {
     return this.inner.unsubscribe(request);
+  }
+
+  public async expiry(request: ExpiryRequest): Promise<ExpiryResponse> {
+    return this.inner.expiry(request);
   }
 
   public async publicKey(
@@ -225,6 +232,17 @@ class HttpGateway implements OasisGateway {
       .catch(err => {
         console.error(`Error unsubscribing from gateway: ${err}`);
       });
+  }
+
+  public async expiry(request: ExpiryRequest): Promise<ExpiryResponse> {
+    const response = await this.session.request(
+      ExpiryApi.method,
+      ExpiryApi.url,
+      {
+        address: bytes.toHex(request.address),
+      }
+    );
+    return response as ExpiryResponse;
   }
 
   public async publicKey(

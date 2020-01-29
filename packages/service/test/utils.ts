@@ -6,10 +6,12 @@ import {
   RpcRequest,
   SubscribeRequest,
   UnsubscribeRequest,
-  PublicKeyRequest,
-  PublicKeyResponse,
   DeployRequest,
   DeployResponse,
+  ExpiryRequest,
+  ExpiryResponse,
+  PublicKeyRequest,
+  PublicKeyResponse,
   GetCodeRequest,
   GetCodeResponse,
 } from '../src/oasis-gateway';
@@ -27,13 +29,18 @@ export class EmptyOasisGateway implements OasisGateway {
   public unsubscribe(_request: UnsubscribeRequest) {
     return Promise.resolve();
   }
+  public async deploy(_request: DeployRequest): Promise<DeployResponse> {
+    throw new Error('cannot deploy from an empty gateway');
+  }
+  public async expiry(_request: ExpiryRequest): Promise<ExpiryResponse> {
+    return {
+      expiry: 123456789,
+    };
+  }
   public async publicKey(
     _request: PublicKeyRequest
   ): Promise<PublicKeyResponse> {
     return {};
-  }
-  public async deploy(_request: DeployRequest): Promise<DeployResponse> {
-    throw new Error('cannot deploy from an empty gateway');
   }
   public async getCode(_request: GetCodeRequest): Promise<GetCodeResponse> {
     return {
