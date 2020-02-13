@@ -84,7 +84,7 @@ export type SubscribeRequest = {
 };
 
 export type SubscribeFilter = {
-  address: Uint8Array;
+  address?: Uint8Array;
   topics: string[];
 };
 

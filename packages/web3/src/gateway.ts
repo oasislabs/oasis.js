@@ -148,8 +148,11 @@ export default class Web3Gateway implements OasisGateway {
     return this.web3Subscribe(request.event, [
       'logs',
       {
-        address: bytes.toHex(request.filter!.address),
-        topics: request.filter!.topics,
+        address:
+          typeof request.filter?.address !== 'undefined'
+            ? bytes.toHex(request.filter.address)
+            : undefined,
+        topics: request.filter?.topics ?? [],
       },
     ]);
   }

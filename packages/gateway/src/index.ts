@@ -313,9 +313,9 @@ class HttpGateway implements OasisGateway {
 }
 
 function urlEncodeFilter(filter: SubscribeFilter): string {
-  return (
-    `address=${bytes.toHex(filter.address)}` +
-    '&' +
-    filter.topics.map((t: string) => 'topic=' + t).join('&')
-  );
+  const queryParams = filter.topics.map((t: string) => 'topic=' + t);
+  if (typeof filter.address !== 'undefined') {
+    queryParams.push(`address=${bytes.toHex(filter.address)}`);
+  }
+  return queryParams.join('&');
 }
