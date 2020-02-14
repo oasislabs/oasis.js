@@ -1,6 +1,6 @@
 {
   "name": "@oasislabs/service",
-  "version": "1.0.0-rc.24",
+  "version": "1.0.0-rc.25",
   "description": "Connects to and deploys IDL defined services",
   "keywords": [
     "oasis",
