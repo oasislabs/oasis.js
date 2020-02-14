@@ -40,7 +40,7 @@ export default class GatewayBuilder {
     return this;
   }
 
-  public gateway(): HttpGateway {
+  public async gateway(): Promise<HttpGateway> {
     const url = 'test';
     const dummyApiToken = 'LPbGhl6lGxaFDHgHF5N8CNZ32a3MgE+IfmutjxEb3FWt4WwP';
     const gateway = new HttpGateway(url, dummyApiToken, { headers: new Map() });

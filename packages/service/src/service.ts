@@ -113,7 +113,10 @@ export class Service {
    * @param callback is the callback to call when an event is emitted in the
    *        case where listener options are provided as the second argument.
    */
-  public addEventListener(event: string, callback: Listener) {
+  public async addEventListener(
+    event: string,
+    callback: Listener
+  ): Promise<void> {
     // Register the listener. We allow many for a single event subscription.
     this._inner.listeners.addListener(event, callback);
 
@@ -123,32 +126,25 @@ export class Service {
       return;
     }
 
-    this._inner.coder
-      .then(coder => {
-        // Create the subscription.
-        subscription = this._inner.options.gateway!.subscribe({
-          event,
-          filter: {
-            address: this.address.bytes,
-            topics: [coder.topic(event, this._inner.idl)],
-          },
-        });
-        // Save the subscription so that we can remove it on demand.
-        this._inner.subscriptions.set(event, subscription);
+    const coder = await this._inner.coder;
+    // Create the subscription.
+    subscription = await this._inner.options.gateway!.subscribe({
+      event,
+      filter: {
+        address: this.address.bytes,
+        topics: [coder.topic(event, this._inner.idl)],
+      },
+    });
 
-        // Decode the gateway's response and return it to the listener.
-        subscription.addListener(event, async (e: any) => {
-          const decoded = await coder.decodeSubscriptionEvent(
-            e,
-            this._inner.idl
-          );
+    // Save the subscription so that we can remove it on demand.
+    this._inner.subscriptions.set(event, subscription);
 
-          this._inner.listeners.emit(event, decoded);
-        });
-      })
-      .catch(err => {
-        console.error(`${err}`);
-      });
+    // Decode the gateway's response and return it to the listener.
+    subscription.addListener(event, async (e: any) => {
+      const decoded = await coder.decodeSubscriptionEvent(e, this._inner.idl);
+
+      this._inner.listeners.emit(event, decoded);
+    });
   }
 
   public removeEventListener(event: string, listener: Listener) {

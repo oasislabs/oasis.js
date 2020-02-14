@@ -9,7 +9,7 @@ describe('Service', () => {
   it('deploys a service and executes an rpc', async () => {
     const expectedOutput = 'rpc success!';
 
-    const gateway = new GatewayBuilder()
+    const gateway = await new GatewayBuilder()
       .deploy('0x372FF3aeA1fc69B9C440A5fE0B4c23c38226Da68')
       .rpc(expectedOutput)
       .gateway();
@@ -32,7 +32,7 @@ describe('Service', () => {
 
   it(`listens for a service event with listeners`, async () => {
     // Build the gateway with the mocked network responses.
-    const gateway = new GatewayBuilder()
+    const gateway = await new GatewayBuilder()
       .deploy('0x372FF3aeA1fc69B9C440A5fE0B4c23c38226Da68')
       .subscribe({ indexed1: 1, indexed2: 1 })
       .subscribe({ indexed1: 2, indexed2: 2 })
@@ -54,21 +54,18 @@ describe('Service', () => {
     const listenerCount = 3;
 
     // Wait for three logs to be emitted for each listener.
-    const promises: Promise<any[]>[] = [];
+    const promises: Promise<any>[] = [];
+    const resolvers: any[] = [];
     for (let k = 0; k < listenerCount; k += 1) {
-      promises.push(
-        new Promise(resolve => {
-          const logs: any[] = [];
-
-          service.addEventListener('TestEvent2', function listener(event) {
-            logs.push(event);
-            if (logs.length === 3) {
-              service.removeEventListener('TestEvent2', listener);
-              resolve(logs);
-            }
-          });
-        })
-      );
+      promises.push(new Promise(resolve => resolvers.push(resolve)));
+      const logs: any[] = [];
+      await service.addEventListener('TestEvent2', function listener(event) {
+        logs.push(event);
+        if (logs.length === 3) {
+          service.removeEventListener('TestEvent2', listener);
+          resolvers[k](logs);
+        }
+      });
     }
 
     const logListeners = await Promise.all(promises);

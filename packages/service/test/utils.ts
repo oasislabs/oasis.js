@@ -23,11 +23,11 @@ export class EmptyOasisGateway implements OasisGateway {
   public async rpc(_request: RpcRequest): Promise<any> {
     return Promise.resolve();
   }
-  public subscribe(_request: SubscribeRequest): EventEmitter {
+  public async subscribe(_request: SubscribeRequest): Promise<EventEmitter> {
     return new EventEmitter();
   }
-  public unsubscribe(_request: UnsubscribeRequest) {
-    return Promise.resolve();
+  public async unsubscribe(_request: UnsubscribeRequest): Promise<void> {
+    // no-op
   }
   public async deploy(_request: DeployRequest): Promise<DeployResponse> {
     throw new Error('cannot deploy from an empty gateway');
@@ -47,7 +47,7 @@ export class EmptyOasisGateway implements OasisGateway {
       code: new Uint8Array([0]),
     };
   }
-  public disconnect() {
+  public async disconnect(): Promise<void> {
     // no-op
   }
   public connectionState(): EventEmitter {
@@ -123,7 +123,7 @@ export class EventEmitterMockOasisGateway extends EmptyOasisGateway {
     super();
   }
 
-  public subscribe(_request: SubscribeRequest): EventEmitter {
+  public async subscribe(_request: SubscribeRequest): Promise<EventEmitter> {
     return this.remote;
   }
 }

@@ -71,7 +71,7 @@ export default class Gateway implements OasisGateway {
     return this.inner.subscribe(request);
   }
 
-  public unsubscribe(request: UnsubscribeRequest) {
+  public async unsubscribe(request: UnsubscribeRequest): Promise<void> {
     return this.inner.unsubscribe(request);
   }
 
@@ -89,8 +89,8 @@ export default class Gateway implements OasisGateway {
     return this.inner.getCode(request);
   }
 
-  public disconnect() {
-    this.inner.disconnect();
+  public async disconnect(): Promise<void> {
+    return this.inner.disconnect();
   }
 
   public hasSigner(): boolean {
@@ -182,35 +182,32 @@ class HttpGateway implements OasisGateway {
 
   // TODO: this should be typed to return an event emitter once we address
   //       https://github.com/oasislabs/oasis-client/issues/25
-  public subscribe(request: SubscribeRequest): any {
+  public async subscribe(request: SubscribeRequest): Promise<any> {
     const events = new EventEmitter();
-    this.session
-      .request(SubscribeApi.method, SubscribeApi.url, {
+    const response = await this.session.request(
+      SubscribeApi.method,
+      SubscribeApi.url,
+      {
         events: ['logs'],
         filter: urlEncodeFilter(request.filter!),
-      })
-      .then(response => {
-        if (response.id === undefined || response.id === null) {
-          throw new Error(`subscription failed: ${response}`);
-        }
-        // Store the event -> queueId mapping so that we can unsubscribe later.
-        this.subscriptions.set(request.event, response.id);
-        PollingService.instance({
-          url: this.url,
-          session: this.session,
-          queueId: response.id,
-        }).subscribe(response.id, (event: any) => {
-          events.emit(request.event, event);
-        });
-      })
-      .catch(err => {
-        events.emit('error', err);
-      });
-
+      }
+    );
+    if (response.id === undefined || response.id === null) {
+      throw new Error(`subscription failed: ${response}`);
+    }
+    // Store the event -> queueId mapping so that we can unsubscribe later.
+    this.subscriptions.set(request.event, response.id);
+    PollingService.instance({
+      url: this.url,
+      session: this.session,
+      queueId: response.id,
+    }).subscribe(response.id, (event: any) => {
+      events.emit(request.event, event);
+    });
     return events;
   }
 
-  public unsubscribe(request: UnsubscribeRequest) {
+  public async unsubscribe(request: UnsubscribeRequest): Promise<void> {
     const queueId = this.subscriptions.get(request.event);
     if (queueId === undefined) {
       throw new Error(`no subscriptions exist for ${JSON.stringify(request)}`);
@@ -225,13 +222,13 @@ class HttpGateway implements OasisGateway {
     this.subscriptions.delete(request.event);
 
     // Cleanup the gateway's subscription.
-    this.session
-      .request(UnsubscribeApi.method, UnsubscribeApi.url, {
+    try {
+      await this.session.request(UnsubscribeApi.method, UnsubscribeApi.url, {
         id: queueId,
-      })
-      .catch(err => {
-        console.error(`Error unsubscribing from gateway: ${err}`);
       });
+    } catch (err) {
+      console.error(`Error unsubscribing from gateway: ${err}`);
+    }
   }
 
   public async expiry(request: ExpiryRequest): Promise<ExpiryResponse> {
@@ -296,8 +293,12 @@ class HttpGateway implements OasisGateway {
     };
   }
 
-  public disconnect() {
-    // no-op
+  public async disconnect(): Promise<void> {
+    const unsubscribes = [];
+    for (const event of this.subscriptions.keys()) {
+      unsubscribes.push(this.unsubscribe({ event }));
+    }
+    await Promise.all(unsubscribes);
   }
 
   // todo: change any to EventEmitter.

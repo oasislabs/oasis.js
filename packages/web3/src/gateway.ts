@@ -144,7 +144,7 @@ export default class Web3Gateway implements OasisGateway {
     };
   }
 
-  subscribe(request: SubscribeRequest): any {
+  public async subscribe(request: SubscribeRequest): Promise<any> {
     return this.web3Subscribe(request.event, [
       'logs',
       {
@@ -157,26 +157,22 @@ export default class Web3Gateway implements OasisGateway {
     ]);
   }
 
-  web3Subscribe(eventName: string, params: any[]): any {
+  public async web3Subscribe(eventName: string, params: any[]): Promise<any> {
     const events = new EventEmitter();
 
-    this.eth
-      .subscribe(...params)
-      .then((sub: any) => {
-        // Set this mapping to allow clients to `unsubscribe` with an event
-        // name, instead of an id.
-        this._inner.subscriptionIds.set(eventName, sub.id);
-        // Remap web3 `data` event to the given event name.
-        sub.on('data', (event: any) => {
-          events.emit(eventName, event);
-        });
-      })
-      .catch(console.error);
+    const sub = await this.eth.subscribe(...params);
+    // Set this mapping to allow clients to `unsubscribe` with an event
+    // name, instead of an id.
+    this._inner.subscriptionIds.set(eventName, sub.id);
+    // Remap web3 `data` event to the given event name.
+    sub.on('data', (event: any) => {
+      events.emit(eventName, event);
+    });
 
     return events;
   }
 
-  async unsubscribe(request: UnsubscribeRequest) {
+  public async unsubscribe(request: UnsubscribeRequest): Promise<void> {
     const id = this._inner.subscriptionIds.get(request.event);
     if (!id) {
       return;
@@ -214,8 +210,8 @@ export default class Web3Gateway implements OasisGateway {
     };
   }
 
-  public disconnect() {
-    this._inner.web3.provider.ws.disconnect();
+  public async disconnect(): Promise<void> {
+    return this._inner.web3.provider.ws.disconnect();
   }
 
   // todo: https://github.com/oasislabs/oasis.js/issues/25

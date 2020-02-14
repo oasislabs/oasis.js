@@ -6,12 +6,12 @@ import EventEmitter from 'eventemitter3';
 export interface OasisGateway {
   deploy(request: DeployRequest): Promise<DeployResponse>;
   rpc(request: RpcRequest): Promise<RpcResponse>;
-  subscribe(request: SubscribeRequest): EventEmitter;
-  unsubscribe(request: UnsubscribeRequest): void;
+  subscribe(request: SubscribeRequest): Promise<EventEmitter>;
+  unsubscribe(request: UnsubscribeRequest): Promise<void>;
   expiry(request: ExpiryRequest): Promise<ExpiryResponse>;
   publicKey(request: PublicKeyRequest): Promise<PublicKeyResponse>;
   getCode(request: GetCodeRequest): Promise<GetCodeResponse>;
-  disconnect(): void;
+  disconnect(): Promise<void>;
   /**
    * For implementations that manage reconnection internally, this emits advisory
    * events about its internal connection status:
