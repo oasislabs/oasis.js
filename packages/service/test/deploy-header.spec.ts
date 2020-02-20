@@ -1,3 +1,4 @@
+import { randomBytes } from 'tweetnacl';
 import { bytes } from '@oasislabs/common';
 import { DeployHeader } from '../src/deploy/header';
 import { makeExpectedBytecode } from './utils';
@@ -8,25 +9,25 @@ describe('DeployHeader', () => {
       {
         description: 'errors when writing a deploy header to empty bytecode',
         bytecode: new Uint8Array(),
-        header: { expiry: 100000, confidential: false },
+        header: { expiry: 100000, saltIfConfidential: null },
         error: 'Malformed deploycode',
       },
       {
         description: 'errors when writing an invalid deploy header',
         bytecode: bytes.parseHex('0x1234'),
-        header: { invalid: 1234, expiry: 100000, confidential: false },
+        header: { invalid: 1234, expiry: 100000 },
         error: 'Malformed deploycode',
       },
       {
         description:
           'errors when writing to bytecode that already has an invalid header',
         bytecode: makeExpectedBytecode(
-          { expiry: 100000, confidential: false, badkey: true },
+          { expiry: 100000, saltIfConfidential: null, badkey: true },
           '1234'
         ),
-        header: { expiry: 100000, confidential: false },
+        header: { expiry: 100000, saltIfConfidential: null },
         error:
-          'Invalid body {"expiry":100000,"confidential":false,"badkey":true}',
+          'Invalid body {"expiry":100000,"saltIfConfidential":null,"badkey":true}',
       },
     ];
 
@@ -38,6 +39,8 @@ describe('DeployHeader', () => {
       });
     });
 
+    const saltIfConfidential = randomBytes(32);
+
     const successTests = [
       {
         description: 'does not change the bytecode if the header is empty',
@@ -48,18 +51,15 @@ describe('DeployHeader', () => {
       {
         description: 'writes a deploy header to non-empty bytecode',
         bytecode: bytes.parseHex('0x1234'),
-        header: { expiry: 100000, confidential: false },
-        expected: makeExpectedBytecode(
-          { expiry: 100000, confidential: false },
-          '1234'
-        ),
+        header: { expiry: 100000 },
+        expected: makeExpectedBytecode({ expiry: 100000 }, '1234'),
       },
       {
         description:
           'overwrites a deploy header to non-empty bytecode with an existing confidential header',
-        bytecode: makeExpectedBytecode({ confidential: false }, '1234'),
-        header: { confidential: true },
-        expected: makeExpectedBytecode({ confidential: true }, '1234'),
+        bytecode: makeExpectedBytecode({}, '1234'),
+        header: { saltIfConfidential },
+        expected: makeExpectedBytecode({ saltIfConfidential }, '1234'),
       },
       {
         description:
@@ -71,24 +71,21 @@ describe('DeployHeader', () => {
       {
         description:
           'overwrites a deploy header to non-empty bytecode with an existing expiry and confidential header',
-        bytecode: makeExpectedBytecode(
-          { expiry: 100000, confidential: false },
-          '1234'
-        ),
-        header: { expiry: 100001, confidential: true },
+        bytecode: makeExpectedBytecode({ expiry: 100000 }, '1234'),
+        header: { expiry: 100001, saltIfConfidential },
         expected: makeExpectedBytecode(
-          { expiry: 100001, confidential: true },
+          { expiry: 100001, saltIfConfidential },
           '1234'
         ),
       },
     ];
 
     successTests.forEach(test => {
-      it(test.description, function() {
-        const data = DeployHeader.deployCode(
+      it(test.description, async function() {
+        const data = (await DeployHeader.deployCode(
           test.header,
           test.bytecode
-        ) as Uint8Array;
+        )) as Uint8Array;
         expect(data).toEqual(test.expected);
       });
     });

@@ -187,7 +187,7 @@ export class RpcFactory {
 
     const deployHeader = DeployHeader.parseFromCode(response.code);
 
-    if (!deployHeader || !deployHeader.body.confidential) {
+    if (!deployHeader || !deployHeader.body.saltIfConfidential) {
       return OasisCoder.plaintext();
     }
 

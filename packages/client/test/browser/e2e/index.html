@@ -54,7 +54,7 @@
             bytecode,
             arguments: [],
             // TODO: make confidential once we have the new runtime.
-            header: { confidential: false },
+            header: { salt_if_confidential: null },
             coder: test.coder,
             gateway: test.gateway,
           });

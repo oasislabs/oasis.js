@@ -121,12 +121,14 @@ describe('Service', () => {
     const address = '0x288e7e1cc60962f40d4d782950470e3705c5acf4';
     const bin = bytes.toHex(
       new Uint8Array(
-        require('fs').readFileSync('test/wasm/mantle-counter.wasm')
+        await require('fs').promises.readFile('test/wasm/mantle-counter.wasm')
       )
     );
     const gateway = {
-      getCode: () => {
-        return { code: makeExpectedBytecode({ confidential: false }, bin) };
+      async getCode(): Promise<any> {
+        return {
+          code: makeExpectedBytecode({ saltIfConfidential: null }, bin),
+        };
       },
     };
     // @ts-ignore

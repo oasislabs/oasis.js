@@ -1,3 +1,4 @@
+import { randomBytes } from 'tweetnacl';
 import { cbor, bytes } from '@oasislabs/common';
 import { idl } from '@oasislabs/test';
 import {
@@ -7,7 +8,11 @@ import {
 } from './utils';
 import { deploy } from '../src/index';
 import { RpcRequest, setGateway } from '../src/oasis-gateway';
-import { DeployHeaderReader } from '../src/deploy/header';
+import {
+  DeployHeaderReader,
+  DeployHeaderOptions,
+  SALT_NUM_BYTES,
+} from '../src/deploy/header';
 
 setGateway(new EmptyOasisGateway());
 
@@ -27,12 +32,15 @@ describe('Service deploys', () => {
     },
     {
       bytecode: bytes.parseHex('0x0102039999'),
-      header: { confidential: false },
+      header: { saltIfConfidential: null },
       label: 'deploys a service without confidentiality',
     },
     {
       bytecode: bytes.parseHex('0x0102039999'),
-      header: { confidential: true, expiry: 12345 },
+      header: {
+        saltIfConfidential: randomBytes(SALT_NUM_BYTES),
+        expiry: 12345,
+      },
       label: 'deploys a service with expiry',
       gasLimit: '0xffff',
     },
@@ -69,7 +77,10 @@ describe('Service deploys', () => {
       // Check header.
       const header = DeployHeaderReader.header(deployCode);
       // Should have used the default header since we didn't specify one.
-      const expectedHeader = { version: 1, body: { confidential: true } };
+      const expectedHeader: { version: number; body: DeployHeaderOptions } = {
+        version: 1,
+        body: { saltIfConfidential: header?.body.saltIfConfidential },
+      };
       if (test.header !== undefined) {
         expectedHeader.body = test.header!;
       }

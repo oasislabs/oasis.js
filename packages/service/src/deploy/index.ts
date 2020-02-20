@@ -1,3 +1,4 @@
+import nacl from 'tweetnacl';
 import { Address, Db, bytes } from '@oasislabs/common';
 
 import { Service } from '../service';
@@ -7,7 +8,7 @@ import {
   RpcOptions,
   defaultOasisGateway,
 } from '../oasis-gateway';
-import { DeployHeader, DeployHeaderOptions } from './header';
+import { DeployHeader, DeployHeaderOptions, SALT_NUM_BYTES } from './header';
 import { OasisCoder } from '../coder/oasis';
 import { RpcCoder } from '../coder';
 import { DeployError } from '../error';
@@ -130,7 +131,9 @@ async function toDeployOptions(
  *          filling in any left out options with the default header.
  */
 function deployHeader(options: DeployOptions): DeployHeaderOptions {
-  const defaultHeader = { confidential: true };
+  const defaultHeader = {
+    saltIfConfidential: nacl.randomBytes(SALT_NUM_BYTES),
+  };
   return Object.assign(defaultHeader, options.header);
 }
 
@@ -168,7 +171,7 @@ function oasisGateway(options: DeployOptions): OasisGateway {
  */
 function validateDeployOptions(deployOptions: DeployOptions, args: any[]) {
   if (
-    deployOptions.header!.confidential &&
+    deployOptions.header!.saltIfConfidential &&
     (!deployOptions.options || !deployOptions.options.gasLimit)
   ) {
     throw new DeployError(

@@ -1,8 +1,10 @@
 import { bytes } from '@oasislabs/common';
 
+export const SALT_NUM_BYTES = 32;
+
 export type DeployHeaderOptions = {
   expiry?: number;
-  confidential?: boolean;
+  saltIfConfidential?: Uint8Array | null;
 };
 
 export class DeployHeaderError extends Error {}
@@ -13,7 +15,7 @@ export class DeployHeader {
   /**
    * @param {Number} version is the header version number.
    * @param {Object} is the header body with two fields, expiry (Number)
-   *        and confidential (boolean).
+   *        and saltIfConfidential (boolean).
    */
   constructor(public version: number, public body: DeployHeaderOptions) {}
 
@@ -98,7 +100,7 @@ export class DeployHeader {
    * @returns true iff the keys in the headerBody are part of the valid set.
    */
   public static isValidBody(headerBody: DeployHeaderOptions): boolean {
-    const validKeys = ['expiry', 'confidential'];
+    const validKeys = ['expiry', 'saltIfConfidential'];
 
     const keys = Object.keys(headerBody);
     for (let k = 0; k < keys.length; k += 1) {

@@ -1,3 +1,5 @@
+import { randomBytes } from 'tweetnacl';
+
 import oasis from '../../../src/';
 
 const process = require('process');
@@ -13,12 +15,12 @@ describe('Counter', () => {
   const cases = [
     {
       label: 'confidential',
-      header: { confidential: true },
+      header: { saltIfConfidential: randomBytes(32) },
       options: { gasLimit: '0xe79732' },
     },
     {
       label: 'non-confidential',
-      header: { confidential: false },
+      header: {},
       options: {},
     },
   ];
