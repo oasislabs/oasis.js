@@ -104,9 +104,7 @@
           async getCode(request) {
             // Just return any bytecode with the deploy header with `saltIfConfidential` set
             const prefix = '00736973'; // \0sis
-            const saltIfConfidential = [];
-            saltIfConfidential.length = 32;
-            saltIfConfidential.fill(1);
+            const saltIfConfidential = Array(32).fill(1);
             const headerStr = JSON.stringify({ saltIfConfidential });
             const headerVersion = (1).toString(16).padStart(4, '0');
             const header = oasis.utils.bytes.toHex(new TextEncoder().encode(headerStr));
