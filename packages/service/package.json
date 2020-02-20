@@ -1,6 +1,6 @@
 {
   "name": "@oasislabs/service",
-  "version": "1.0.0-rc.25",
+  "version": "1.0.0-rc.26",
   "description": "Connects to and deploys IDL defined services",
   "keywords": [
     "oasis",
@@ -45,7 +45,7 @@
   },
   "dependencies": {
     "@oasislabs/common": "^1.0.0-rc.15",
-    "@oasislabs/confidential": "^1.0.0-rc.16",
+    "@oasislabs/confidential": "^1.0.0-rc.17",
     "@types/pako": "^1.0.1",
     "camelcase": "^5.3.1",
     "camelcase-keys": "^6.0.1",
