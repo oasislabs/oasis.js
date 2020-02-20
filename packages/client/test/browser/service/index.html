@@ -102,9 +102,20 @@
             return { publicKey: keys.peerPublicKey.bytes };
           }
           async getCode(request) {
-            // Just return any bytecode with the deploy header with confidential === true.
+            // Just return any bytecode with the deploy header with `saltIfConfidential` set
+            const prefix = '00736973'; // \0sis
+            const saltIfConfidential = [];
+            saltIfConfidential.length = 32;
+            saltIfConfidential.fill(1);
+            const headerStr = JSON.stringify({ saltIfConfidential });
+            const headerVersion = (1).toString(16).padStart(4, '0');
+            const header = oasis.utils.bytes.toHex(new TextEncoder().encode(headerStr));
+            const headerLength = headerStr.length.toString(16).padStart(4, '0');
+            const body = '0102039999816f636f6e7374727563746f722d617267';
             return {
-              code: new Uint8Array(oasis.utils.bytes.parseHex('0x00736973000100247b22636f6e666964656e7469616c223a747275652c22657870697279223a31323334357d0102039999816f636f6e7374727563746f722d617267'))
+              code: oasis.utils.bytes.parseHex(
+                `${prefix}${headerVersion}${headerLength}${header.slice(2)}${body}`
+              )
             };
           }
           hasSigner() {
@@ -153,7 +164,7 @@
         let nonConfidentialTest = {
           gateway: (resolve) => new RequestMockOasisGateway(resolve),
           db: () => new DummyStorage(),
-          coder: new oasis.utils.OasisCoder.plaintext(),
+          coder: oasis.utils.OasisCoder.plaintext(),
         };
         // Confidential test case.
         let confidentialTest = {
@@ -168,7 +179,7 @@
             }));
             return db;
           },
-          coder: new oasis.utils.OasisCoder.confidential({
+          coder: oasis.utils.OasisCoder.confidential({
             publicKey: keys.peerPublicKey,
             privateKey: keys.peerPrivateKey,
             peerPublicKey: keys.publicKey,
