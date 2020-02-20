@@ -107,7 +107,11 @@ export async function decrypt(
 }
 
 export function nonce(): Nonce {
-  return new Nonce(nacl.randomBytes(aead.nonceSize()));
+  return new Nonce(randomBytes(aead.nonceSize()));
+}
+
+export function randomBytes(length: number): Uint8Array {
+  return nacl.randomBytes(length);
 }
 
 /**

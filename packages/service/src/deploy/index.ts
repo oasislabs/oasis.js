@@ -1,5 +1,5 @@
-import nacl from 'tweetnacl';
 import { Address, Db, bytes } from '@oasislabs/common';
+import { randomBytes } from '@oasislabs/confidential';
 
 import { Service } from '../service';
 import { Idl, fromWasm } from '../idl';
@@ -132,7 +132,7 @@ async function toDeployOptions(
  */
 function deployHeader(options: DeployOptions): DeployHeaderOptions {
   const defaultHeader = {
-    saltIfConfidential: nacl.randomBytes(SALT_NUM_BYTES),
+    saltIfConfidential: randomBytes(SALT_NUM_BYTES),
   };
   return Object.assign(defaultHeader, options.header);
 }
