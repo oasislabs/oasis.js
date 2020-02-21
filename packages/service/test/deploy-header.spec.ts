@@ -18,17 +18,6 @@ describe('DeployHeader', () => {
         header: { invalid: 1234, expiry: 100000 },
         error: 'Malformed deploycode',
       },
-      {
-        description:
-          'errors when writing to bytecode that already has an invalid header',
-        bytecode: makeExpectedBytecode(
-          { expiry: 100000, saltIfConfidential: null, badkey: true },
-          '1234'
-        ),
-        header: { expiry: 100000, saltIfConfidential: null },
-        error:
-          'Invalid body {"expiry":100000,"saltIfConfidential":null,"badkey":true}',
-      },
     ];
 
     failTests.forEach(test => {

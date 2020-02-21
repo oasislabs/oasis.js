@@ -273,8 +273,18 @@ export class DeployHeaderReader {
 }
 
 export class DeployHeaderWriter {
-  public static body(body: DeployHeaderOptions): Uint8Array {
-    return bytes.encodeUtf8(JSON.stringify(body));
+  public static body({
+    expiry,
+    saltIfConfidential,
+  }: DeployHeaderOptions): Uint8Array {
+    return bytes.encodeUtf8(
+      JSON.stringify({
+        expiry,
+        saltIfConfidential: saltIfConfidential
+          ? Array.from(saltIfConfidential)
+          : undefined,
+      })
+    );
   }
 
   /**

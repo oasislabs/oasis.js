@@ -79,12 +79,30 @@ describe('Service deploys', () => {
       // Should have used the default header since we didn't specify one.
       const expectedHeader: { version: number; body: DeployHeaderOptions } = {
         version: 1,
-        body: { saltIfConfidential: header?.body.saltIfConfidential },
+        body: { saltIfConfidential: header?.body?.saltIfConfidential },
       };
       if (test.header !== undefined) {
         expectedHeader.body = test.header!;
       }
-      expect(JSON.stringify(header)).toEqual(JSON.stringify(expectedHeader));
+      expect(header!.version).toEqual(expectedHeader.version);
+      if (test.header?.saltIfConfidential) {
+        expect(header!.body.saltIfConfidential).toEqual(
+          Array.from(test.header.saltIfConfidential)
+        );
+      }
+      if (test.header?.expiry) {
+        expect(header!.body.expiry).toBe(test.header.expiry);
+      }
+      if (header?.body.saltIfConfidential) {
+        const stringifiedSalt = expectedHeader?.body.saltIfConfidential
+          ? '[' +
+            Array.from(expectedHeader.body.saltIfConfidential).join(',') +
+            ']'
+          : 'null';
+        expect(JSON.stringify(header)).toEqual(
+          expect.stringContaining(`"saltIfConfidential":${stringifiedSalt}`)
+        );
+      }
 
       // Check initcode (deployCode without the header).
       const initcode = DeployHeaderReader.initcode(deployCode);
