@@ -1,6 +1,6 @@
 {
   "name": "@oasislabs/web3",
-  "version": "1.0.0-rc.14",
+  "version": "1.0.0-rc.17",
   "description": "Web3 JSON RPC compliant Oasis Gateway",
   "keywords": [
     "oasis",
