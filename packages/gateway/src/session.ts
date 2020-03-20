@@ -19,6 +19,11 @@ else {
 
 export class HttpSession implements Http {
   /**
+   * The gateway base url.
+   */
+  public url: string;
+
+  /**
    * session key passed to the developer gateway in the header.
    */
   private sessionKey: string;
@@ -35,7 +40,7 @@ export class HttpSession implements Http {
   private client: HttpClient;
 
   public constructor(
-    public url: string,
+    url: string,
     public apiToken: string,
     headers: HttpHeaders,
     client?: HttpClient
@@ -47,6 +52,7 @@ export class HttpSession implements Http {
         ? this.headers
         : { headers: new Map() };
     this.client = client ? client : new AxiosClient();
+    this.url = url + (url.endsWith('/') ? '' : '/');
   }
 
   public async request(
@@ -54,7 +60,7 @@ export class HttpSession implements Http {
     api: string,
     body: Record<string, any>
   ): Promise<any> {
-    const url = new URL(api, this.url).href;
+    const url = this.url + api;
     const headers: HttpHeaders = { headers: new Map() };
     headers.headers.set('X-OASIS-INSECURE-AUTH', '1');
     headers.headers.set('X-OASIS-LOGIN-TOKEN', this.apiToken);
