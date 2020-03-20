@@ -1,6 +1,6 @@
 {
   "name": "@oasislabs/test",
-  "version": "1.0.0-rc.29",
+  "version": "1.0.0-rc.30",
   "description": "Tools used in Oasis tests",
   "repository": {
     "type": "git",
@@ -23,7 +23,7 @@
     "prepublishOnly": "yarn build"
   },
   "dependencies": {
-    "@oasislabs/common": "^1.0.0-rc.16",
-    "@oasislabs/service": "^1.0.0-rc.30"
+    "@oasislabs/common": "^1.0.0-rc.17",
+    "@oasislabs/service": "^1.0.0-rc.31"
   }
 }

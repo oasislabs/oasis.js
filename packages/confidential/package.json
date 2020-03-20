@@ -1,6 +1,6 @@
 {
   "name": "@oasislabs/confidential",
-  "version": "1.0.0-rc.19",
+  "version": "1.0.0-rc.20",
   "description": "Primitives for Confidential Services on Oasis",
   "keywords": [
     "oasis",
@@ -45,7 +45,7 @@
     ]
   },
   "dependencies": {
-    "@oasislabs/common": "^1.0.0-rc.16",
+    "@oasislabs/common": "^1.0.0-rc.17",
     "deoxysii": "^0.0.2",
     "node-localstorage": "^2.1.4",
     "tweetnacl": "^1.0.1"
