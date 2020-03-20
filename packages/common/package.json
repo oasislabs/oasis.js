@@ -1,6 +1,6 @@
 {
   "name": "@oasislabs/common",
-  "version": "1.0.0-rc.15",
+  "version": "1.0.0-rc.16",
   "description": "Common utilities for Oasis packages",
   "keywords": [
     "oasis",
