@@ -29,7 +29,8 @@
     "build:browser": "npm run-script build",
     "build:node": "npm run-script build",
     "test": "jest test/",
-    "coverage": "jest test --coverage"
+    "coverage": "jest test --coverage",
+    "prepublish": "yarn build"
   },
   "jest": {
     "transform": {

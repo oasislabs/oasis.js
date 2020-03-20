@@ -19,7 +19,8 @@
   },
   "author": "Oasis Labs Inc. <feedback@oasislabs.com>",
   "scripts": {
-    "build": "tsc --module commonjs && rollup -c rollup.config.ts"
+    "build": "tsc --module commonjs && rollup -c rollup.config.ts",
+    "prepublish": "yarn build"
   },
   "dependencies": {
     "@oasislabs/common": "^1.0.0-rc.15",
