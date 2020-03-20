@@ -30,7 +30,7 @@
     "build:node": "npm run-script build",
     "test": "jest test/",
     "coverage": "jest test --coverage",
-    "prepublish": "yarn build"
+    "prepublishOnly": "yarn build"
   },
   "jest": {
     "transform": {

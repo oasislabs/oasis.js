@@ -34,7 +34,7 @@
     "test:e2e": "jest test/e2e",
     "test:browser": "scripts/test-browser.sh",
     "coverage": "jest --coverage test/integration",
-    "prepublish": "yarn build"
+    "prepublishOnly": "yarn build"
   },
   "jest": {
     "transform": {
