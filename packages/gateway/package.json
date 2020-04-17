@@ -1,6 +1,6 @@
 {
   "name": "@oasislabs/gateway",
-  "version": "1.0.0-rc.36",
+  "version": "1.0.0-rc.37",
   "description": "Oasis Gateway implementation used as the client backend",
   "keywords": [
     "oasis",
@@ -46,7 +46,7 @@
   },
   "dependencies": {
     "@oasislabs/common": "^1.0.0-rc.17",
-    "@oasislabs/service": "^1.0.0-rc.31",
+    "@oasislabs/service": "^1.0.0-rc.32",
     "@types/uuid": "^3.4.5",
     "axios": "^0.19.0",
     "uuid": "^3.4.0"
