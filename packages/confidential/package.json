@@ -47,6 +47,7 @@
   "dependencies": {
     "@oasislabs/common": "^1.0.0-rc.17",
     "deoxysii": "^0.0.2",
+    "js-sha512": "^0.8.0",
     "node-localstorage": "^2.1.4",
     "tweetnacl": "^1.0.1"
   },

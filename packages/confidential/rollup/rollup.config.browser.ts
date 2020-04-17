@@ -38,6 +38,7 @@ export default {
     commonjs({
       namedExports: {
         '../../node_modules/js-sha3/src/sha3.js': ['keccak256'],
+        '../../node_modules/js-sha512/src/sha512.js': ['sha512_256'],
       },
     }),
     json(),
