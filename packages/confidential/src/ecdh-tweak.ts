@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import { sha512_256 } from 'js-sha512';
 
 import { PublicKey, PrivateKey } from '.';

@@ -3,7 +3,7 @@ import { AxiosClient, HttpClient, HttpHeaders, Http } from './http';
 import * as _uuid from 'uuid';
 
 let uuid: any = undefined;
-let URL: any = undefined;
+let URL: any = undefined; // eslint-disable-line @typescript-eslint/no-unused-vars
 
 // Browser.
 if (typeof window !== 'undefined') {
