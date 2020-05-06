@@ -148,16 +148,16 @@ export default class PollingService {
     });
 
     // No responses so exit.
-    if (responses.events.length === 0) {
-      if (Date.now() - this.lastResponseTs >= PollingService.IDLE_TIMELAPSE) {
-        this.stop();
-      }
+    if (
+      responses.events.length === 0 &&
+      Date.now() - this.lastResponseTs >= PollingService.IDLE_TIMELAPSE
+    ) {
+      this.stop();
       return;
     }
 
-    this.lastResponseTs = Date.now();
-
     responses.events.forEach((r: any) => {
+      this.lastResponseTs = Date.now();
       this.responses.emit(this.topic(r), r);
       this.responseWindow.slide(r.id, r);
       if (this.responseWindow.isClosed()) {
