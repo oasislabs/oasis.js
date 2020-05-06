@@ -2,19 +2,16 @@ import { AxiosClient, HttpClient, HttpHeaders, Http } from './http';
 
 import * as _uuid from 'uuid';
 
-let uuid: any = undefined;
-let URL: any = undefined; // eslint-disable-line @typescript-eslint/no-unused-vars
+let uuid: typeof _uuid;
 
 // Browser.
 if (typeof window !== 'undefined') {
   // @ts-ignore
   uuid = _uuid.default;
-  URL = window.URL;
 }
 // Node.
 else {
   uuid = require('uuid');
-  URL = require('url').URL;
 }
 
 export class HttpSession implements Http {
