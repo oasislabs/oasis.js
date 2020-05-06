@@ -146,9 +146,9 @@ export default class PollingService {
       discardPrevious: true,
       id: this.queueId,
     });
-    // No responses so exit. Can remove once this is resolved:
-    // https://github.com/oasislabs/developer-gateway/issues/23
-    if (!responses.events) {
+
+    // No responses so exit.
+    if (responses.events.length <= 0) {
       if (Date.now() - this.lastResponseTs >= PollingService.IDLE_TIMELAPSE) {
         this.stop();
       }

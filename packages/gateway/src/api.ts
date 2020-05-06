@@ -114,7 +114,7 @@ export type ExecuteServiceResponse = {
  */
 export type PollServiceResponse = {
   offset: number;
-  events: Event[] | null;
+  events: Event[];
 };
 
 /**

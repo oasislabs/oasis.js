@@ -131,7 +131,7 @@ class MockSession implements Http {
 function emptyPollResponse(): PollServiceResponse {
   return {
     offset: 0,
-    events: null,
+    events: [],
   };
 }
 
