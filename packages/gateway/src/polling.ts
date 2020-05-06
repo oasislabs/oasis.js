@@ -258,9 +258,6 @@ class Window<T> {
         }
       }
     }
-    if (this.start > this.end) {
-      this.end = this.start + 1;
-    }
   }
 
   /**
