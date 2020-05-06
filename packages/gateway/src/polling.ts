@@ -148,7 +148,7 @@ export default class PollingService {
     });
 
     // No responses so exit.
-    if (responses.events.length <= 0) {
+    if (responses.events.length === 0) {
       if (Date.now() - this.lastResponseTs >= PollingService.IDLE_TIMELAPSE) {
         this.stop();
       }
