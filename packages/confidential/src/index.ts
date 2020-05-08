@@ -120,8 +120,13 @@ export function nonce(): Nonce {
 export function splitEncryptedPayload(
   encryption: Uint8Array
 ): [PublicKey, Uint8Array, Uint8Array, Nonce] {
-  if (encryption.length < ciphertextSize(0, 0)) {
-    throw new Error(`ciphertext is too short: ${encryption}`);
+  const minCiphertextSize = ciphertextSize(0, 0);
+  if (encryption.length < minCiphertextSize) {
+    throw new Error(
+      `Ciphertext is too short; it should have at least ${minCiphertextSize} bytes, but has ${
+        encryption.length
+      }: "${bytes.toHex(encryption)}"`
+    );
   }
   const nonce = new Uint8Array(aead.nonceSize());
   const publicKey = new Uint8Array(aead.keySize());

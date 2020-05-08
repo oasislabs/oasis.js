@@ -275,7 +275,11 @@ class HttpGateway implements OasisGateway {
     const response = await this.session.request(api.method, api.url, body);
     const event = await this.polling.response(response.id);
     if ((event as ErrorEvent).cause) {
-      throw new Error(`poll error: ${JSON.stringify(event)}`);
+      throw new Error(
+        `Error when polling results from ${api.url} with ${JSON.stringify(
+          body
+        )}: ${JSON.stringify(event)}`
+      );
     }
     return event;
   }
