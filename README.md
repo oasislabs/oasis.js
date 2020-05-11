@@ -11,9 +11,9 @@ See the [documentation](https://oasis-labs-oasis-client.readthedocs-hosted.com/e
 For most use cases, it's recommended to use the main `@oasislabs/client` package
 for all your Oasis client needs, for which there is extensive documentation.
 
-| Package                                                           | Version                                                                                                                        | Description                                                        |
-| ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------ |
-| [`@oasislabs/client`](/packages/client)                           | [![npm](https://img.shields.io/npm/v/@oasislabs/client.svg)](https://www.npmjs.com/package/@oasislabs/client)                  | Client SDK for interacting with services on Oasis              |
+| Package                                 | Version                                                                                                       | Description                                       |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| [`@oasislabs/client`](/packages/client) | [![npm](https://img.shields.io/npm/v/@oasislabs/client.svg)](https://www.npmjs.com/package/@oasislabs/client) | Client SDK for interacting with services on Oasis |
 
 ### Internal Packages
 
@@ -22,15 +22,14 @@ you need directly from the underlying packages. Together these packages compose
 the client. Standalone documentation is not provided so it's recommended to use
 these only if you know what you're doing.
 
-| Package                                                           | Version                                                                                                                        | Description                                                        |
-| ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------ |
-| [`@oasislabs/gateway`](/packages/gateway)                         | [![npm](https://img.shields.io/npm/v/@oasislabs/gateway.svg)](https://www.npmjs.com/package/@oasislabs/gateway)                | Oasis Gateway implementation used as the client backend          |
-| [`@oasislabs/service`](/packages/service)                         | [![npm](https://img.shields.io/npm/v/@oasislabs/service.svg)](https://www.npmjs.com/package/@oasislabs/service)                | Connects to and deploys IDL defined services      |
-| [`@oasislabs/confidential`](/packages/confidential)               | [![npm](https://img.shields.io/npm/v/@oasislabs/confidential.svg)](https://www.npmjs.com/package/@oasislabs/confidential)      | Primitives for confidentiality                    |
-| [`@oasislabs/common`](/packages/common)                           | [![npm](https://img.shields.io/npm/v/@oasislabs/common.svg)](https://www.npmjs.com/package/@oasislabs/common)                  | Common utilities for Oasis packages                                |
-| [`@oasislabs/test`](/packages/test)                               | [![npm](https://img.shields.io/npm/v/@oasislabs/test.svg)](https://www.npmjs.com/package/@oasislabs/test)                      | Tools used in Oasis tests                                          |
-| [`@oasislabs/web3`](/packages/web3)                            | [![npm](https://img.shields.io/npm/v/@oasislabs/web3.svg)](https://www.npmjs.com/package/@oasislabs/web3)                         | Web3 JSON RPC version of an Oasis Gateway|
-
+| Package                                             | Version                                                                                                                   | Description                                             |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| [`@oasislabs/gateway`](/packages/gateway)           | [![npm](https://img.shields.io/npm/v/@oasislabs/gateway.svg)](https://www.npmjs.com/package/@oasislabs/gateway)           | Oasis Gateway implementation used as the client backend |
+| [`@oasislabs/service`](/packages/service)           | [![npm](https://img.shields.io/npm/v/@oasislabs/service.svg)](https://www.npmjs.com/package/@oasislabs/service)           | Connects to and deploys IDL defined services            |
+| [`@oasislabs/confidential`](/packages/confidential) | [![npm](https://img.shields.io/npm/v/@oasislabs/confidential.svg)](https://www.npmjs.com/package/@oasislabs/confidential) | Primitives for confidentiality                          |
+| [`@oasislabs/common`](/packages/common)             | [![npm](https://img.shields.io/npm/v/@oasislabs/common.svg)](https://www.npmjs.com/package/@oasislabs/common)             | Common utilities for Oasis packages                     |
+| [`@oasislabs/test`](/packages/test)                 | [![npm](https://img.shields.io/npm/v/@oasislabs/test.svg)](https://www.npmjs.com/package/@oasislabs/test)                 | Tools used in Oasis tests                               |
+| [`@oasislabs/web3`](/packages/web3)                 | [![npm](https://img.shields.io/npm/v/@oasislabs/web3.svg)](https://www.npmjs.com/package/@oasislabs/web3)                 | Web3 JSON RPC version of an Oasis Gateway               |
 
 ## Contributing
 
@@ -75,9 +74,27 @@ To lint:
 yarn lint
 ```
 
-
 To apply lint fixes:
 
 ```
 yarn lint:fix
+```
+
+### Publishing new npm package versions
+
+This is a multi-package repo; packages are managed by `lerna`.
+
+First, bump the version number in all `package.json`:
+
+```sh
+git checkout -b mybranch
+lerna version  # bumps package numbers and creates a commit
+```
+
+Get the PR approved and merge it. Then pull the newly-updated master
+and push packages from it to npm:
+
+```sh
+git checkout master && git pull
+lerna publish from-package
 ```
