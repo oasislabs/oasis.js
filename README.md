@@ -81,3 +81,22 @@ To apply lint fixes:
 ```
 yarn lint:fix
 ```
+
+### Publishing new npm package versions
+
+This is a multi-package repo; packages are managed by `lerna`.
+
+First, bump the version number in all `package.json`:
+
+```sh
+git checkout -b mybranch
+lerna version  # bumps package numbers and creates a PR
+```
+
+Get the PR approved and submit it. Then pull the newly-update master
+and push packages from it to npm:
+
+```sh
+git checkout master && git pull
+lerna publish from-package
+```
