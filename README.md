@@ -91,7 +91,7 @@ git checkout -b mybranch
 lerna version  # bumps package numbers and creates a commit
 ```
 
-Get the PR approved and submit it. Then pull the newly-update master
+Get the PR approved and merge it. Then pull the newly-updated master
 and push packages from it to npm:
 
 ```sh
