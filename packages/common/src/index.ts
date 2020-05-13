@@ -1,4 +1,4 @@
-export { default as cbor } from './cbor';
+export { default as borsh } from './borsh';
 import * as bytes from './bytes';
 export { Db, LocalStorage, DummyStorage } from './db';
 export { sleep } from './utils';

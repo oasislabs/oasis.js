@@ -7,7 +7,7 @@ import {
   HttpGateway,
   Http,
 } from '@oasislabs/gateway';
-import { bytes, cbor } from '@oasislabs/common';
+import { bytes, borsh } from '@oasislabs/common';
 
 /**
  * Builds a gateway with all HTTP requests mocked out.
@@ -26,13 +26,13 @@ export default class GatewayBuilder {
 
   public rpc(output: any): GatewayBuilder {
     this.addServiceResponse({
-      event: { output: bytes.toHex(cbor.encode(output)) },
+      event: { output: bytes.toHex(borsh.encode(output)) },
     });
     return this;
   }
 
   public subscribe(event: Record<string, any>): GatewayBuilder {
-    const data = bytes.toHex(cbor.encode(event));
+    const data = bytes.toHex(borsh.encode(event));
     this.addSubscribeResponse({
       event: { data },
     });

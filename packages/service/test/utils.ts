@@ -1,6 +1,6 @@
 import * as EventEmitter from 'eventemitter3';
 import { PublicKey, PrivateKey, decrypt } from '@oasislabs/confidential';
-import { bytes, cbor } from '@oasislabs/common';
+import { bytes, borsh } from '@oasislabs/common';
 import {
   OasisGateway,
   RpcRequest,
@@ -134,7 +134,7 @@ export class GatewayRequestDecoder {
       data = bytes.parseHex(data);
     }
 
-    return cbor.decode(data) as FnRequest;
+    return borsh.decode(data) as FnRequest;
   }
 }
 

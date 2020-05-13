@@ -71,7 +71,7 @@
           async rpc(request) {
             this.requestResolve(request);
             return {
-              output: oasis.utils.bytes.toHex(oasis.utils.cbor.encode({ success: true}))
+              output: oasis.utils.bytes.toHex(oasis.utils.borsh.encode({ success: true}))
             }
           }
           async publicKey(address) {
