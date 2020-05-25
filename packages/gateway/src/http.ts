@@ -32,14 +32,19 @@ export interface HttpClient {
  * axios library as the underlying implementation
  */
 export class AxiosClient implements HttpClient {
-  private log: BaseLogger;
+  private log?: BaseLogger;
   public constructor() {
-    this.log = pino({
-      name: 'http-client',
-      timestamp: pino.stdTimeFunctions.isoTime, // ISO format instead of epoch
-      serializers: { err: pino.stdSerializers.err },
-      level: 'silent', //process?.env?.OASIS_SDK_LOG_LEVEL ?? 'silent',
-    });
+    try {
+      this.log = pino({
+        name: 'http-client',
+        timestamp: pino.stdTimeFunctions.isoTime, // ISO format instead of epoch
+        serializers: { err: pino.stdSerializers.err },
+        level: process?.env?.OASIS_SDK_LOG_LEVEL ?? 'silent',
+      });
+    } catch {
+      // Cannot initialize logging; maybe OASIS_SDK_LOG_LEVEL is not a valid level name.
+      // Ignore and skip logging.
+    }
   }
 
   /**
@@ -66,8 +71,8 @@ export class AxiosClient implements HttpClient {
     httpHeaders.headers.forEach(
       (value, key) => ((headers as any)[key] = value)
     );
-    if (this.log.isLevelEnabled('trace')) {
-      this.log.trace(
+    if (this.log?.isLevelEnabled('trace')) {
+      this.log?.trace(
         { data: this.conciseDebugRepr(data), headers },
         `Making HTTP request to ${url}`
       );
@@ -75,11 +80,11 @@ export class AxiosClient implements HttpClient {
     return axios
       .request({ method, url, data, headers })
       .catch(err => {
-        this.log.warn({ err }, `HTTP request to ${url} failed`);
+        this.log?.warn({ err }, `HTTP request to ${url} failed`);
         throw err;
       })
       .then(val => {
-        this.log.trace(
+        this.log?.trace(
           { http_response: this.conciseDebugRepr(val.data) },
           `Received HTTP response from ${url}`
         );
