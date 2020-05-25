@@ -1,6 +1,6 @@
 {
   "name": "@oasislabs/confidential",
-  "version": "1.0.0-rc.22",
+  "version": "1.0.0-rc.23",
   "description": "Primitives for Confidential Services on Oasis",
   "keywords": [
     "oasis",
