@@ -51,7 +51,7 @@ export class AxiosClient implements HttpClient {
    * Returns a string representation of `data` object suitable for debug printing.
    * Similar to `JSON.stringify()`, but clips long string values so they don't overwhelm the output.
    */
-  private conciseDebugRepr(data: any) {
+  private conciseDebugRepr(data: any): Record<string, any> {
     let dataDigest: Record<string, any> = {}; // like `data`, but with long fields clipped
     for (const key of Object.getOwnPropertyNames(data)) {
       const valStr = data[key]?.toString() || 'undefined';
@@ -71,13 +71,16 @@ export class AxiosClient implements HttpClient {
     httpHeaders.headers.forEach(
       (value, key) => ((headers as any)[key] = value)
     );
-    this.log?.trace(
-      () => ({
-        data: this.conciseDebugRepr(data),
-        headers,
-      }),
-      `Making HTTP request to ${url}`
-    );
+
+    if (this.log?.isLevelEnabled('trace')) {
+      this.log?.trace(
+        {
+          request_data: this.conciseDebugRepr(data),
+          headers,
+        },
+        `Making HTTP request to ${url}`
+      );
+    }
     return axios
       .request({ method, url, data, headers })
       .catch(err => {
@@ -85,12 +88,12 @@ export class AxiosClient implements HttpClient {
         throw err;
       })
       .then(val => {
-        this.log?.trace(
-          () => ({
-            http_response: this.conciseDebugRepr(val.data),
-          }),
-          `Received HTTP response from ${url}`
-        );
+        if (this.log?.isLevelEnabled('trace')) {
+          this.log?.trace(
+            { http_response: this.conciseDebugRepr(val.data) },
+            `Received HTTP response from ${url}`
+          );
+        }
         return val;
       });
   }
