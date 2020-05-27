@@ -71,12 +71,13 @@ export class AxiosClient implements HttpClient {
     httpHeaders.headers.forEach(
       (value, key) => ((headers as any)[key] = value)
     );
-    if (this.log?.isLevelEnabled('trace')) {
-      this.log?.trace(
-        { data: this.conciseDebugRepr(data), headers },
-        `Making HTTP request to ${url}`
-      );
-    }
+    this.log?.trace(
+      () => ({
+        data: this.conciseDebugRepr(data),
+        headers,
+      }),
+      `Making HTTP request to ${url}`
+    );
     return axios
       .request({ method, url, data, headers })
       .catch(err => {
@@ -85,7 +86,9 @@ export class AxiosClient implements HttpClient {
       })
       .then(val => {
         this.log?.trace(
-          { http_response: this.conciseDebugRepr(val.data) },
+          () => ({
+            http_response: this.conciseDebugRepr(val.data),
+          }),
           `Received HTTP response from ${url}`
         );
         return val;
