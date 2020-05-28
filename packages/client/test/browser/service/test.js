@@ -10,6 +10,12 @@ async function runTest() {
   // Open browser at the test's webpage.
   const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
+  page.on('pageerror', (err) => {
+      console.log(`Page error: "${err.toString()}"`);
+  });
+  page.on('error', (err) => {
+      console.log(`Browser error: "${err.toString()}"`);
+  });
   await page.goto('localhost:8000/test/browser/service');
 
   // Get the test's html content.
