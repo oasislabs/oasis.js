@@ -146,18 +146,18 @@ export default class PollingService {
       discardPrevious: true,
       id: this.queueId,
     });
-    // No responses so exit. Can remove once this is resolved:
-    // https://github.com/oasislabs/developer-gateway/issues/23
-    if (!responses.events) {
-      if (Date.now() - this.lastResponseTs >= PollingService.IDLE_TIMELAPSE) {
-        this.stop();
-      }
+
+    // No responses so exit.
+    if (
+      responses.events.length === 0 &&
+      Date.now() - this.lastResponseTs >= PollingService.IDLE_TIMELAPSE
+    ) {
+      this.stop();
       return;
     }
 
-    this.lastResponseTs = Date.now();
-
     responses.events.forEach((r: any) => {
+      this.lastResponseTs = Date.now();
       this.responses.emit(this.topic(r), r);
       this.responseWindow.slide(r.id, r);
       if (this.responseWindow.isClosed()) {
@@ -257,9 +257,6 @@ class Window<T> {
           break;
         }
       }
-    }
-    if (this.start > this.end) {
-      this.end = this.start + 1;
     }
   }
 

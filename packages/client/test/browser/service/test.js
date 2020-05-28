@@ -1,5 +1,4 @@
 const puppeteer = require('puppeteer');
-const assert = require('assert');
 
 /**
  * `runTest` is the entry point into the browser test. It opens a webpage and checks
@@ -10,14 +9,22 @@ async function runTest() {
   // Open browser at the test's webpage.
   const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
+  page.on('pageerror', (err) => {
+      console.log(`Page error: "${err.toString()}"`);
+  });
+  page.on('error', (err) => {
+      console.log(`Browser error: "${err.toString()}"`);
+  });
   await page.goto('localhost:8000/test/browser/service');
 
   // Get the test's html content.
+  await page.waitForSelector('#plaintext-test .result', { timeout: 5000 });
   const plainH1 = await page.$('#plaintext-test');
-  let plainOutput = await page.evaluate(element => element.innerHTML, plainH1);
+  const plainOutput = await page.evaluate(element => element.textContent, plainH1);
 
+  await page.waitForSelector('#confidential-test .result', { timeout: 5000 });
   const confH1 = await page.$('#confidential-test');
-  let confOutput = await page.evaluate(element => element.innerHTML, confH1);
+  const confOutput = await page.evaluate(element => element.textContent, confH1);
 
   // Shut down.
   await browser.close();

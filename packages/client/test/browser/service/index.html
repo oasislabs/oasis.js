@@ -12,11 +12,13 @@
          */
         async function runTest() {
           let nonConf = await runCase(nonConfidentialTest);
-          document.getElementById('plaintext-test').innerHTML = JSON.stringify(nonConf);
+          document.getElementById('plaintext-test').innerHTML =
+            `<div class="result">${JSON.stringify(nonConf)}</div>`;
           // ^ Place the results in the html for consumption by the test runner.
 
           let conf = await runCase(confidentialTest);
-          document.getElementById('confidential-test').innerHTML = JSON.stringify(conf);
+          document.getElementById('confidential-test').innerHTML =
+            `<div class="result">${JSON.stringify(conf)}</div>`;
         }
 
         async function runCase(test) {
@@ -153,7 +155,7 @@
         let nonConfidentialTest = {
           gateway: (resolve) => new RequestMockOasisGateway(resolve),
           db: () => new DummyStorage(),
-          coder: new oasis.utils.OasisCoder.plaintext(),
+          coder: oasis.utils.OasisCoder.plaintext(),
         };
         // Confidential test case.
         let confidentialTest = {
@@ -168,7 +170,7 @@
             }));
             return db;
           },
-          coder: new oasis.utils.OasisCoder.confidential({
+          coder: oasis.utils.OasisCoder.confidential({
             publicKey: keys.peerPublicKey,
             privateKey: keys.peerPrivateKey,
             peerPublicKey: keys.publicKey,
