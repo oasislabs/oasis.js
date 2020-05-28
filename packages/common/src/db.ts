@@ -9,7 +9,8 @@ export class LocalStorage implements Db {
   constructor() {
     // Node.
     if (typeof window === 'undefined') {
-      this.storage = require('node-localstorage').LocalStorage('.oasis');
+      const tmpDir = require('tmp').dirSync({ prefix: '.oasis-' }).name;
+      this.storage = require('node-localstorage').LocalStorage(tmpDir);
     }
     // Browser.
     else {
