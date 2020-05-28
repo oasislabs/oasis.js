@@ -1,6 +1,6 @@
 {
   "name": "@oasislabs/gateway",
-  "version": "1.0.0-rc.38",
+  "version": "1.0.0-rc.39",
   "description": "Oasis Gateway implementation used as the client backend",
   "keywords": [
     "oasis",
@@ -46,13 +46,18 @@
   },
   "dependencies": {
     "@oasislabs/common": "^1.0.0-rc.17",
-    "@oasislabs/service": "^1.0.0-rc.33",
+    "@oasislabs/service": "^1.0.0-rc.34",
     "@types/uuid": "^3.4.5",
     "axios": "^0.19.0",
+    "pino": "^6.2.1",
+    "pino-pretty": "^4.0.0",
     "uuid": "^3.4.0"
   },
   "browser": {
     "./dist/index.umd.js": "./dist/index.browser.umd.js",
     "./dist/index.es5.js": "./dist/index.browser.es5.js"
+  },
+  "devDependencies": {
+    "@types/pino": "^6.0.1"
   }
 }

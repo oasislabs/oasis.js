@@ -1,3 +1,4 @@
+import { BaseLogger, default as pino } from 'pino';
 import axios, { Method } from 'axios';
 
 /**
@@ -31,6 +32,35 @@ export interface HttpClient {
  * axios library as the underlying implementation
  */
 export class AxiosClient implements HttpClient {
+  private log?: BaseLogger;
+  public constructor() {
+    try {
+      this.log = pino({
+        name: 'http-client',
+        timestamp: pino.stdTimeFunctions.isoTime, // ISO format instead of epoch
+        serializers: { err: pino.stdSerializers.err },
+        level: process?.env?.OASIS_SDK_LOG_LEVEL ?? 'silent',
+      });
+    } catch {
+      // Cannot initialize logging; maybe OASIS_SDK_LOG_LEVEL is not a valid level name.
+      // Ignore and skip logging.
+    }
+  }
+
+  /**
+   * Returns a string representation of `data` object suitable for debug printing.
+   * Similar to `JSON.stringify()`, but clips long string values so they don't overwhelm the output.
+   */
+  private conciseDebugRepr(data: any): Record<string, any> {
+    let dataDigest: Record<string, any> = {}; // like `data`, but with long fields clipped
+    for (const key of Object.getOwnPropertyNames(data)) {
+      const valStr = data[key]?.toString() || 'undefined';
+      dataDigest[key] =
+        valStr.slice(0, 100) + (valStr.size === 100 ? '...' : '');
+    }
+    return dataDigest;
+  }
+
   public request(
     method: Method,
     url: string,
@@ -41,6 +71,30 @@ export class AxiosClient implements HttpClient {
     httpHeaders.headers.forEach(
       (value, key) => ((headers as any)[key] = value)
     );
-    return axios.request({ method, url, data, headers });
+
+    if (this.log?.isLevelEnabled('trace')) {
+      this.log?.trace(
+        {
+          request_data: this.conciseDebugRepr(data),
+          headers,
+        },
+        `Making HTTP request to ${url}`
+      );
+    }
+    return axios
+      .request({ method, url, data, headers })
+      .catch(err => {
+        this.log?.warn({ err }, `HTTP request to ${url} failed`);
+        throw err;
+      })
+      .then(val => {
+        if (this.log?.isLevelEnabled('trace')) {
+          this.log?.trace(
+            { http_response: this.conciseDebugRepr(val.data) },
+            `Received HTTP response from ${url}`
+          );
+        }
+        return val;
+      });
   }
 }
