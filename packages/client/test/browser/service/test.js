@@ -1,5 +1,4 @@
 const puppeteer = require('puppeteer');
-const assert = require('assert');
 
 /**
  * `runTest` is the entry point into the browser test. It opens a webpage and checks
