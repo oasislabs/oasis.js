@@ -12,6 +12,8 @@ export type HttpHeaders = {
  * Http interface for making http requests to the developer gateway.
  */
 export interface Http {
+  /** Unique ID of this Http instance, for caching. */
+  id: string;
   request(method: string, api: string, body: Record<string, any>): Promise<any>;
 }
 
