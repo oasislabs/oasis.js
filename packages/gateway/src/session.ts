@@ -21,6 +21,11 @@ export class HttpSession implements Http {
   public url: string;
 
   /**
+   * Unique identifier of this session.
+   */
+  public id: string;
+
+  /**
    * session key passed to the developer gateway in the header.
    */
   private sessionKey: string;
@@ -43,6 +48,7 @@ export class HttpSession implements Http {
     client?: HttpClient
   ) {
     this.sessionKey = uuid.v4();
+    this.id = this.sessionKey;
     this.headers = headers;
     this.headers =
       this.headers && this.headers.headers

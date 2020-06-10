@@ -102,10 +102,9 @@ export default class PollingService {
    *          unique queue for each individudual subscription--hence the use of
    *          queueId to form the id.
    */
-  private static id(options: PollingServiceOptions): string {
-    return options.queueId !== undefined
-      ? `${options.url}/${SubscribePollApi}/${options.queueId}`
-      : `${options.url}/${ServicePollApi}`;
+  private static id(opts: PollingServiceOptions): string {
+    const url = `${opts.url}/${SubscribePollApi.url}/${opts.queueId ?? ''}`;
+    return url + `(${opts.session.id})`;
   }
 
   /**
