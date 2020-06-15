@@ -47,6 +47,7 @@
   "dependencies": {
     "@oasislabs/common": "^1.0.0-rc.19",
     "@oasislabs/service": "^1.0.0-rc.36",
+    "@types/pino": "^6.2.1",
     "@types/uuid": "^3.4.5",
     "axios": "^0.19.0",
     "pino": "^6.2.1",
@@ -56,8 +57,5 @@
   "browser": {
     "./dist/index.umd.js": "./dist/index.browser.umd.js",
     "./dist/index.es5.js": "./dist/index.browser.es5.js"
-  },
-  "devDependencies": {
-    "@types/pino": "^6.0.1"
   }
 }
