@@ -39,19 +39,6 @@ export default class PollingService {
   private polling?: any;
 
   /**
-   * Millisecond timestamp representing the last time we received an event response
-   * from the gateway. When IDLE_TIMELAPSE milliseconds have passed, the
-   * PollingService is considered idle and stops.
-   */
-  private lastResponseTs: number;
-
-  /**
-   * Amount of time (in ms) that can pass before being considered idle.
-   * The special value of 0 means "never consider it idle".
-   */
-  private static IDLE_TIMELAPSE = 0;
-
-  /**
    * The constructor should never be invoked directly. To access the PollingService
    * use `PollingService.instance`.
    */
@@ -64,7 +51,6 @@ export default class PollingService {
     this.responseWindow = responseWindow ? responseWindow : new Window();
     this.interval = interval ? interval : 1000;
     this.responses = new EventEmitter();
-    this.lastResponseTs = Date.now();
   }
 
   /**
@@ -147,18 +133,7 @@ export default class PollingService {
       id: this.queueId,
     });
 
-    // If there have been no responses for longer than IDLE_TIMELAPSE, exit.
-    if (
-      responses.events.length === 0 &&
-      PollingService.IDLE_TIMELAPSE > 0 &&
-      Date.now() - this.lastResponseTs >= PollingService.IDLE_TIMELAPSE
-    ) {
-      this.stop();
-      return;
-    }
-
     responses.events.forEach((r: any) => {
-      this.lastResponseTs = Date.now();
       this.responses.emit(this.topic(r), r);
       this.responseWindow.slide(r.id, r);
       if (this.responseWindow.isClosed()) {
