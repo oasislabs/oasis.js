@@ -54,7 +54,7 @@ export class AxiosClient implements HttpClient {
    * Similar to `JSON.stringify()`, but clips long string values so they don't overwhelm the output.
    */
   private conciseDebugRepr(data: any): Record<string, any> {
-    let dataDigest: Record<string, any> = {}; // like `data`, but with long fields clipped
+    const dataDigest: Record<string, any> = {}; // like `data`, but with long fields clipped
     for (const key of Object.getOwnPropertyNames(data)) {
       const valStr = data[key]?.toString() || 'undefined';
       dataDigest[key] =
@@ -77,6 +77,7 @@ export class AxiosClient implements HttpClient {
     if (this.log?.isLevelEnabled('trace')) {
       this.log?.trace(
         {
+          // eslint-disable-next-line
           request_data: this.conciseDebugRepr(data),
           headers,
         },
@@ -92,6 +93,7 @@ export class AxiosClient implements HttpClient {
       .then(val => {
         if (this.log?.isLevelEnabled('trace')) {
           this.log?.trace(
+            // eslint-disable-next-line
             { http_response: this.conciseDebugRepr(val.data) },
             `Received HTTP response from ${url}`
           );
