@@ -46,9 +46,9 @@ export default class PollingService {
   private lastResponseTs: number;
 
   /**
-   * Amount of time that can pass before being considered idle.
+   * Amount of time (in ms) that can pass before being considered idle.
    */
-  private static IDLE_TIMELAPSE = 1000 * 60;
+  private static IDLE_TIMELAPSE = 1000 * 3600 * 24 * 365; // 365 days
 
   /**
    * The constructor should never be invoked directly. To access the PollingService
