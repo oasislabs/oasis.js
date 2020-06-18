@@ -47,8 +47,9 @@ export default class PollingService {
 
   /**
    * Amount of time (in ms) that can pass before being considered idle.
+   * The special value of 0 means "never consider it idle".
    */
-  private static IDLE_TIMELAPSE = 1000 * 3600 * 24 * 365; // 365 days
+  private static IDLE_TIMELAPSE = 0;
 
   /**
    * The constructor should never be invoked directly. To access the PollingService
@@ -146,9 +147,10 @@ export default class PollingService {
       id: this.queueId,
     });
 
-    // No responses so exit.
+    // If there have been no responses for longer than IDLE_TIMELAPSE, exit.
     if (
       responses.events.length === 0 &&
+      PollingService.IDLE_TIMELAPSE > 0 &&
       Date.now() - this.lastResponseTs >= PollingService.IDLE_TIMELAPSE
     ) {
       this.stop();
