@@ -1,6 +1,6 @@
 {
   "name": "@oasislabs/gateway",
-  "version": "1.0.0-rc.43",
+  "version": "1.0.0-rc.44",
   "description": "Oasis Gateway implementation used as the client backend",
   "keywords": [
     "oasis",

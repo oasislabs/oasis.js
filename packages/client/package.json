@@ -1,6 +1,6 @@
 {
   "name": "@oasislabs/client",
-  "version": "1.0.0-rc.47",
+  "version": "1.0.0-rc.48",
   "description": "Client SDK for interacting with services on Oasis",
   "keywords": [
     "oasis",
@@ -50,7 +50,7 @@
   },
   "dependencies": {
     "@oasislabs/common": "^1.0.0-rc.19",
-    "@oasislabs/gateway": "^1.0.0-rc.43",
+    "@oasislabs/gateway": "^1.0.0-rc.44",
     "@oasislabs/service": "^1.0.0-rc.36",
     "@oasislabs/web3": "^1.0.0-rc.25",
     "find": "^0.3.0",
