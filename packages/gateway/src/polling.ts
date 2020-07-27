@@ -103,7 +103,7 @@ export default class PollingService {
    *          gateway.
    */
   public async response(requestId: number): Promise<any> {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       const cached = this.responseWindow.item(requestId);
       if (cached) {
         return resolve(cached);
@@ -112,6 +112,7 @@ export default class PollingService {
       this.responses.once(`${requestId}`, (response: Event) => {
         resolve(response);
       });
+      this.responses.once('error', reject);
       if (!this.polling) {
         this.start();
       }
@@ -122,7 +123,14 @@ export default class PollingService {
    * Initiates the polling service to begin polling for responses.
    */
   public start() {
-    this.polling = setInterval(this.pollOnce.bind(this), this.interval);
+    this.polling = setInterval(async () => {
+      try {
+        await this.pollOnce();
+      } catch (e) {
+        this.responses.emit('error', e);
+        this.stop();
+      }
+    }, this.interval);
   }
 
   private async pollOnce() {
