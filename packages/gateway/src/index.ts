@@ -201,8 +201,12 @@ class HttpGateway implements OasisGateway {
       url: this.url,
       session: this.session,
       queueId: response.id,
-    }).subscribe(response.id, (event: any) => {
-      events.emit(request.event, event);
+    }).subscribe(response.id, (err: any, event: any) => {
+      if (err) {
+        events.emit('error', err);
+      } else {
+        events.emit(request.event, event);
+      }
     });
     return events;
   }

@@ -162,7 +162,8 @@ export default class PollingService {
     if (this.polling) {
       throw new Error('cannot make a new subscription when already polling');
     }
-    this.responses.addListener(SubscribeTopic, callback);
+    this.responses.on(SubscribeTopic, (event: any) => callback(null, event));
+    this.responses.on('error', (err: any) => callback(err));
     this.start();
   }
 
