@@ -61,7 +61,7 @@ export class HttpSession implements Http {
   public async request(
     method: string,
     api: string,
-    body: Record<string, any>
+    body: Record<string, any> | undefined
   ): Promise<any> {
     const url = this.url + api;
     const headers: HttpHeaders = { headers: new Map() };

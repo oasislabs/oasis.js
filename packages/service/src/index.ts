@@ -20,6 +20,7 @@ export {
   PublicKeyResponse,
   GetCodeRequest,
   GetCodeResponse,
+  GetSendersResponse,
   RpcOptions,
   RpcRequest,
   RpcResponse,

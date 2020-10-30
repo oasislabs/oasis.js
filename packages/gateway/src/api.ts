@@ -12,6 +12,14 @@ export type DeveloperGatewayApi = {
 };
 
 /**
+ * Retrieves the Ethereum addresses that the gateway uses to sign transactions.
+ */
+export const GetSendersApi: DeveloperGatewayApi = {
+  url: 'v0/api/getSenders',
+  method: 'GET',
+};
+
+/**
  * Deploys a services.
  */
 export const DeployApi: DeveloperGatewayApi = {

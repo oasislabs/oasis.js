@@ -14,6 +14,7 @@ import {
   PublicKeyResponse,
   GetCodeRequest,
   GetCodeResponse,
+  GetSendersResponse,
 } from '@oasislabs/service';
 import { bytes } from '@oasislabs/common';
 import PollingService from './polling';
@@ -29,6 +30,7 @@ import {
   ExpiryApi,
   PublicKeyApi,
   GetCodeApi,
+  GetSendersApi,
   SubscribeApi,
   ServicePollApi,
   SubscribePollApi,
@@ -286,6 +288,14 @@ class HttpGateway implements OasisGateway {
       );
     }
     return event;
+  }
+
+  public async getSenders(): Promise<GetSendersResponse> {
+    return this.session.request(
+      GetSendersApi.method,
+      GetSendersApi.url,
+      undefined
+    );
   }
 
   public async getCode(request: GetCodeRequest): Promise<GetCodeResponse> {

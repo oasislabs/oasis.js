@@ -60,6 +60,10 @@ export type GetCodeResponse = {
   code: Uint8Array | null;
 };
 
+export type GetSendersResponse = {
+  addresses: string[];
+};
+
 export type RpcRequest = {
   data: Uint8Array;
   address?: Uint8Array;

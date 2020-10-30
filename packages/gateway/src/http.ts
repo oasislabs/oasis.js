@@ -14,7 +14,11 @@ export type HttpHeaders = {
 export interface Http {
   /** Unique ID of this Http instance, for caching. */
   id: string;
-  request(method: string, api: string, body: Record<string, any>): Promise<any>;
+  request(
+    method: string,
+    api: string,
+    body?: Record<string, any>
+  ): Promise<any>;
 }
 
 /**
@@ -24,7 +28,7 @@ export interface HttpClient {
   request(
     method: string,
     url: string,
-    data: Record<string, any>,
+    data: Record<string, any> | undefined,
     headers: HttpHeaders
   ): Promise<any>;
 }
@@ -66,7 +70,7 @@ export class AxiosClient implements HttpClient {
   public request(
     method: Method,
     url: string,
-    data: Record<string, any>,
+    data: Record<string, any> | undefined,
     httpHeaders: HttpHeaders
   ): Promise<any> {
     const headers: Record<string, any> = {};
